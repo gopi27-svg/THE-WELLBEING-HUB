@@ -1,0 +1,1755 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>THE WELLBEING HUB</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&amp;family=Playfair+Display:wght700&amp;display=swap" rel="stylesheet"/>
+<style>
+        :root {
+            /* Existing Color Palette - Brighter & More Varied */
+            --primary-green: #4CAF50; /* Google Material Design Green 500 */
+            --dark-green: #388E3C; /* Green 700 */
+            --light-green: #E8F5E9; /* Green 50 */
+            --accent-blue: #2196F3; /* Blue 500 - for accents/focus */
+            --white: #FFFFFF;
+            --off-white: #F9FAFB; /* Very light background for contrast */
+            --text-dark: #37474F; /* Dark Grey 800 */
+            --text-medium: #78909C; /* Blue Grey 600 */
+            --border-light: #CFD8DC; /* Blue Grey 100 */
+            --warning-orange: #FF9800; /* Orange 500 */
+            --danger-red: #F44336; /* Red 500 */
+
+            /* Neumorphic Shadow & Background Variables (adapted to existing palette) */
+            --neumorphic-base-bg: var(--off-white); /* Main background for neumorphic elements */
+            --neumorphic-light-shadow: var(--white); /* Highlight for extruded effect */
+            --neumorphic-dark-shadow: rgba(0, 0, 0, 0.1); /* Darker shadow for extruded effect */
+            --neumorphic-inset-shadow-dark: rgba(0, 0, 0, 0.15); /* Darker inset shadow for inputs */
+            --neumorphic-inset-shadow-light: rgba(255, 255, 255, 0.8); /* Lighter inset shadow for inputs */
+
+            /* Spacing */
+            --spacing-xs: 8px;
+            --spacing-sm: 12px;
+            --spacing-md: 20px;
+            --spacing-lg: 30px;
+            --spacing-xl: 40px;
+
+            /* Border Radius - Softer, more friendly */
+            --radius-sm: 8px; /* For inputs/buttons */
+            --radius-md: 12px; /* For smaller cards */
+            --radius-lg: 16px; /* For main sections/cards */
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            padding: var(--spacing-xl);
+            background: linear-gradient(135deg, var(--light-green) 0%, var(--off-white) 50%, var(--light-green) 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+            overflow-x: hidden; /* Prevent horizontal scroll on small screens */
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            color: var(--dark-green);
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+            font-size: 3.8em;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-shadow: 3px 3px 6px var(--shadow-subtle);
+            line-height: 1.1;
+        }
+
+        h2 {
+            font-family: 'Montserrat', sans-serif;
+            color: var(--primary-green);
+            margin-bottom: var(--spacing-md);
+            font-size: 2.5em;
+            font-weight: 700;
+            border-bottom: 4px solid var(--light-green);
+            padding-bottom: var(--spacing-sm);
+            display: inline-block;
+            margin-left: 0;
+            margin-right: 0;
+            letter-spacing: 0.8px;
+        }
+
+        /* Main content wrapper for neumorphic effect */
+        .main-content-wrapper {
+            background-color: var(--neumorphic-base-bg);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            box-shadow: 8px 8px 16px var(--neumorphic-dark-shadow),
+                        -8px -8px 16px var(--neumorphic-light-shadow);
+            width: 100%;
+            max-width: 950px; /* Consistent max-width */
+            box-sizing: border-box;
+            transition: all 0.4s ease-in-out;
+            margin-bottom: var(--spacing-xl); /* Space below the main content */
+        }
+
+        .intro-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 50vh;
+            text-align: center;
+            padding: var(--spacing-xl);
+            background: var(--neumorphic-base-bg); /* Use neumorphic background */
+            border-radius: var(--radius-lg);
+            box-shadow: 8px 8px 16px var(--neumorphic-dark-shadow),
+                        -8px -8px 16px var(--neumorphic-light-shadow); /* Neumorphic shadow */
+            max-width: 950px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: var(--spacing-xl);
+            animation: fadeIn 1s ease-out;
+            border: none;
+        }
+
+        .intro-screen p {
+            max-width: 850px;
+            margin-top: var(--spacing-md);
+            font-size: 1.25em;
+            line-height: 1.7;
+            color: var(--text-dark);
+        }
+
+        .btn {
+            background: var(--neumorphic-base-bg); /* Button base background */
+            color: var(--primary-green); /* Text color for primary action */
+            padding: 16px 45px;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.15em;
+            margin: var(--spacing-lg) var(--spacing-md) 0 0;
+            transition: all 0.3s ease; /* Combined transition */
+            box-shadow: 5px 5px 10px var(--neumorphic-dark-shadow),
+                        -5px -5px 10px var(--neumorphic-light-shadow); /* Extruded neumorphic shadow */
+            letter-spacing: 0.5px;
+            text-transform: uppercase; /* Match PF form button style */
+        }
+
+        .btn:hover {
+            box-shadow: inset 3px 3px 7px var(--neumorphic-dark-shadow),
+                        inset -3px -3px 7px var(--neumorphic-light-shadow); /* Pressed-in effect on hover */
+            color: var(--dark-green); /* Darker green on hover */
+            transform: translateY(1px); /* Slight press */
+        }
+
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: inset 2px 2px 5px var(--neumorphic-dark-shadow),
+                        inset -2px -2px 5px var(--neumorphic-light-shadow);
+        }
+
+        .btn.secondary {
+            background: var(--neumorphic-base-bg); /* Light background for secondary */
+            color: var(--text-medium); /* Softer text color */
+            border: none; /* No explicit border, rely on shadow */
+            box-shadow: 5px 5px 10px var(--neumorphic-dark-shadow),
+                        -5px -5px 10px var(--neumorphic-light-shadow); /* Extruded neumorphic shadow */
+        }
+
+        .btn.secondary:hover {
+            background: var(--neumorphic-base-bg);
+            color: var(--primary-green); /* Primary green on hover */
+            box-shadow: inset 3px 3px 7px var(--neumorphic-dark-shadow),
+                        inset -3px -3px 7px var(--neumorphic-light-shadow);
+        }
+        .btn-link {
+            background: none;
+            border: none;
+            color: var(--accent-blue);
+            text-decoration: underline;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.05em;
+            padding: 0;
+            margin: 10px 0;
+            transition: color 0.3s ease;
+        }
+
+        .btn-link:hover {
+            color: var(--dark-green);
+        }
+
+        .section {
+            margin-bottom: var(--spacing-xl);
+            background: var(--neumorphic-base-bg); /* Use neumorphic background */
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            box-shadow: 8px 8px 20px var(--neumorphic-dark-shadow),
+                        -8px -8px 20px var(--neumorphic-light-shadow); /* Neumorphic card shadow */
+            border: none;
+            max-width: 950px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-left: auto; /* Center sections within the form */
+            margin-right: auto;
+        }
+
+        label {
+            display: block;
+            margin-top: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+            font-weight: 600;
+            color: var(--text-dark); /* Darker text for labels */
+            font-size: 1.05em;
+        }
+
+        select,
+        input[type="text"],
+        input[type="email"],
+        input[type="date"],
+        input[type="time"] {
+            width: calc(100% - 24px); /* Account for padding */
+            padding: 12px; /* Match PF form input padding */
+            margin-bottom: 20px; /* Match PF form input margin */
+            border: none; /* No border, rely on shadow */
+            border-radius: var(--radius-sm); /* Consistent rounded corners */
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.05em;
+            color: var(--text-dark);
+            background-color: var(--neumorphic-base-bg); /* Use neumorphic background */
+            box-shadow: inset 2px 2px 5px var(--neumorphic-inset-shadow-dark),
+                        inset -3px -3px 7px var(--neumorphic-inset-shadow-light); /* Inset neumorphic shadow */
+            transition: all 0.3s ease; /* Smooth transition */
+            line-height: 1.2;
+        }
+
+        select:focus,
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="date"]:focus,
+        input[type="time"]:focus {
+            outline: none;
+            box-shadow: inset 1px 1px 3px var(--neumorphic-inset-shadow-dark),
+                        inset -1px -1px 3px var(--neumorphic-inset-shadow-light),
+                        0 0 0 3px rgba(76, 175, 80, 0.2); /* Green accent glow on focus */
+            background-color: var(--white); /* Lighter background on focus */
+        }
+
+        /* Custom arrow for select */
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%2337474F" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>'); /* Use text-dark color for arrow */
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 24px;
+            padding-right: 45px;
+            cursor: pointer;
+        }
+
+        .step-section {
+            display: none;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+            width: 100%;
+            max-width: 950px;
+            box-sizing: border-box;
+        }
+
+        .step-section.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-lg);
+            padding: 0 var(--spacing-xs);
+            max-width: 950px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Specific text colors for score ranges */
+        .score-healthy {
+            color: var(--dark-green);
+            font-weight: 700;
+        }
+        .score-moderate {
+            color: var(--warning-orange);
+            font-weight: 700;
+        }
+        .score-concern {
+            color: var(--danger-red);
+            font-weight: 700;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin-top: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        ul li {
+            background-color: transparent;
+            padding: var(--spacing-sm) 0;
+            margin-bottom: var(--spacing-xs);
+            border-radius: 0;
+            font-size: 1.05em;
+            color: var(--text-dark);
+            position: relative;
+            padding-left: 30px;
+        }
+
+        ul li::before {
+            content: '\2713';
+            color: var(--primary-green);
+            font-size: 1.3em;
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: bold;
+        }
+
+        .resources, .appointment {
+            margin-top: var(--spacing-xl);
+            padding: var(--spacing-xl);
+            border: none; /* Removed border, rely on neumorphic shadow */
+            border-radius: var(--radius-md);
+            background-color: var(--neumorphic-base-bg); /* Use neumorphic background */
+            box-shadow: inset 3px 3px 7px var(--neumorphic-inset-shadow-dark),
+                        inset -3px -3px 7px var(--neumorphic-inset-shadow-light); /* Inset neumorphic shadow */
+        }
+
+        .resources h3, .appointment h3 {
+            color: var(--dark-green);
+            font-size: 2em;
+            margin-top: 0;
+            border-bottom: 3px solid var(--primary-green);
+            padding-bottom: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .disclaimer-text {
+            color: var(--text-dark);
+            font-size: 1.05em;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        /* Keyframe for fade-in animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Styles for the main folder cards */
+        .folder-card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Adjust minmax as needed */
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .folder-card {
+            background: var(--neumorphic-base-bg);
+            border: none;
+            border-radius: var(--radius-md); /* Slightly more rounded than buttons */
+            box-shadow: 8px 8px 16px var(--neumorphic-dark-shadow),
+                        -8px -8px 16px var(--neumorphic-light-shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-lg);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            color: var(--text-dark); /* Ensure text is visible */
+            font-weight: 600;
+            font-size: 1.1em;
+            min-height: 180px; /* Adjust as needed for card height */
+        }
+
+        .folder-card:hover {
+            box-shadow: inset 3px 3px 7px var(--neumorphic-dark-shadow),
+                        inset -3px -3px 7px var(--neumorphic-light-shadow); /* Pressed-in effect on hover */
+            transform: translateY(1px); /* Slight press */
+        }
+
+        .folder-card .folder-icon {
+            width: 160px; /* Adjust icon size */
+            height: 160px; /* Adjust icon size */
+            object-fit: contain;
+            margin-bottom: var(--spacing-sm);
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.1)); /* Subtle shadow for icon */
+        }
+
+        /* Styles for the section revealed by clicking the main folder card */
+        .resource-section-container {
+            background-color: var(--neumorphic-base-bg); /* Use base for consistency */
+            border: none;
+            border-radius: var(--radius-lg);
+            box-shadow: 8px 8px 20px var(--neumorphic-dark-shadow),
+                        -8px -8px 20px var(--neumorphic-light-shadow); /* Similar to main sections */
+            padding: var(--spacing-xl);
+            margin-top: var(--spacing-md); /* Space below the grid of cards */
+            display: none; /* Initially hidden, controlled by JS */
+            animation: fadeIn 0.7s ease-out; /* Use existing fadeIn animation */
+            width: 100%; /* Take full width of parent */
+            box-sizing: border-box;
+        }
+
+        .resource-section-container.expanded {
+            display: block;
+        }
+
+        .resource-section-container .sub-folder-heading {
+            margin-top: 0;
+            padding-left: 0;
+            text-align: center;
+            color: var(--primary-green);
+            font-size: 2em; /* Slightly larger for sub-heading */
+            margin-bottom: var(--spacing-lg); /* More space below heading */
+            border-bottom: 3px solid var(--light-green); /* Subtle border */
+            padding-bottom: var(--spacing-sm);
+            display: inline-block;
+            width: auto;
+        }
+
+        /* Styles for the nested resource cards (e.g., 'Videos' folder) */
+        .nested-resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Smaller cards */
+            gap: var(--spacing-md);
+            margin-top: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .nested-resource-card {
+            background: var(--neumorphic-base-bg);
+            border: none;
+            border-radius: var(--radius-md);
+            box-shadow: inset 3px 3px 7px var(--neumorphic-inset-shadow-dark),
+                        inset -3px -3px 7px var(--neumorphic-inset-shadow-light); /* Inset for 'pressed' look */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-md);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 1em;
+            min-height: 120px; /* Smaller height */
+        }
+
+        .nested-resource-card:hover {
+            box-shadow: 5px 5px 10px var(--neumorphic-dark-shadow),
+                        -5px -5px 10px var(--neumorphic-light-shadow); /* Pop-out on hover */
+            transform: translateY(-2px);
+        }
+
+        .nested-resource-card .folder-icon {
+            width: 60px; /* Smaller icon */
+            height: 60px;
+            object-fit: contain;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        /* Styles for the actual content container (e.g., video grid) */
+        .actual-content-container {
+            background-color: var(--off-white); /* Slightly different background for actual content */
+            border-radius: var(--radius-md);
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.05); /* Subtle inner shadow */
+            padding: var(--spacing-md);
+            margin-top: var(--spacing-md);
+            display: none; /* Initially hidden */
+            animation: fadeIn 0.5s ease-out;
+            border: 1px solid var(--border-light); /* Light border */
+        }
+
+        .actual-content-container.expanded {
+            display: block;
+        }
+
+        .actual-content-container .inner-content-heading {
+            margin-top: 0;
+            text-align: center;
+            color: var(--dark-green);
+            font-size: 1.6em;
+            margin-bottom: var(--spacing-md);
+            border-bottom: 2px solid var(--primary-green);
+            padding-bottom: var(--spacing-xs);
+            display: inline-block;
+            width: auto;
+        }
+
+        /* Ensure video grid styles are still applied */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Adjusted minmax slightly */
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        /* Adjustments for the usdc video items to fit the new card context if needed */
+        .usdc-video-item {
+            background-color: var(--neumorphic-base-bg);
+            border-radius: var(--radius-sm);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Keep this as it's a specific inner shadow for video items */
+            display: flex; /* Use flexbox for image and text alignment */
+            flex-direction: column;
+            text-decoration: none;
+            color: var(--text-dark);
+            overflow: hidden; /* Ensure rounded corners */
+        }
+
+        .usdc-video-item img {
+            height: 150px; /* Make images slightly smaller if they are too large */
+            object-fit: cover;
+            width: 100%;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .usdc-video-item p {
+            padding: var(--spacing-sm);
+            margin: 0;
+            font-weight: 600;
+            font-size: 0.95em; /* Slightly smaller font for these labels */
+        }
+
+        /* New styles for Thank You Message */
+        #thankYouMessage {
+            display: none; /* Hidden by default, shown by JS */
+            text-align: center;
+            padding: var(--spacing-xl) var(--spacing-lg);
+            background-color: var(--neumorphic-base-bg); /* Use neumorphic background */
+            border-radius: var(--radius-lg);
+            margin-top: var(--spacing-xl);
+            color: var(--primary-green);
+            box-shadow: 8px 8px 20px var(--neumorphic-dark-shadow),
+                        -8px -8px 20px var(--neumorphic-light-shadow); /* Neumorphic shadow */
+            max-width: 950px;
+            width: 100%;
+            box-sizing: border-box;
+            animation: fadeIn 1s ease-out;
+        }
+
+        #thankYouMessage h3 {
+            color: var(--primary-green);
+            font-size: 2.2em;
+            margin-bottom: 20px;
+            border-bottom: none;
+            padding-bottom: 0;
+            font-weight: 700;
+        }
+
+        #thankYouMessage p {
+            font-size: 1.2em;
+            line-height: 1.7;
+            margin-bottom: 0;
+            color: var(--text-dark);
+        }
+
+        #thankYouMessage .emoji {
+            font-size: 2em;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* Custom message box styling */
+        .custom-message-box {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .custom-message-box .message-content {
+            background-color: var(--white);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            font-size: 1.1em;
+            color: var(--text-dark);
+            position: relative;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .custom-message-box .message-close-btn {
+            background-color: var(--primary-green);
+            color: var(--white);
+            padding: 10px 25px;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            margin-top: var(--spacing-md);
+            transition: background 0.3s ease;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 1200px) {
+            body {
+                max-width: 90%;
+                padding: var(--spacing-lg);
+            }
+            .main-content-wrapper, .intro-screen, .section, .step-section, .btn-group, #thankYouMessage {
+                max-width: 90%;
+            }
+            h1 {
+                font-size: 3.2em;
+            }
+            h2 {
+                font-size: 2.2em;
+            }
+        }
+
+        @media (max-width: 992px) {
+            h1 {
+                font-size: 2.8em;
+            }
+            h2 {
+                font-size: 2em;
+            }
+            .intro-screen p {
+                font-size: 1.1em;
+            }
+            .btn {
+                padding: 14px 35px;
+                font-size: 1.05em;
+            }
+            .section {
+                padding: var(--spacing-lg);
+            }
+            select, input {
+                padding: var(--spacing-sm);
+            }
+            .folder-card-grid {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: var(--spacing-md);
+            }
+            h1 {
+                font-size: 2.4em;
+                margin-bottom: var(--spacing-lg);
+            }
+            h2 {
+                font-size: 1.8em;
+                border-bottom: 3px solid var(--light-green);
+            }
+            .intro-screen {
+                min-height: auto;
+                padding: var(--spacing-md);
+            }
+            .intro-screen p {
+                font-size: 1em;
+            }
+            .btn {
+                width: 100%;
+                margin: 0;
+                padding: 10px 20px;
+            }
+            .btn-group {
+                flex-direction: column;
+                align-items: stretch;
+                gap: var(--spacing-xs);
+                padding: 0;
+            }
+            .section {
+                padding: var(--spacing-md);
+                margin-bottom: var(--spacing-md);
+            }
+            label {
+                font-size: 0.95em;
+            }
+            select, input {
+                font-size: 0.95em;
+                padding: 10px 12px;
+            }
+            ul li {
+                font-size: 0.95em;
+                padding-left: 25px;
+            }
+            ul li::before {
+                font-size: 1.1em;
+            }
+            .resources, .appointment {
+                padding: var(--spacing-md);
+            }
+            .folder-card-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: var(--spacing-sm);
+            }
+            .folder-card {
+                padding: var(--spacing-md);
+                min-height: 150px;
+            }
+            .folder-card .folder-icon {
+                width: 60px;
+                height: 60px;
+            }
+            .folder-card p {
+                font-size: 0.95em;
+            }
+            .video-grid {
+                grid-template-columns: 1fr; /* Single column on small screens for videos */
+            }
+            .usdc-video-item img {
+                height: 120px;
+            }
+            /* Adjustments for nested folders on smaller screens */
+            .nested-resource-grid {
+                grid-template-columns: 1fr; /* Stack nested cards vertically */
+            }
+            .nested-resource-card {
+                min-height: 100px;
+                padding: var(--spacing-sm);
+            }
+            .nested-resource-card .folder-icon {
+                width: 50px;
+                height: 50px;
+            }
+            .nested-resource-card p {
+                font-size: 0.9em;
+            }
+            .resource-section-container .sub-folder-heading {
+                font-size: 1.6em;
+            }
+            .actual-content-container .inner-content-heading {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8em;
+                letter-spacing: 1px;
+            }
+            h2 {
+                font-size: 1.4em;
+            }
+            .intro-screen p, .disclaimer-text {
+                font-size: 0.9em;
+            }
+            .btn {
+                width: 100%;
+                margin: 0;
+                padding: 10px 20px;
+            }
+            ul li {
+                font-size: 0.85em;
+                padding-left: 25px;
+            }
+            ul li::before {
+                font-size: 1.1em;
+            }
+            .resources, .appointment {
+                padding: var(--spacing-md);
+            }
+            .folder-card-grid {
+                grid-template-columns: 1fr; /* Stack cards vertically on very small screens */
+            }
+            .folder-card {
+                padding: var(--spacing-sm);
+                min-height: 120px;
+            }
+            .folder-card .folder-icon {
+                width: 50px;
+                height: 50px;
+            }
+            .folder-card p {
+                font-size: 0.85em;
+            }
+        }
+    </style>
+<style>
+  .article-link-list li {
+    margin: 10px 0;
+  }
+
+  .article-link-list a {
+    display: inline-block;
+    background-color: var(--white);
+    padding: 12px 20px;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    color: var(--primary-green);
+    text-decoration: none;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    font-size: 1em;
+  }
+
+  .article-link-list a:hover {
+    background-color: var(--light-green);
+    color: var(--dark-green);
+    box-shadow: inset 1px 1px 4px rgba(0, 0, 0, 0.1);
+  }
+</style>
+</head>
+<body>
+<img alt="USDC Logo" src="bd767b2f-ba67-44af-8fc8-243b5e9a879e.png" style="max-width: 700px; height: auto; margin-bottom: 20px;"/>
+<h1>🌿 THE WELLBEING HUB</h1>
+<div class="main-content-wrapper">
+<div class="intro-screen" id="intro">
+<p>
+  Welcome to the **Wellbeing Hub!** Your one stop destination to find tools, reflections, and resources to support your emotional wellbeing—whether you're navigating stress, building resilience, or just pausing to breathe.
+</p>
+<p>
+  Begin by exploring our self-assessment tool—it’s a simple way to check in with yourself and reflect on how you're doing in areas like
+  <span style="font-weight: bold; color: #d9534f;">anxiety</span>,
+  <span style="font-weight: bold; color: #f0ad4e;">stress</span>,
+  <span style="font-weight: bold; color: #5bc0de;">happiness</span>, and
+  <span style="font-weight: bold; color: #bd1494;">emotional well-being</span>.
+</p>
+<button class="btn" id="startAssessmentBtn" onclick="startForm()">Begin</button>
+</div>
+<form id="wellbeingForm" style="display: none;">
+<div class="step-section" id="step-1">
+<div class="section">
+<h2>Basic Details</h2>
+<label for="userName">Full Name</label>
+<input id="userName" name="Full Name" required="" type="text"/>
+<label for="employmentCode">Employment Code</label>
+<input id="employmentCode" name="Employment Code" required="" type="text"/>
+<label for="gender">Gender</label>
+<select id="gender" name="Gender" required="">
+<option value="">Select Gender</option>
+<option value="Male">Male</option>
+<option value="Female">Female</option>
+</select>
+<label for="emailId">Email ID</label>
+<input id="emailId" name="Email ID" required="" type="email"/>
+<label for="location">Location</label>
+<select id="location" name="Location" required="">
+<option value="">Select Location</option>
+<option value="JP Nagar_Bangalore">JP Nagar_Bangalore</option>
+<option value="Jayanagar_Bangalore">Jayanagar_Bangalore</option>
+<option value="Pune">Pune</option>
+<option value="Mumbai">Mumbai</option>
+</select>
+</div>
+<div class="btn-group">
+<button class="btn" onclick="nextStep()" type="button">Next</button>
+</div>
+</div>
+<div class="step-section" id="step-1a">
+<div class="section">
+<h2>Your Next Step</h2>
+<p class="disclaimer-text">What would you like to do next?</p>
+<div style="display: flex; flex-direction: column; gap: 15px; margin-top: 25px;"><button class="btn" onclick="handleDecision('assessment')" type="button">Wellbeing Assessment</button><button class="btn" onclick="handleDecision('self')" type="button">Self-Care Resources</button><button class="btn" onclick="handleDecision('appointment')" type="button">Book an Appointment with the Wellbeing Coach</button></div>
+</div>
+<div class="btn-group">
+<button class="btn secondary" onclick="prevStep()" type="button">Back</button>
+</div>
+</div>
+<div class="step-section" id="step-2">
+<div class="section">
+<h2>IMPORTANT DISCLAIMER</h2>
+<p class="disclaimer-text">This self-assessment is designed to help you reflect on your mental health across various areas such as **anxiety, stress, emotional well-being, and work-life balance.**</p>
+<p class="disclaimer-text">**Your responses are strictly confidential and will not be shared without your explicit consent.**</p>
+<p class="disclaimer-text">Your **honesty** in completing this assessment is crucial. It can help you identify areas for personal growth and inform your decision to seek professional support if needed.</p>
+</div>
+<div class="btn-group">
+<button class="btn secondary" onclick="prevStep()" type="button">Back</button>
+<button class="btn" onclick="nextStep()" type="button">Next</button>
+</div>
+</div>
+<div class="step-section" id="step-3">
+<div class="section">
+<h2>Self-Assessment Instructions</h2>
+<p class="disclaimer-text">**Please Note:** This assessment is for awareness purposes only and is not a diagnostic tool. If you are experiencing significant distress or symptoms, please consult a licensed mental health professional.</p>
+<ul>
+<li>**0:** Never</li>
+<li>**1:** Rarely</li>
+<li>**2:** Sometimes</li>
+<li>**3:** Often</li>
+<li>**4:** Always</li>
+</ul>
+</div>
+<div class="btn-group">
+<button class="btn secondary" onclick="prevStep()" type="button">Back</button>
+<button class="btn" onclick="nextStep()" type="button">Start Questions</button>
+</div>
+</div>
+<div id="questionsContainer"></div>
+<div class="step-section" id="step-9">
+<div class="section">
+<h2>Your Wellbeing Snapshot</h2>
+<p class="disclaimer-text">Below is a breakdown of your scores across different wellbeing areas. Use this as a guide for self-reflection.</p>
+<div id="scoreBreakdown"></div>
+<h3>Scoring Guidelines:</h3>
+<p>**For Anxiety, Stress, and Work-Life Balance (max 40 points per section):</p>
+<p><span class="score-healthy">0–13:</span> Healthy Range ✅</p>
+<p><span class="score-moderate">14–26:</span> Moderate ⚠️</p>
+<p><span class="score-concern">27–40:</span> Area of Concern ❗</p>
+<br/>
+<p>**For Overall Happiness and Emotional Well-Being (max 40 points per section):</p>
+<p><span class="score-concern">0–13:</span> Area of Concern ❗</p>
+<p><span class="score-moderate">14–26:</span> Moderate ⚠️</p>
+<p><span class="score-healthy">27–40:</span> Healthy Range ✅</p>
+</div>
+<div class="btn-group">
+<button class="btn secondary" onclick="prevStep()" type="button">Back</button>
+<button class="btn" onclick="nextStep()" type="button">Continue</button>
+</div>
+</div>
+<div class="step-section" id="step-10">
+<div class="section">
+<h2>Thank You for Completing the Assessment!</h2>
+<p>Your responses have been securely recorded. If you'd like to explore resources or book an appointment, please select an option below:</p>
+<label for="supportChoice">How would you like to proceed?</label>
+<select id="supportChoice" name="Support Choice" onchange="toggleSupportOptions()" required="">
+<option value="">Select an Option</option>
+<option value="self">Explore Self-Care Resources</option>
+<option value="appointment">Book a Wellness Appointment</option>
+</select>
+<div id="selfCareContainer" style="display:none;">
+<div class="resources">
+<h3>Self-Care Resources</h3>
+<p>Access our curated collection of booklets, videos, and articles designed to support your mental wellbeing.</p>
+<p>Consider exploring trusted mindfulness apps like Headspace or Calm for daily practice.</p>
+<div class="folder-card-grid">
+<button class="folder-card" data-target="anxietyResourceSection">
+<h1>😰</h1>
+<p> Anxiety</p>
+</button>
+<button class="folder-card" data-target="stressResourceSection">
+<h1>😓</h1>
+<p> Stress</p>
+</button>
+<button class="folder-card" data-target="worklifeResourceSection">
+<h1>⚖️</h1>
+<p> Work-Life Balance</p>
+</button>
+<button class="folder-card" data-target="happinessResourceSection">
+<h1>😊</h1>
+<p>Overall Happiness</p>
+</button>
+<button class="folder-card" data-target="emotionalWellbeingResourceSection">
+<h1>💖</h1><p>Emotional Well-Being</p>
+</button>
+<button class="folder-card" data-target="usdcWellnessResourceSection">
+<h1>🌿</h1><p>USDC Wellness</p>
+</button>
+<button class="folder-card" data-target="adaptabilityResourceSection"><h1>🌊</h1><p>Adaptability</p></button><button class="folder-card" data-target="affirmationcardsResourceSection"><h1>💌</h1><p>Affirmation Cards</p></button><button class="folder-card" data-target="assertivenessResourceSection"><h1>💬</h1><p>Assertiveness</p></button><button class="folder-card" data-target="assertivenesshowtosaynoResourceSection"><h1>✋</h1><p>Assertiveness (How To Say No)</p></button><button class="folder-card" data-target="booksummariesResourceSection"><h1>📚</h1><p>Book Summaries</p></button><button class="folder-card" data-target="buildbetterroutinesResourceSection"><h1>⏰</h1><p>Build Better Routines</p></button><button class="folder-card" data-target="burnoutResourceSection"><h1>🔥</h1><p>Burnout</p></button><button class="folder-card" data-target="confidenceResourceSection"><h1>💪</h1><p>Confidence</p></button><button class="folder-card" data-target="conflictresolutionResourceSection"><h1>🤝</h1><p> Conflict Resolution</p></button><button class="folder-card" data-target="engagementsResourceSection"><h1>📢</h1><p>Engagements</p></button><button class="folder-card" data-target="flashcardResourceSection"><h1>🔖</h1><p> Flashcard</p></button><button class="folder-card" data-target="funpersonalitytestsResourceSection"><h1>🎭</h1><p>Fun Personality Tests</p></button><button class="folder-card" data-target="goalsettingResourceSection"><h1>🎯</h1><p>Goal Setting</p></button><button class="folder-card" data-target="gratitudeResourceSection"><h1>🙏</h1><p>Gratitude</p></button><button class="folder-card" data-target="habitsResourceSection"><h1>🔁</h1><p>Habits</p></button><button class="folder-card" data-target="hobbiesResourceSection"><h1>🎨</h1><p>Hobbies</p></button><button class="folder-card" data-target="managingsocialmediaResourceSection"><h1>📱</h1><p>Managing Social Media</p></button><button class="folder-card" data-target="mindsetResourceSection"><h1>🧠</h1><p>Mindset</p></button><button class="folder-card" data-target="procrastinationResourceSection"><h1>🐢</h1><p> Procrastination</p></button><button class="folder-card" data-target="sleephygieneResourceSection"><h1>🛌</h1><p>Sleep Hygiene</p></button></div>
+<div class="resource-section-container" id="anxietyResourceSection" style="display: none;">
+<h5 class="sub-folder-heading">Anxiety Resources</h5>
+<div class="nested-resource-grid">
+<button class="nested-resource-card" data-parent-section="anxietyResourceSection" data-target-content="anxietyActualVideos">
+<h1>▶️</h1>
+<p>Videos</p>
+</button>
+<button class="nested-resource-card" data-parent-section="anxietyResourceSection" data-target-content="anxietyActualArticles">
+<h1>📑</h1>
+<p>Articles</p>
+</button>
+</div>
+<div class="actual-content-container" id="anxietyActualVideos" style="display: none;">
+<h6 class="inner-content-heading">Anxiety Video Collection</h6>
+<div class="video-grid">
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/QPyNeGHlMao"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/dM--lHKJeA4"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/fgNetu6EiZw"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/ibdrvXVwdN8"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/XujjmPmclbU"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/TGUouL4ZAN4"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/whrN7ujh3Yk"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/FpiWSFcL3-c"></iframe>
+</div>
+</div>
+<div class="actual-content-container" id="anxietyActualArticles" style="display: none;">
+<h6 class="inner-content-heading">Anxiety Article Collection</h6>
+<ul class="article-link-list"><li><a href="https://www.mcleanhospital.org/essential/anxiety" target="_blank">Understanding Anxiety: Symptoms, Causes, and Treatment - McLean Hospital</a></li><li><a href="https://www.psychiatry.org/patients-families/anxiety-disorders/what-are-anxiety-disorders" target="_blank">What are Anxiety Disorders? - American Psychiatric Association</a></li><li><a href="https://www.mentalhealth.org.uk/our-work/public-engagement/mental-health-awareness-week/anxiety-report/what-causes-anxiety" target="_blank">What causes anxiety? | Mental Health Foundation</a></li><li><a href="https://www.rethink.org/news-and-stories/news-and-views/2024/10-tips-to-manage-anxiety-and-stress/" target="_blank">10 tips to Manage Anxiety and Stress - Rethink Mental Illness</a></li><li><a href="https://www.paho.org/en/noncommunicable-diseases-and-mental-health/noncommunicable-diseases-and-mental-health-data-portal-2" target="_blank">Anxiety disorders - World Health Organization (WHO)</a></li><li><a href="https://www.beyondblue.org.au/mental-health/anxiety" target="_blank">Understand Anxiety disorders - Beyond Blue</a></li><li><a href="https://www.nhs.uk/every-mind-matters/mental-wellbeing-tips/self-help-cbt-techniques/tackling-your-worries/" target="_blank">Tackling your worries - Every Mind Matters - NHS</a></li><li><a href="https://www.mentalhealth.org.uk/explore-mental-health/publications/how-overcome-anxiety-and-fear" target="_blank">How to manage fear and anxiety | Mental Health Foundation</a></li><li><a href="https://www.healthline.com/health/stress-and-anxiety" target="_blank">Stress and Anxiety: How They Differ and How to Manage Them - Healthline</a></li><li><a href="https://thrivingcenterofpsych.com/blog/understanding-anxiety-disorders-causes-and-coping-strategies/" target="_blank">Understanding Anxiety Disorders: Causes &amp; Coping - Thriving Center of Psychology</a></li></ul>
+</div>
+</div>
+<div class="resource-section-container" id="stressResourceSection" style="display: none;">
+<h5 class="sub-folder-heading">Stress Resources</h5>
+<div class="nested-resource-grid">
+<button class="nested-resource-card" data-parent-section="stressResourceSection" data-target-content="stressActualVideos">
+<h1>▶️</h1>
+<p>Videos</p>
+</button>
+<button class="nested-resource-card" data-parent-section="stressResourceSection" data-target-content="stressActualArticles">
+<h1>📑</h1>
+<p>Articles</p>
+</button>
+</div>
+<div class="actual-content-container" id="stressActualVideos" style="display: none;">
+<h6 class="inner-content-heading">Stress Video Collection</h6>
+<div class="video-grid">
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/hnpQrMqDoqE"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/nzVzO0vFEBo"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/ZvsHI_OoCG0"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/RcGyVTAoXEU"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/WuyPuH9ojCE"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/3FlIfFt3Pp4"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/6OzKD1YWHRI"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/ntfcfJ28eiU"></iframe>
+</div>
+</div>
+<div class="actual-content-container" id="stressActualArticles" style="display: none;">
+<h6 class="inner-content-heading">Stress Article Collection</h6>
+<ul class="article-link-list"><li><a href="https://www.everydayhealth.com/anxiety/guide/" target="_blank">Stress vs. Anxiety: What's the Difference? - WebMD</a></li><li><a href="https://www.everydayhealth.com/anxiety/guide/" target="_blank">Understanding the Difference Between Stress and Anxiety - Everyday Health</a></li><li><a href="https://www.medicalnewstoday.com/articles/stress-vs-anxiety" target="_blank">Stress vs. Anxiety: What's the Difference? - Verywell Mind</a></li><li><a href="https://www.psychologytoday.com/us/blog/addiction-recovery/202105/the-difference-between-stress-and-anxiety-disorder" target="_blank">The Difference Between Stress and Anxiety (and What to Do About Both) - Psychology Today</a></li><li><a href="https://www.apa.org/topics/anxiety" target="_blank">What's the Difference Between Stress, Anxiety, and Fear? - APA</a></li><li><a href="https://my.clevelandclinic.org/health/diseases/11874-stress" target="_blank">Is it Stress or Anxiety? Know the Difference to Cope Better - Cleveland Clinic</a></li><li><a href="https://www.talkspace.com/blog/worry-vs-anxiety/" target="_blank">Understanding Stress and Anxiety: Key Differences and Management - Talkspace</a></li><li><a href="https://www.yalemedicine.org/conditions/stress-disorder" target="_blank">Is it Stress or Anxiety? A Guide to Recognizing the Differences - Yale Medicine</a></li><li><a href="https://www.healthvolunteers.in/post/finding-calm-in-chaos-your-complete-guide-to-managing-anxiety-and-stress" target="_blank">The Difference Between Stress and Anxiety — and How to Manage Both - Health</a></li><li><a href="https://www.uofmhealth.org/health-library/zu1121" target="_blank">Stress vs. Anxiety - University of Michigan Health</a></li></ul>
+</div>
+</div>
+<div class="resource-section-container" id="worklifeResourceSection" style="display: none;">
+<h5 class="sub-folder-heading">Work-Life Balance Resources</h5>
+<div class="nested-resource-grid">
+<button class="nested-resource-card" data-parent-section="worklifeResourceSection" data-target-content="worklifeActualVideos">
+<h1>▶️</h1>
+<p>Videos</p>
+</button>
+<button class="nested-resource-card" data-parent-section="worklifeResourceSection" data-target-content="worklifeActualArticles">
+<h1>📑</h1>
+<p>Articles</p>
+</button>
+</div>
+<div class="actual-content-container" id="worklifeActualVideos" style="display: none;">
+<h6 class="inner-content-heading">Work-Life Balance Video Collection</h6>
+<div class="video-grid">
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/teE-xVO-ljw"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/iLxeoeWyK6w"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/MPR3o6Hnf2g"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/_8CPZT5tY4o"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/Mvxr3OOU5WY"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/8QUuGwyX4j0"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/UeHTqZ4UH8M"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/OjTzArA32YA"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/H3CqFjVKofQ"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/-nvD-t77Z-U"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/fOTTKjmDluo"></iframe>
+</div>
+</div>
+<div class="actual-content-container" id="worklifeActualArticles" style="display: none;">
+<h6 class="inner-content-heading">Work-Life Balance Article Collection</h6>
+<ul class="article-link-list"><li><a href="https://www.achievers.com/blog/employee-wellbeing/" target="_blank">Work-life balance and how to improve It</a></li><li><a href="https://www.betterup.com/blog/how-to-have-good-work-life-balance" target="_blank">12 Tips to Achieve a Healthy Work-Life Balance</a></li><li><a href="https://www.jakson.com/blogs/work-life-balance-in-the-21st-centurylets-talk-about-it/" target="_blank">Work-Life Balance in the 21st Century…Let's Talk About It!</a></li><li><a href="https://novoresume.com/career-blog/work-life-balance" target="_blank">6 Guaranteed Ways to Improve Work-Life Balance in 2025</a></li><li><a href="https://www.amyshamblen.com/blog/the-ultimate-guide-for-a-better-work-life-balance" target="_blank">The Ultimate Guide for a Better Work-Life Balance</a></li><li><a href="https://www.vantagecircle.com/en/blog/work-life-balance/" target="_blank">25 Best Ways to Celebrate Work-Life Balance and Its Benefits</a></li><li><a href="https://www.healthdirect.gov.au/work-life-balance" target="_blank">Work-life balance - strategies and where to get help</a></li><li><a href="https://www.virtuallatinos.com/blog/rethinking-work-life-balance-strategies/" target="_blank">Work-Life Balance Strategies That Actually Work</a></li><li><a href="https://ckfamilyservices.org/blog/benefits-flying-kites" target="_blank">The Benefits of Flying Kites</a></li><li><a href="https://medium.com/@rey01v/soaring-to-new-heights-comparing-human-life-to-a-kite-6e5447bf16e" target="_blank">Soaring to New Heights: Comparing Human Life to a Kite</a></li></ul>
+</div>
+</div>
+<div class="resource-section-container" id="happinessResourceSection" style="display: none;">
+<h5 class="sub-folder-heading">Overall Happiness Resources</h5>
+<div class="nested-resource-grid">
+<button class="nested-resource-card" data-parent-section="happinessResourceSection" data-target-content="happinessActualVideos">
+<h1>▶️</h1>
+<p>Videos</p>
+</button>
+<button class="nested-resource-card" data-parent-section="happinessResourceSection" data-target-content="happinessActualArticles">
+<h1>📑</h1>
+<p>Articles</p>
+</button>
+</div>
+<div class="actual-content-container" id="happinessActualVideos" style="display: none;">
+<h6 class="inner-content-heading">Overall Happiness Video Collection</h6>
+<div class="video-grid">
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/TIsDtP11UrQ"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/m4Ics03xzUQ"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/WVadFpErn9w"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/qRY-foz-ZAw"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/5jnEizYzQl0"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/FNv8sJ28RjY"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/NGE8BgxEOd4"></iframe>
+</div>
+</div>
+<div class="actual-content-container" id="happinessActualArticles" style="display: none;">
+<h6 class="inner-content-heading">Happiness Article Collection</h6>
+<ul class="article-link-list"><li><a href="https://www.healthline.com/health/how-to-be-happy" target="_blank">How to Be Happy: 12 Habits to Add to Your Routine</a></li><li><a href="https://www.unh.edu/pacs/positive-psychology-strategies-increased-happiness" target="_blank">Positive Psychology Strategies for Increased Happiness</a></li><li><a href="https://greatergood.berkeley.edu/article/item/five_science_backed_strategies_for_more_happiness" target="_blank">Five Science-Backed Strategies for More Happiness</a></li><li><a href="https://buffer.com/resources/be-happy-today/" target="_blank">11 Simple Things That Will Make You Happier</a></li><li><a href="https://www.helpguide.org/mental-health/wellbeing/cultivating-happiness" target="_blank">Cultivating Happiness</a></li><li><a href="https://afaeducation.org/blog/how-to-be-happy-10-tips-and-strategies-for-a-fulfilling-life/" target="_blank">How to Be Happy: 10 Tips and Strategies</a></li><li><a href="https://www.verywellmind.com/what-is-happiness-4869755" target="_blank">Happiness: What It Really Means and How to Find It</a></li><li><a href="https://kingamnich.com/2021/08/10/increase-happiness-with-these-positive-psychology-strategies/" target="_blank">Increase Happiness with These Positive Psychology Strategies</a></li><li><a href="https://www.positivityblog.com/" target="_blank">The Positivity Blog: Practical Happiness Advice</a></li><li><a href="https://blog.mediassist.in/science-of-happiness/" target="_blank">Science of Happiness - Medi Assist Blog &amp; News</a></li></ul>
+</div>
+</div>
+<div class="resource-section-container" id="emotionalWellbeingResourceSection" style="display: none;">
+<h5 class="sub-folder-heading">Emotional Well-Being Resources</h5>
+<div class="nested-resource-grid">
+<button class="nested-resource-card" data-parent-section="emotionalWellbeingResourceSection" data-target-content="emotionalWellbeingActualVideos">
+<h1>▶️</h1>
+<p>Videos</p>
+</button>
+<button class="nested-resource-card" data-parent-section="emotionalWellbeingResourceSection" data-target-content="emotionalWellbeingActualArticles">
+<h1>📑</h1>
+<p>Articles</p>
+</button>
+</div>
+<div class="actual-content-container" id="emotionalWellbeingActualVideos" style="display: none;">
+<h6 class="inner-content-heading">Emotional Well-Being Video Collection</h6>
+<div class="video-grid">
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/_gJ5V525SCk"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/mxz8KyV3Ydc"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/PAestsXAWsw"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/hxCvJJv2vw8"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/petg12b36UA"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/Uew5BbvmLks"></iframe>
+<iframe allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" frameborder="0" src="https://www.youtube.com/embed/JEBFZ0U7ZZI"></iframe>
+</div>
+</div>
+<div class="actual-content-container" id="emotionalWellbeingActualArticles" style="display: none;">
+<h6 class="inner-content-heading">Emotional Well-Being Article Collection</h6>
+<ul class="article-link-list"><li><a href="https://www.bu.edu/studentwellbeing/what-is-wellbeing/emotional-wellbeing/" target="_blank">What is Emotional Wellbeing - Boston University</a></li><li><a href="https://www.harmonyhealthmedical.com.au/emotional-health-and-well-being" target="_blank">Emotional Health and Wellbeing - Harmony Health</a></li><li><a href="https://www.webmd.com/balance/what-to-know-about-emotional-health" target="_blank">What to Know About Emotional Health - WebMD</a></li><li><a href="https://www.cdc.gov/emotional-well-being/improve-your-emotional-well-being/index.html" target="_blank">Improve Your Emotional Well-Being - CDC</a></li><li><a href="https://ghcscw.com/mental-health-matters-nurturing-your-emotional-well-being/" target="_blank">Mental Health Matters - GHC-SCW</a></li><li><a href="https://happimynd.com/blog/6-ways-to-improve-your-emotional-health-and-maintain-a-balanced-life" target="_blank">6 Ways to Improve Your Emotional Health</a></li><li><a href="https://www.cinim.org/blog/emotional-well-being-a-simple-guide-to-being-happier" target="_blank">Emotional Well-Being: A Simple Guide to Being Happier - Cinim</a></li><li><a href="https://continentalhospitals.com/blog/importance-of-emotional-wellbeing/" target="_blank">Importance of Emotional Wellbeing - Continental Hospitals</a></li><li><a href="https://www.nih.gov/health-information/your-healthiest-self-wellness-toolkits/emotional-wellness-toolkit/emotional-wellness-toolkit-more-resources" target="_blank">Emotional Wellness Toolkit — NIH</a></li><li><a href="https://www.thisiscalmer.com/blog" target="_blank">Mental Health &amp; Wellbeing Blog - Calmer</a></li></ul>
+</div>
+</div>
+<div class="resource-section-container" id="usdcWellnessResourceSection" style="display: none;">
+<h5 class="sub-folder-heading">USDC Wellness Resources</h5>
+<div class="nested-resource-grid">
+<button class="nested-resource-card" data-parent-section="usdcWellnessResourceSection" data-target-content="usdcWellnessActualVideos">
+<h1>▶️</h1>
+<p>Videos</p>
+</button>
+</div>
+<div class="actual-content-container" id="usdcWellnessActualVideos" style="display: none;">
+<h6 class="inner-content-heading">USDC Wellness Video Collection</h6>
+<div class="video-grid">
+<a class="usdc-video-item" href="https://drive.google.com/file/d/1mi4RtoLzroFayecKtkreSygUoE-ev9eM/view" target="_blank">
+<img alt="Video Thumbnail" src="https://placehold.co/640x480/4CAF50/ffffff?text=Mastering+Your+Mindset"/>
+<p>Mastering Your Mindset</p>
+</a>
+<a class="usdc-video-item" href="https://drive.google.com/file/d/1cCQOJfOLWxYpzpWWf3LiyIIYYeaIiqui/view" target="_blank">
+<img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=Building+Resilience+Daily"/>
+<p>Building Resilience Daily</p>
+</a>
+<a class="usdc-video-item" href="https://drive.google.com/file/d/18EWTPigJcqOGqw91kj8h1gghy73OmT12/view" target="_blank">
+<img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=Stress+Reduction+Techniques"/>
+<p>Stress Reduction Techniques</p>
+</a>
+<a class="usdc-video-item" href="https://drive.google.com/file/d/12N6pnfxGvbuTSqLfQP80dNIC6hgYcnBx/view" target="_blank">
+<img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=Finding+Inner+Peace"/>
+<p>Finding Inner Peace</p>
+</a>
+<a class="usdc-video-item" href="https://drive.google.com/file/d/1-8Su4f4ywDL4jCtzUWuSPnjJSo6mRB4i/view" target="_blank">
+<img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=Mindful+Living+Guide"/>
+<p>Mindful Living Guide</p>
+</a>
+<a class="usdc-video-item" href="https://drive.google.com/file/d/1XV4qZWiPgWpi1mV6zMPPimnl2T-4lxQ9/view" target="_blank">
+<img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=Emotional+Intelligence+Basics"/>
+<p>Emotional Intelligence Basics</p>
+</a>
+<a class="usdc-video-item" href="https://drive.google.com/file/d/1B9vWjBPRq-0Hcw6fGC0_GN28dDt0gvZh/view" target="_blank">
+<img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=Overcoming+Challenges"/>
+<p>Overcoming Challenges</p>
+</a>
+<a class="usdc-video-item" href="https://drive.google.com/file/d/1DH6c_36YPkgs0ynctYZbOdW642soNqKP/view" target="_blank">
+<img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=Positive+Psychology+Insights"/>
+<p>Positive Psychology Insights</p>
+</a>
+<a class="usdc-video-item" href="https://drive.google.com/file/d/1rPq_DFdv1TZnC627L5wOIXBdb6aNZoiP/view" target="_blank">
+<img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=Cultivating+Gratitude"/>
+<p>Cultivating Gratitude</p>
+</a>
+<a class="usdc-video-item" href="https://drive.google.com/file/d/1jD_cu_7EimGev7zdv7p-6PBIDMn6gZFE/view" target="_blank">
+<img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=Achieving+Work-Life+Harmony"/>
+<p>Achieving Work-Life+Harmony</p>
+</a>
+<a class="usdc-video-item" href="https://drive.google.com/file/d/1_KoBeB4XDdrjebfE16oUE1c00JLjGEzt/view" target="_blank">
+<img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=Boost+Your+Wellbeing"/>
+<p>Boost Your Wellbeing</p>
+</a>
+<a class="usdc-video-item" href="https://drive.google.com/file/d/1Z3iFemxJgPueb8VSs7zWf0Fb5L0Kd3Ct/view" target="_blank">
+<img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=The+Power+of+Mindfulness"/>
+<p>The Power of Mindfulness</p>
+</a>
+<a class="usdc-video-item" href="https://drive.google.com/file/d/1etTfgTpzM5qNAfQnJpOPh5Och0BQCw-O/view" target="_blank">
+<img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=Understanding+Your+Emotions"/>
+<p>Understanding Your Emotions</p>
+</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="appointmentContainer" style="display:none;">
+<div class="appointment">
+<h3>Book a Wellness Appointment</h3>
+<p><strong>Availability:</strong></p>
+<ul>
+<li><strong>Monday &amp; Tuesday (Offline):</strong> 10 AM to 4 PM at JP Nagar or Jayanagar</li>
+<li><strong>Friday (Online):</strong> 10 AM to 4 PM</li>
+</ul>
+<label for="appointmentDate">Select Preferred Date</label>
+<input id="appointmentDate" name="Preferred Date" type="date"/>
+<label for="appointmentTime">Select Preferred Time</label>
+<input id="appointmentTime" name="Preferred Time" type="time"/>
+<label for="appointmentLocation">Preferred Location</label>
+<select id="appointmentLocation" name="Preferred Location">
+<option value="">Select Location</option>
+<option>JP Nagar</option>
+<option>Jayanagar</option>
+</select>
+</div>
+</div>
+</div>
+<div class="btn-group">
+<button class="btn secondary" onclick="prevStep()" type="button">Back</button>
+<button class="btn" type="submit">Submit Final</button>
+</div>
+</div>
+</form>
+<div id="thankYouMessage" style="display: none;">
+<h3 class="emoji">🎉</h3>
+<h3>Thank You!</h3>
+<p>Your form has been submitted successfully. Thank you for your patience.</p>
+</div>
+</div>
+<script>
+let currentStep = 0;
+const totalQuestionSections = 5; // Anxiety, Stress, Work-Life, Happiness, Emotional
+let lastStepBefore10 = null; // New global variable to store the step before navigating to 10
+
+function startForm() {
+    document.getElementById("intro").style.display = "none";
+    document.getElementById("wellbeingForm").style.display = "flex";
+    document.getElementById("wellbeingForm").style.flexDirection = "column";
+    document.getElementById("wellbeingForm").style.alignItems = "center";
+    currentStep = 1;
+    showStep(currentStep);
+    renderQuestions();
+    // Ensure thank you message is hidden if starting a new form
+    document.getElementById("thankYouMessage").style.display = "none";
+    // Re-enable the start button if it was disabled (e.g., after a refresh)
+    const startBtn = document.getElementById('startAssessmentBtn');
+    if (startBtn) {
+        startBtn.disabled = false;
+        startBtn.textContent = "Begin";
+        startBtn.style.opacity = "";
+        startBtn.style.cursor = "";
+    }
+}
+
+function showStep(step) {
+    const allSections = document.querySelectorAll(".step-section");
+    allSections.forEach(sec => sec.classList.remove("active"));
+    const target = document.getElementById(`step-${step}`);
+    if (target) {
+        target.classList.add("active");
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
+function nextStep() {
+    // Basic validation for step 1
+    if (currentStep === 1) {
+        const nameEl = document.getElementById('userName');
+        const empCodeEl = document.getElementById('employmentCode');
+        const emailEl = document.getElementById('emailId');
+        const locationEl = document.getElementById('location');
+        const genderEl = document.getElementById('gender');
+
+        // Reset styles
+        [nameEl, empCodeEl, emailEl, locationEl, genderEl].forEach(el => {
+            el.style.borderColor = "";
+            el.style.boxShadow = "";
+        });
+
+        const name = nameEl.value;
+        const empCode = empCodeEl.value;
+        const email = emailEl.value;
+        const location = locationEl.value;
+        const gender = genderEl.value;
+
+        let allFilled = true;
+
+        if (!name) {
+            allFilled = false;
+            // Removed alert, using custom message box for better UX
+            showMessage('Please fill in your Full Name before proceeding.');
+            nameEl.style.borderColor = "var(--danger-red)";
+            nameEl.style.boxShadow = "0 0 6px var(--danger-red)";
+            return;
+        }
+        if (!empCode) {
+            allFilled = false;
+            showMessage('Please fill in your Employment Code before proceeding.');
+            empCodeEl.style.borderColor = "var(--danger-red)";
+            empCodeEl.style.boxShadow = "0 0 6px var(--danger-red)";
+            return;
+        }
+        if (!email) {
+            allFilled = false;
+            showMessage('Please fill in your Email ID before proceeding.');
+            emailEl.style.borderColor = "var(--danger-red)";
+            emailEl.style.boxShadow = "0 0 6px var(--danger-red)";
+            return;
+        }
+        if (!location) {
+            allFilled = false;
+            showMessage('Please select your Location before proceeding.');
+            locationEl.style.borderColor = "var(--danger-red)";
+            locationEl.style.boxShadow = "0 0 6px var(--danger-red)";
+            return;
+        }
+        if (!gender || gender === "") {
+            allFilled = false;
+            showMessage('Please select your Gender before proceeding.');
+            genderEl.style.borderColor = "var(--danger-red)";
+            genderEl.style.boxShadow = "0 0 6px var(--danger-red)";
+            return;
+        }
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            showMessage('Please enter a valid email address.');
+            emailEl.style.borderColor = "var(--danger-red)";
+            emailEl.style.boxShadow = "0 0 6px var(--danger-red)";
+            return;
+        }
+    }
+    
+    // Validate answers for question sections before moving on
+    if (currentStep >= 4 && currentStep <= 3 + totalQuestionSections) {
+        const currentQuestionSectionId = `step-${currentStep}`;
+        const selects = document.querySelectorAll(`#${currentQuestionSectionId} select`);
+        let allAnswered = true;
+        selects.forEach(sel => {
+            sel.style.borderColor = "";
+            sel.style.boxShadow = "";
+            if (sel.value === "") {
+                allAnswered = false;
+                sel.style.borderColor = "var(--danger-red)";
+                sel.style.boxShadow = "0 0 6px var(--danger-red)";
+            }
+        });
+        if (!allAnswered) {
+            showMessage('Please answer all highlighted questions before proceeding.');
+            return;
+        }
+    }
+
+    // Before moving from last question section to score section (step 9)
+    if (currentStep === 3 + totalQuestionSections) {
+        calculateScores();
+    }
+
+    currentStep++;
+    // If we're coming from step 1, go to step 1a
+    if (currentStep === 2) {
+        currentStep = '1a';
+    }
+    showStep(currentStep);
+}
+
+function prevStep() {
+    // Special handling for step 1a to go back to step 1
+    if (currentStep === '1a') {
+        currentStep = 1;
+    } else if (currentStep === 10) {
+        // If coming back from step 10, check how we got here
+        if (lastStepBefore10 === '1a') {
+            currentStep = '1a'; // Go back to Your Next Step
+            lastStepBefore10 = null; // Reset
+        } else {
+            currentStep = 9; // Go back to Your Wellbeing Snapshot
+        }
+    } else {
+        currentStep--;
+    }
+    showStep(currentStep);
+}
+
+function handleDecision(decision) {
+    lastStepBefore10 = currentStep; // Save last step
+    if (decision === 'assessment') {
+        currentStep = 2;
+        showStep(currentStep);
+    } else if (decision === 'self') {
+        currentStep = 10;
+        showStep(currentStep);
+        document.getElementById('selfCareContainer').style.display = 'block';
+        document.getElementById('appointmentContainer').style.display = 'none';
+        document.getElementById('supportChoice').value = 'self';
+    } else if (decision === 'appointment') {
+        currentStep = 10;
+        showStep(currentStep);
+        document.getElementById('appointmentContainer').style.display = 'block';
+        document.getElementById('selfCareContainer').style.display = 'none';
+        document.getElementById('supportChoice').value = 'appointment';
+    }
+}
+
+
+function renderQuestions() {
+    const sections = ["Anxiety", "Stress", "Work-Life Balance", "Overall Happiness", "Emotional Well-Being"];
+    const questions = [
+        ["I feel nervous, anxious, or on edge.", "I worry excessively about different things.", "I experience racing thoughts that are hard to control.", "I feel a sense of panic in everyday situations.", "I avoid certain places or situations because they make me anxious.", "I find it difficult to calm myself when upset.", "I experience physical symptoms like trembling or a racing heart.", "I feel tense or jumpy for no apparent reason.", "I feel a constant sense of dread or worry.", "I find it hard to stop worrying once I’ve started."],
+        ["I feel overwhelmed by my responsibilities.", "I struggle to keep up with day-to-day tasks.", "I have difficulty sleeping due to racing thoughts.", "I often feel emotionally drained.", "I feel that I am constantly under pressure.", "I get irritated or angry more easily than usual.", "I feel tired even after a full night's sleep.", "I notice physical signs of stress (headaches, stomachaches, etc.).", "I find it difficult to relax or unwind.", "I feel like I’m losing control over parts of my life."],
+        ["I find it hard to disconnect from work during personal time.", "I feel guilty when taking breaks or days off.", "My personal relationships suffer due to work stress.", "I frequently bring work-related problems home.", "I struggle to set boundaries between work and home.", "I miss meals, rest, or social time because of work.", "I constantly check work emails/messages outside work hours.", "I struggle to set boundaries between work and home.", "I feel that work consumes most of my time and energy.", "I feel fulfilled by both my work and personal life."],
+        ["I feel a sense of purpose and meaning in life.", "I enjoy the things I do each day.", "I feel hopeful about my future.", "I often find things that make me laugh or smile.", "I have a sense of accomplishment in my day-to-day life.", "I feel connected to the people around me.", "I engage in activities that make me happy.", "I am satisfied with where my life is right now.", "I feel grateful for what I have.", "I am optimistic about tomorrow."],
+        ["I am aware of my emotions throughout the day.", "I can express my feelings clearly to others.", "I know healthy ways to cope when I’m feeling low.", "I can bounce back after facing a setback.", "I feel comfortable asking for help when I need to.", "I am able to accept things I cannot change.", "I feel confident in my ability to manage my emotions.", "I make time for self-care regularly.", "I feel emotionally supported by people in my life.", "I feel in control of how I respond to emotional challenges."]
+    ];
+
+    const container = document.getElementById("questionsContainer");
+    // Clear existing questions to prevent duplicates on re-render if any
+    container.innerHTML = '';
+    let stepId = 4; // Starting step ID for question sections
+
+    for (let i = 0; i < sections.length; i++) {
+        const div = document.createElement("div");
+        div.className = "step-section";
+        div.id = `step-${stepId}`;
+
+        const inner = document.createElement("div");
+        inner.className = "section";
+        inner.innerHTML = `<h2>Section ${i + 1}: ${sections[i]}</h2>`;
+
+        questions[i].forEach((q, qIndex) => {
+            // Use the full question text as the 'name' attribute for the select element
+            inner.innerHTML += `<label for="q${stepId}-${qIndex}">${q}</label>
+                <select id="q${stepId}-${qIndex}" name="${q}" required>
+                    <option value="">Select</option>
+                    <option value="0">Never</option>
+                    <option value="1">Rarely</option>
+                    <option value="2">Sometimes</option>
+                    <option value="3">Often</option>
+                    <option value="4">Always</option>
+                </select>`;
+        });
+        div.appendChild(inner);
+
+        div.innerHTML += `<div class='btn-group'>
+            <button class='btn secondary' type='button' onclick='prevStep()'>Back</button>
+            <button class='btn' type='button' onclick='nextStep()'>Next</button>
+        </div>`;
+        container.appendChild(div);
+        stepId++;
+    }
+}
+
+function calculateScores() {
+    const sections = ["Anxiety", "Stress", "Work-Life Balance", "Overall Happiness", "Emotional Well-Being"];
+    const scoreDiv = document.getElementById("scoreBreakdown");
+    scoreDiv.innerHTML = "";
+
+    const form = document.getElementById('wellbeingForm');
+
+    for (let i = 0; i < sections.length; i++) {
+        const sectionName = sections[i];
+        let score = 0;
+
+        // Find all select elements within the current section's step-section div
+        const stepId = i + 4; // Question sections start from step 4
+        const selects = document.querySelectorAll(`#step-${stepId} select`);
+
+        selects.forEach(selectElement => {
+            if (selectElement.value) {
+                score += parseInt(selectElement.value);
+            }
+        });
+
+        let rangeText = "";
+
+        // Scoring logic remains the same
+        if (sectionName === "Overall Happiness" || sectionName === "Emotional Well-Being") {
+            if (score <= 13) {
+                rangeText = "Area of Concern ❗";
+            } else if (score <= 26) {
+                rangeText = "Moderate ⚠️";
+            } else { // 27-40
+                rangeText = "Healthy Range ✅";
+            }
+        } else { // For Anxiety, Stress, Work-Life Balance
+            if (score <= 13) {
+                rangeText = "Healthy Range ✅";
+            } else if (score <= 26) {
+                rangeText = "Moderate ⚠️";
+            } else { // 27-40
+                rangeText = "Area of Concern ❗";
+            }
+        }
+        let rangeClass = "";
+        if (rangeText.includes("Healthy")) {
+            rangeClass = "score-healthy";
+        } else if (rangeText.includes("Moderate")) {
+            rangeClass = "score-moderate";
+        } else if (rangeText.includes("Concern")) {
+            rangeClass = "score-concern";
+        }
+
+        scoreDiv.innerHTML += `<p><strong>${sectionName}:</strong> <span class="${rangeClass}">${score} - ${rangeText}</span></p>`;
+    }
+}
+
+function toggleSupportOptions() {
+    const val = document.getElementById("supportChoice").value;
+    const selfCareContainer = document.getElementById("selfCareContainer");
+    const appointmentContainer = document.getElementById("appointmentContainer");
+
+    // Hide both containers first to reset the state
+    selfCareContainer.style.display = "none";
+    appointmentContainer.style.display = "none";
+
+    // Hide all main resource sections and their nested content
+    document.querySelectorAll('.resource-section-container').forEach(section => {
+        section.classList.remove('expanded');
+        section.style.display = 'none';
+        // Also hide any active nested content within these sections
+        section.querySelectorAll('.actual-content-container').forEach(nestedContent => {
+            nestedContent.classList.remove('expanded');
+            nestedContent.style.display = 'none';
+        });
+    });
+
+
+    // Hide Tawk.to widget by default whenever this function is called,
+    // unless 'self' is specifically selected.
+    if (typeof Tawk_API !== 'undefined') { // Check if Tawk_API is loaded
+        Tawk_API.hideWidget();
+    }
+
+    // Show the selected one
+    if (val === "self") {
+        selfCareContainer.style.display = "block";
+        selfCareContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        // Show Tawk.to widget only when "Explore Self-Care Resources" is selected
+        if (typeof Tawk_API !== 'undefined') { // Check if Tawk_API is loaded
+            Tawk_API.showWidget();
+        }
+    } else if (val === "appointment") {
+        appointmentContainer.style.display = "block";
+        appointmentContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        // Tawk.to widget is already hidden by the initial hideWidget() call above,
+        // so no explicit hide is strictly needed here, but it doesn't hurt.
+    }
+}
+
+// Function to handle main folder card clicks
+document.addEventListener('DOMContentLoaded', (event) => {
+    const mainFolderCards = document.querySelectorAll('.folder-card');
+    const nestedResourceCards = document.querySelectorAll('.nested-resource-card');
+
+    mainFolderCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const targetId = this.dataset.target; // e.g., 'anxietyResourceSection'
+            const targetContent = document.getElementById(targetId);
+
+            if (targetContent) {
+                // Close all other open main resource sections
+                document.querySelectorAll('.resource-section-container').forEach(section => {
+                    if (section.id !== targetId && section.classList.contains('expanded')) {
+                        section.classList.remove('expanded');
+                        section.style.display = 'none';
+                        // Also hide any active nested content within these sections
+                        section.querySelectorAll('.actual-content-container').forEach(nestedContent => {
+                            nestedContent.classList.remove('expanded');
+                            nestedContent.style.display = 'none';
+                        });
+                    }
+                });
+
+                // Toggle the clicked main resource section
+                if (targetContent.classList.contains('expanded')) {
+                    targetContent.classList.remove('expanded');
+                    targetContent.style.display = 'none';
+                    // Hide any nested content if the main section is closed
+                    targetContent.querySelectorAll('.actual-content-container').forEach(nestedContent => {
+                        nestedContent.classList.remove('expanded');
+                        nestedContent.style.display = 'none';
+                    });
+                } else {
+                    targetContent.classList.add('expanded');
+                    targetContent.style.display = 'block';
+                    targetContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+        });
+    });
+
+    // Function to handle nested resource card clicks (e.g., 'Videos' folder)
+    nestedResourceCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const targetContentId = this.dataset.targetContent; // e.g., 'anxietyActualVideos'
+            const parentSectionId = this.dataset.parentSection; // e.g., 'anxietyResourceSection'
+            const actualContent = document.getElementById(targetContentId);
+            const parentSection = document.getElementById(parentSectionId);
+
+            if (actualContent && parentSection) {
+                // Close any other open actual content containers within the *same* parent section
+                parentSection.querySelectorAll('.actual-content-container').forEach(otherContent => {
+                    if (otherContent.id !== targetContentId && otherContent.classList.contains('expanded')) {
+                        otherContent.classList.remove('expanded');
+                        otherContent.style.display = 'none';
+                    }
+                });
+
+                // Toggle the clicked actual content container
+                if (actualContent.classList.contains('expanded')) {
+                    actualContent.classList.remove('expanded');
+                    actualContent.style.display = 'none';
+                } else {
+                    actualContent.classList.add('expanded');
+                    actualContent.style.display = 'block';
+                    actualContent.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            }
+        });
+    });
+});
+
+
+// Custom message box instead of alert()
+function showMessage(message, type = 'info') {
+    const messageBox = document.createElement('div');
+    messageBox.className = 'custom-message-box';
+    messageBox.innerHTML = `
+        <div class="message-content">
+            <p>${message}</p>
+            <button class="message-close-btn">OK</button>
+        </div>
+    `;
+    document.body.appendChild(messageBox);
+
+    const closeBtn = messageBox.querySelector('.message-close-btn');
+    closeBtn.addEventListener('click', () => {
+        document.body.removeChild(messageBox);
+    });
+}
+
+
+// Handle form submission (send data to Google Apps Script)
+document.getElementById('wellbeingForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    const formData = new FormData(this); // Original form data with numerical values for questions
+    const dataToSend = {}; // This will be the object sent to Google Apps Script with text answers
+
+    const answerMapping = {
+        "0": "Never",
+        "1": "Rarely",
+        "2": "Sometimes",
+        "3": "Often",
+        "4": "Always"
+    };
+
+    // Process basic details and questions, converting numerical answers to text
+    for (let [key, value] of formData.entries()) {
+        // Check if the value is a number (0-4) and corresponds to an answer mapping
+        // This heuristic assumes only question answers will be numbers 0-4
+        if (answerMapping[value] !== undefined) {
+            dataToSend[key] = answerMapping[value]; // Store text answer
+        } else {
+            dataToSend[key] = value; // Store other fields as is
+        }
+    }
+
+    // Calculate scores and add them to dataToSend
+    const sections = ["Anxiety", "Stress", "Work-Life Balance", "Overall Happiness", "Emotional Well-Being"];
+    for (let i = 0; i < sections.length; i++) {
+        const sectionName = sections[i];
+        let score = 0;
+        // Iterate through original formData to get numerical values for calculation
+        // We need to get the numerical values from the original form elements.
+        const stepId = i + 4; // Question sections start from step 4
+        const selects = document.querySelectorAll(`#step-${stepId} select`);
+
+        selects.forEach(selectElement => {
+            if (selectElement.value) {
+                score += parseInt(selectElement.value);
+            }
+        });
+
+        let rangeText = "";
+        if (sectionName === "Overall Happiness" || sectionName === "Emotional Well-Being") {
+            if (score <= 13) rangeText = "Area of Concern ❗";
+            else if (score <= 26) rangeText = "Moderate ⚠️";
+            else rangeText = "Healthy Range ✅";
+        } else {
+            if (score <= 13) rangeText = "Healthy Range ✅";
+            else if (score <= 26) rangeText = "Moderate ⚠️";
+            else rangeText = "Area of Concern ❗";
+        }
+        dataToSend[`${sectionName} Score`] = score; // Add score to dataToSend
+        dataToSend[`${sectionName} Range`] = rangeText; // Add range to dataToSend
+    }
+
+    // Add timestamp (this is now client-side, matching the sheet format more closely)
+    dataToSend['Timestamp'] = new Date().toLocaleString();
+
+    // Show loading indicator (using the existing custom message box)
+    showMessage('Submitting your responses...', 'info');
+
+    // Send data to Google Apps Script
+    google.script.run
+        .withSuccessHandler(function(response) {
+            // Hide the custom message box created by showMessage
+            const existingMessageBox = document.querySelector('.custom-message-box');
+            if (existingMessageBox) {
+                existingMessageBox.remove();
+            }
+
+            // Hide the form and display the new thank you message
+            document.getElementById('wellbeingForm').style.display = "none";
+            document.getElementById("intro").style.display = "none"; // Ensure intro is also hidden
+            document.getElementById("thankYouMessage").style.display = "block"; // Show the new thank you message
+
+            // Reset the form (optional, as it's hidden)
+            document.getElementById('wellbeingForm').reset();
+            currentStep = 0; // Reset step for potential future use (e.g., if page is refreshed)
+
+            // Disable the "Begin" button after successful submission
+            const startBtn = document.getElementById('startAssessmentBtn');
+            if (startBtn) {
+                startBtn.disabled = true;
+                startBtn.textContent = "Assessment Completed"; // Optional: change button text
+                startBtn.style.opacity = "0.6"; // Optional: dim the button
+                startBtn.style.cursor = "not-allowed"; // Optional: change cursor
+            }
+
+            // Hide any open support containers and reset dropdown (from previous logic)
+            document.getElementById("selfCareContainer").style.display = "none";
+            document.getElementById("appointmentContainer").style.display = "none";
+            document.getElementById("supportChoice").value = ""; // Reset dropdown
+
+        })
+        .withFailureHandler(function(error) {
+            showMessage("There was an error submitting your form: " + error.message, 'error');
+        })
+        .processForm(dataToSend); // Send the processed data
+});
+</script>
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/686cb3ed8ff7191911e70bc7/1ivn6l4kv';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+</body>
+</html>
