@@ -1,0 +1,1738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Wellbeing Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Root Variables --- */
+        :root {
+            --primary-green: #4CAF50; --dark-green: #388E3C; --light-green: #E8F5E9; --white: #FFFFFF; --off-white: #F9FAFB; --text-dark: #37474F; --text-medium: #78909C; --border-light: #CFD8DC; --warning-orange: #FF9800; --danger-red: #F44336;
+            --spacing-sm: 12px; --spacing-md: 20px; --spacing-lg: 30px; --spacing-xl: 40px;
+            --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px;
+        }
+
+        /* --- Global & Layout Styles --- */
+        body { font-family: 'Montserrat', sans-serif; background: linear-gradient(135deg, var(--light-green) 0%, var(--off-white) 100%); color: var(--text-dark); line-height: 1.6; margin: 0; padding-top: 80px; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Playfair Display', serif; color: var(--dark-green); }
+        h1 { text-align: center; font-size: 3.2em; margin-bottom: var(--spacing-lg); line-height: 1.2; }
+        h2 { font-size: 2.5em; color: var(--primary-green); border-bottom: 4px solid var(--light-green); padding-bottom: var(--spacing-sm); margin-bottom: var(--spacing-md); }
+        h3 { color: var(--dark-green); font-size: 1.8em; }
+        .page-wrapper { max-width: 1100px; margin: 0 auto; padding: 0 var(--spacing-md); }
+        .page-container { display: none; animation: fadeIn 0.6s ease-out; }
+        .page-container.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Navbar --- */
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 0 var(--spacing-xl); background-color: var(--white); box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: fixed; top: 0; left: 0; width: 100%; height: 80px; z-index: 1000; box-sizing: border-box; }
+        .nav-brand a { font-family: 'Playfair Display', serif; font-size: 1.5em; font-weight: 700; color: var(--dark-green); text-decoration: none; }
+        .nav-links { display: flex; list-style: none; margin: 0; padding: 0; }
+        .nav-links li a { display: block; padding: 10px 20px; font-weight: 600; border-radius: 8px; cursor: pointer; color: var(--text-dark); text-decoration: none; transition: all 0.3s ease; }
+        .nav-links li a:hover, .nav-links li a.active { background-color: var(--light-green); color: var(--dark-green); }
+
+        /* --- Homepage Styles --- */
+        .hero-section { text-align: center; padding: 60px var(--spacing-md) 80px; }
+        .hero-content p { font-size: 1.2em; max-width: 700px; margin: 0 auto 30px auto; color: var(--text-medium); }
+        .hero-buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; }
+        .features-section { text-align: center; padding: 60px 0; }
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-top: 40px; }
+        .feature-card { background: var(--white); padding: 40px 30px; border-radius: var(--radius-lg); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
+        .feature-card h3 { font-size: 2.5em; margin: 0; }
+        .feature-card h4 { font-size: 1.4em; margin: 10px 0; color: var(--dark-green); }
+        .cta-section { text-align: center; background-color: var(--light-green); padding: 60px var(--spacing-xl); border-radius: var(--radius-lg); margin: 40px 0; }
+        .cta-section h2 { font-size: 2.5em; }
+
+        /* --- Shared Content & Form Styles --- */
+        .main-content-wrapper { background-color: var(--white); padding: var(--spacing-xl); border-radius: var(--radius-lg); box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin: 40px auto; }
+        .section { margin-bottom: var(--spacing-xl); }
+        .disclaimer-text { color: var(--text-dark); font-size: 1.05em; margin-bottom: var(--spacing-sm); }
+        label { display: block; margin-top: var(--spacing-md); margin-bottom: var(--spacing-sm); font-weight: 600; color: var(--text-dark); font-size: 1.05em; }
+        select, input[type="text"], input[type="email"], input[type="date"], input[type="time"] { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid var(--border-light); border-radius: var(--radius-sm); box-sizing: border-box; font-family: 'Montserrat', sans-serif; font-size: 1.05em; color: var(--text-dark); transition: all 0.3s ease; }
+        select:focus, input:focus { outline: none; border-color: var(--primary-green); box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2); }
+        .btn { display: inline-block; background: var(--primary-green); color: var(--white) !important; padding: 16px 45px; border: none; border-radius: var(--radius-sm); cursor: pointer; font-weight: 600; font-size: 1.1em; transition: all 0.3s ease; text-transform: uppercase; text-align: center; text-decoration: none; }
+        .btn:hover { background: var(--dark-green); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .btn.secondary { background: var(--light-green); color: var(--dark-green) !important; }
+        .btn.secondary:hover { background: #d0e9d1; }
+        .btn-group { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: var(--spacing-md); margin-top: var(--spacing-lg); }
+        
+        /* --- Assessment Form Styles --- */
+        #assessment-intro { text-align: center; padding: 40px 20px; }
+        .step-section { display: none; animation: fadeIn 0.5s; }
+        .step-section.active { display: block; }
+        #thankYouMessage { text-align: center; padding: 40px; }
+        #thankYouMessage h3 { font-size: 2.2em; }
+        .score-healthy { color: var(--dark-green); font-weight: 700; }
+        .score-moderate { color: var(--warning-orange); font-weight: 700; }
+        .score-concern { color: var(--danger-red); font-weight: 700; }
+        ul { list-style: none; padding: 0; }
+        #assessment-page ul li, #contact-page ul li { padding-left: 30px; position: relative; }
+        #assessment-page ul li::before, #contact-page ul li::before { content: '\2713'; color: var(--primary-green); font-size: 1.3em; position: absolute; left: 0; top: 50%; transform: translateY(-50%); font-weight: bold; }
+        #contact-page ul { margin-bottom: 20px; }
+        #contact-page ul li::before { content: '✓'; }
+
+        /* --- Resource Page Styles --- */
+        .folder-card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--spacing-md); margin-top: var(--spacing-xl); }
+        .folder-card { background: var(--off-white); border: 1px solid var(--border-light); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: var(--spacing-md); cursor: pointer; transition: all 0.3s ease; text-align: center; color: var(--text-dark); font-weight: 600; font-size: 1em; min-height: 150px; }
+        .folder-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); border-color: var(--primary-green); }
+        .folder-card h1 { font-size: 2.5em; margin: 0; line-height: 1; pointer-events: none; }
+        .folder-card p { margin-top: 10px; font-size: 0.9em; pointer-events: none; }
+        .resource-section-container { padding: var(--spacing-xl); margin-top: var(--spacing-md); display: none; animation: fadeIn 0.7s ease-out; border-top: 2px solid var(--border-light); }
+        .sub-folder-heading { margin-top: 0; padding-left: 0; text-align: center; color: var(--primary-green); font-size: 2em; margin-bottom: var(--spacing-lg); border-bottom: 3px solid var(--light-green); padding-bottom: var(--spacing-sm); display: inline-block; width: auto; }
+        .nested-resource-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--spacing-md); margin-bottom: var(--spacing-lg); }
+        .nested-resource-card { background: var(--light-green); border-radius: var(--radius-md); padding: var(--spacing-md); cursor: pointer; transition: all 0.3s ease; text-align: center; color: var(--dark-green); font-weight: 600; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .nested-resource-card:hover { background: var(--primary-green); color: white; }
+        .nested-resource-card h1 { font-size: 2em; margin: 0; pointer-events: none; }
+        .nested-resource-card p { pointer-events: none; }
+        .actual-content-container { background-color: var(--white); border-radius: var(--radius-md); padding: var(--spacing-md); margin-top: var(--spacing-md); display: none; animation: fadeIn 0.5s ease-out; border: 1px solid var(--border-light); }
+        .inner-content-heading { margin-top: 0; text-align: center; color: var(--dark-green); font-size: 1.6em; margin-bottom: var(--spacing-md); border-bottom: 2px solid var(--primary-green); padding-bottom: var(--spacing-sm); display: inline-block; width: auto; }
+        .article-link-list { list-style: none; padding: 0; }
+        .article-link-list li { margin-bottom: 10px; }
+        .article-link-list li a { display: block; padding: 15px; background: var(--off-white); border-radius: var(--radius-sm); font-weight: 600; color: var(--primary-green); text-decoration:none; }
+        .article-link-list li a:hover { background: var(--light-green); color: var(--dark-green); }
+
+        /* --- Video Lazy Loading --- */
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--spacing-md); }
+        .video-placeholder { position: relative; cursor: pointer; overflow: hidden; border-radius: var(--radius-sm); }
+        .video-placeholder img { width: 100%; display: block; transition: transform 0.3s ease; }
+        .video-placeholder:hover img { transform: scale(1.05); }
+        .video-placeholder .play-button { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 70px; height: 50px; background-color: rgba(0,0,0,0.6); border-radius: 10px; display: flex; justify-content: center; align-items: center; pointer-events: none; transition: background-color 0.3s ease; }
+        .video-placeholder:hover .play-button { background-color: var(--danger-red); }
+        .video-placeholder .play-button::after { content: ''; display: block; border-top: 12px solid transparent; border-bottom: 12px solid transparent; border-left: 20px solid white; }
+        .video-grid iframe { width: 100%; aspect-ratio: 16 / 9; height: auto; border: none; }
+        .usdc-video-item { display: block; text-decoration: none; color: var(--text-dark); background-color: var(--off-white); border-radius: var(--radius-sm); overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: all 0.3s ease; }
+        .usdc-video-item:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.1); }
+        .usdc-video-item img { width: 100%; height: 150px; object-fit: cover; border-bottom: 1px solid var(--border-light); }
+        .usdc-video-item p { padding: var(--spacing-sm); margin: 0; font-weight: 600; font-size: 0.95em; }
+
+        /* --- Contact Page --- */
+        .appointment-details { text-align: center; max-width: 600px; margin: 40px auto 0 auto; }
+        .appointment-details ul { padding-left: 0; text-align: left; display: inline-block; }
+        .appointment-details li { margin-bottom: 10px; font-size: 1.1em; }
+        .appointment-details h3 { margin-top: 40px; }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 768px) {
+            .navbar { padding: 0 var(--spacing-md); flex-direction: column; height: auto; }
+            .nav-brand { margin: 10px 0; }
+            .nav-links { width: 100%; justify-content: center; border-top: 1px solid var(--border-light); padding-top: 5px; }
+            .nav-links li a { padding: 8px 10px; font-size: 0.9em; }
+            body { padding-top: 130px; }
+            h1 { font-size: 2.2em; }
+            h2 { font-size: 2em; }
+            .hero-section h1 { font-size: 2.5em; }
+            .hero-content p { font-size: 1.1em; }
+            .btn { padding: 14px 30px; font-size: 1em; }
+        }
+    
+/* === Neumorphic Folder Cards (Main grid) === */
+.folder-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 28px;
+  margin-top: var(--spacing-xl);
+}
+
+.folder-card {
+  background: #ffffff;
+  border: 0;
+  border-radius: 18px;
+  min-height: 220px;
+  padding: 28px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  color: var(--text-dark);
+  font-weight: 700;
+  box-shadow:
+    8px 12px 24px rgba(0, 0, 0, 0.08),
+    -6px -6px 18px rgba(255, 255, 255, 0.9);
+  transition: transform .22s ease, box-shadow .22s ease, background-color .22s ease;
+}
+.folder-card h1 {
+  font-size: 3.2rem;
+  line-height: 1;
+  margin: 0 0 14px 0;
+  pointer-events: none;
+}
+.folder-card p {
+  font-size: 1.05rem;
+  margin: 0;
+  letter-spacing: .2px;
+  pointer-events: none;
+}
+.folder-card:hover {
+  transform: translateY(-6px);
+  box-shadow:
+    14px 18px 30px rgba(0, 0, 0, 0.12),
+    -6px -6px 18px rgba(255, 255, 255, 0.95);
+}
+.folder-card:focus-visible {
+  outline: 3px solid rgba(76, 175, 80, .35);
+  outline-offset: 4px;
+  transform: translateY(-2px);
+}
+
+/* === Section container that opens on click === */
+.resource-section-container {
+  display: none;
+  background: #ffffff;
+  border: 0;
+  border-top: none;
+  margin-top: 24px;
+  padding: 28px;
+  border-radius: 18px;
+  box-shadow:
+    inset 0 0 0 1px rgba(207, 216, 220, 0.25),
+    10px 12px 24px rgba(0,0,0,.06);
+}
+
+.sub-folder-heading {
+  color: var(--primary-green);
+  font-size: 2rem;
+  margin: 0 0 18px 0;
+  border: 0;
+  display: block;
+}
+
+/* === Neumorphic Subfolder Cards (Videos / Articles) === */
+.nested-resource-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.nested-resource-card {
+  background: #ffffff;
+  color: var(--text-dark);
+  border-radius: 18px;
+  padding: 26px 18px;
+  min-height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  box-shadow:
+    8px 12px 24px rgba(0, 0, 0, 0.08),
+    -6px -6px 18px rgba(255, 255, 255, 0.9);
+  transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease;
+}
+.nested-resource-card h1 {
+  font-size: 2.4rem;
+  margin: 0 0 10px 0;
+  pointer-events: none;
+}
+.nested-resource-card p {
+  margin: 0;
+  font-size: 1rem;
+  pointer-events: none;
+}
+.nested-resource-card:hover {
+  transform: translateY(-5px);
+  box-shadow:
+    14px 18px 30px rgba(0, 0, 0, 0.12),
+    -6px -6px 18px rgba(255, 255, 255, 0.95);
+}
+
+/* === Actual inner content (videos/articles lists) === */
+.actual-content-container {
+  display: none;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  margin-top: 14px;
+  border: 0;
+  box-shadow:
+    inset 0 0 0 1px rgba(207, 216, 220, .25),
+    6px 10px 18px rgba(0,0,0,.05);
+}
+
+.inner-content-heading {
+  color: var(--dark-green);
+  font-size: 1.4rem;
+  margin: 0 0 14px 0;
+  border: 0;
+  display: block;
+}
+
+/* === Article link tiles === */
+.article-link-list li a {
+  background: #ffffff;
+  border-radius: 14px;
+  font-weight: 600;
+  box-shadow:
+    6px 10px 18px rgba(0,0,0,.05),
+    -4px -4px 12px rgba(255,255,255,.9);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.article-link-list li a:hover {
+  transform: translateY(-2px);
+  background: #f8fbf9;
+}
+
+
+/* --- Booking Form (Contact Page) --- */
+.booking-form { max-width: 620px; margin: 20px auto 0 auto; text-align: left; }
+.booking-inline { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 640px) { .booking-inline { grid-template-columns: 1fr; } }
+
+
+/* Navbar logo */
+.nav-brand a { display: inline-flex; align-items: center; gap: 10px; }
+.nav-logo { height: 32px; width: auto; border-radius: 6px; }
+@media (max-width: 768px) {
+  .nav-logo { height: 28px; }
+}
+
+
+/* -- NAVBAR LOGO SIZE OVERRIDE -- */
+.nav-logo { height: 48px !important; width: auto; border-radius: 8px; }
+@media (max-width: 768px) {
+  .nav-logo { height: 38px !important; }
+}
+
+</style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-brand"><a href="#" data-page="home-page"><img src="https://i.postimg.cc/44S4b7jP/USDC-Theme.jpg" alt="USDC Logo" class="nav-logo" loading="eager" />🌿 The Wellbeing Hub</a></div>
+        <ul class="nav-links">
+            <li><a data-page="home-page" class="active">Home</a></li>
+            <li><a data-page="assessment-page">Assessment</a></li>
+            <li><a data-page="resources-page">Resources</a></li>
+            <li><a data-page="contact-page">Book Session</a></li>
+        </ul>
+    </nav>
+
+    <!-- ========= HOME PAGE CONTAINER ========= -->
+    <main id="home-page" class="page-container active">
+        <header class="hero-section">
+            <div class="hero-content">
+                <img alt="USDC Logo" src="https://i.postimg.cc/44S4b7jP/USDC-Theme.jpg" style="max-width: 100%; height: auto; max-height: 140px; margin: 0 auto 40px auto; display: block; border-radius: 10px;" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+                <h1>Your Journey to Emotional Wellbeing Starts Here.</h1>
+                <p>A safe space to reflect, find tools, and access resources to support your mental health and build resilience.</p>
+                <div class="hero-buttons">
+                    <a href="#" class="btn" data-page="assessment-page">Take the Self-Assessment</a>
+                    <a href="#" class="btn secondary" data-page="resources-page">Explore Resources</a>
+                </div>
+            </div>
+        </header>
+        <div class="page-wrapper">
+            <section class="features-section">
+                <h2>What We Offer</h2>
+                <div class="features-grid">
+                    <div class="feature-card"><h3>📝</h3><h4>Confidential Assessment</h4><p>Check in with yourself using our guided self-assessment to reflect on key areas of your wellbeing.</p></div>
+                    <div class="feature-card"><h3>📚</h3><h4>Curated Resources</h4><p>Explore a rich library of articles, videos, and tools covering everything from stress to building better habits.</p></div>
+                    <div class="feature-card"><h3>💬</h3><h4>Professional Support</h4><p>Easily book a confidential appointment with our dedicated wellbeing coach to discuss your journey.</p></div>
+                </div>
+            </section>
+            <section class="cta-section">
+                <h2>Ready to Begin?</h2>
+                <p>Your first step towards a more balanced life is just a click away.</p>
+                <a href="#" class="btn" data-page="assessment-page">Start Your Assessment Now</a>
+            </section>
+        </div>
+    </main>
+
+    <!-- ========= ASSESSMENT PAGE CONTAINER ========= -->
+    <main id="assessment-page" class="page-container">
+        <div class="page-wrapper">
+            <div class="main-content-wrapper">
+                <div id="assessment-intro">
+                    <h1>Wellbeing Self-Assessment</h1>
+                    <p class="disclaimer-text">This confidential tool is designed to help you reflect on your emotional wellbeing. It is not a diagnostic tool but a guide for self-awareness. Your privacy is our priority.</p>
+                    <button class="btn" id="startAssessmentBtn">Begin Assessment</button>
+                </div>
+                <form id="wellbeingForm" style="display: none;"></form>
+                <div id="thankYouMessage" style="display: none;">
+                    <h3>🎉 Thank You!</h3>
+                    <p>Your assessment has been submitted successfully.</p>
+                    <div class="hero-buttons" style="margin-top: 30px;">
+                        <a href="#" class="btn" data-page="resources-page">Explore Our Resources</a>
+                        <a href="#" class="btn secondary" data-page="contact-page">Book a Session</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ========= RESOURCES PAGE CONTAINER ========= -->
+    <main id="resources-page" class="page-container">
+        <div class="page-wrapper">
+            <div class="main-content-wrapper">
+                 <div class="section" style="padding:0;">
+                    <h1>Resource Library</h1>
+                    <p class="disclaimer-text" style="text-align: center; max-width: 700px; margin: 0 auto 40px auto;">Access our curated collection of videos and articles. Click on a category to explore.</p>
+                    <div id="resource-content-container">
+                        <!-- All resource HTML will be injected here by JavaScript -->
+                    </div>
+                 </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ========= CONTACT PAGE CONTAINER ========= -->
+    <main id="contact-page" class="page-container">
+        <div class="page-wrapper">
+            <div class="main-content-wrapper">
+                <div class="section" style="text-align: center;">
+                    <h1>Book a Wellness Appointment</h1>
+                    <p class="disclaimer-text" style="max-width: 600px; margin: 0 auto 30px auto;">Taking the step to speak with our wellbeing coach is a positive move towards understanding and enhancing your mental health. All sessions are confidential.</p>
+                    <div class="appointment-details">
+                        <h3>Availability</h3>
+                        <ul>
+                            <li><strong>Mon &amp; Tue:</strong> 9 AM – 4 PM (Online &amp; Offline) (Location: JP Nagar)</li>
+                            <li><strong>Wed &amp; Thu:</strong> 9 AM – 4 PM (Online &amp; Offline) (Location: Jayanagar)</li>
+                            <li><strong>Fri:</strong> 9 AM – 4 PM (Online)</li>
+                        </ul>
+                        
+<h3 style="margin-top: 40px;">Book a Session</h3>
+<form id="bookingForm" class="booking-form">
+  <label for="bfName">Full Name</label>
+  <input type="text" id="bfName" required>
+  <label for="bfEmail">Email</label>
+  <input type="email" id="bfEmail" required>
+  <div class="booking-inline">
+    <div>
+      <label for="bfDate">Preferred Date</label>
+      <input type="date" id="bfDate" required>
+    </div>
+    <div>
+      <label for="bfTime">Preferred Time</label>
+      <input type="time" id="bfTime" min="09:00" max="16:00" step="1800" required>
+    </div>
+  </div>
+  <div class="booking-inline">
+    <div>
+      <label for="bfType">Session Type</label>
+      <select id="bfType" required>
+        <option value="Online">Online</option>
+        <option value="Offline">Offline</option>
+      </select>
+    </div>
+    <div>
+      <label for="bfLocation">Location</label>
+      <select id="bfLocation" required>
+        <option value="Online">Online</option>
+        <option value="JP Nagar">JP Nagar</option>
+        <option value="Jayanagar">Jayanagar</option>
+      </select>
+    </div>
+  </div>
+  <label for="bfNotes">Notes (optional)</label>
+  <input type="text" id="bfNotes" placeholder="Anything you'd like us to know">
+  <div class="btn-group"><button class="btn" type="submit">Request Appointment</button></div>
+</form>
+<div id="bookingConfirmation" style="display:none; text-align:center; max-width:700px; margin: 18px auto 0 auto;">
+  <h3>✅ Request Received</h3>
+  <p>Thanks, <span id="_confName"></span>! We’ve received your request for <strong><span id="_confDate"></span> at <span id="_confTime"></span></strong> (<span id="_confType"></span> — <span id="_confLocation"></span>).</p>
+  <p>You’ll get a confirmation by email shortly.</p>
+  <div class="hero-buttons" style="margin-top: 12px;">
+    <a href="#" class="btn secondary" data-page="home-page">Back to Home</a>
+  </div>
+</div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer" style="text-align:center; padding: 20px; color: var(--text-medium);">
+        <p>&copy; 2025 USDC Wellbeing Hub. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+    // --- MASTER SCRIPT ---
+    document.addEventListener('DOMContentLoaded', () => {
+        setupNavigation();
+        setupAssessment();
+        setupResources();
+        setupBookingForm();
+    });
+
+    // --- 1. NAVIGATION LOGIC ---
+    function setupNavigation() {
+        const pageSwitchLinks = document.querySelectorAll('[data-page]');
+        pageSwitchLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const pageId = link.getAttribute('data-page');
+                showPage(pageId);
+            });
+        });
+    }
+
+    function showPage(pageId) {
+        document.querySelectorAll('.page-container').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId)?.classList.add('active');
+        document.querySelectorAll('.nav-links a').forEach(a => {
+            a.classList.remove('active');
+            if (a.getAttribute('data-page') === pageId) a.classList.add('active');
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // --- 2. ASSESSMENT LOGIC ---
+    let currentStep = 1;
+    const totalQuestionSections = 5;
+
+    function setupAssessment() {
+        const startBtn = document.getElementById('startAssessmentBtn');
+        const formContainer = document.getElementById('wellbeingForm');
+        const introContainer = document.getElementById('assessment-intro');
+        const thankYouContainer = document.getElementById('thankYouMessage');
+
+        startBtn.addEventListener('click', () => {
+            introContainer.style.display = 'none';
+            formContainer.style.display = 'block';
+            currentStep = 1;
+            renderFullForm();
+            updateStepVisibility();
+        });
+
+        formContainer.addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log("Form submitted to Google Apps Script (placeholder).");
+            formContainer.style.display = 'none';
+            thankYouContainer.style.display = 'block';
+        });
+    }
+    
+    window.nextStep = function() {
+        if (currentStep >= 4 && currentStep <= 3 + totalQuestionSections) {
+            if (!validateCurrentStep()) return;
+        }
+        if (currentStep === 3 + totalQuestionSections) {
+            calculateScores();
+        }
+        currentStep++;
+        updateStepVisibility();
+    };
+
+    window.prevStep = function() {
+        if (currentStep > 1) {
+            currentStep--;
+            updateStepVisibility();
+        }
+    };
+
+    function validateCurrentStep() {
+        const selects = document.querySelectorAll(`#step-${currentStep} select`);
+        for (const sel of selects) {
+            if (sel.value === "") {
+                alert('Please answer all questions before proceeding.');
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function updateStepVisibility() {
+        document.querySelectorAll(".step-section").forEach(sec => sec.classList.remove("active"));
+        const target = document.getElementById(`step-${currentStep}`);
+        if (target) target.classList.add("active");
+    }
+    
+    function calculateScores() {
+        const sections = ["Anxiety", "Stress", "Work-Life Balance", "Overall Happiness", "Emotional Well-Being"];
+        const scoreDiv = document.getElementById("scoreBreakdown");
+        if (!scoreDiv) return;
+        scoreDiv.innerHTML = "";
+        
+        for (let i = 0; i < sections.length; i++) {
+            const sectionName = sections[i];
+            let score = 0;
+            const stepId = i + 4;
+            const selects = document.querySelectorAll(`#step-${stepId} select`);
+            selects.forEach(selectElement => {
+                if (selectElement.value) score += parseInt(selectElement.value);
+            });
+            let rangeText = "", rangeClass = "";
+            if (["Overall Happiness", "Emotional Well-Being"].includes(sectionName)) {
+                if (score <= 13) { rangeText = "Area of Concern ❗"; rangeClass = "score-concern"; }
+                else if (score <= 26) { rangeText = "Moderate ⚠️"; rangeClass = "score-moderate"; }
+                else { rangeText = "Healthy Range ✅"; rangeClass = "score-healthy"; }
+            } else {
+                if (score <= 13) { rangeText = "Healthy Range ✅"; rangeClass = "score-healthy"; }
+                else if (score <= 26) { rangeText = "Moderate ⚠️"; rangeClass = "score-moderate"; }
+                else { rangeText = "Area of Concern ❗"; rangeClass = "score-concern"; }
+            }
+            scoreDiv.innerHTML += `<p><strong>${sectionName}:</strong> <span class="${rangeClass}">${score} - ${rangeText}</span></p>`;
+        }
+    }
+
+    function renderFullForm() {
+        const formContainer = document.getElementById('wellbeingForm');
+        formContainer.innerHTML = `
+            <div class="step-section" id="step-1">
+                <div class="section"><h2>Basic Details</h2><label for="userName">Full Name</label><input type="text" id="userName" name="Full Name" required><label for="employmentCode">Employment Code</label><input type="text" id="employmentCode" name="Employment Code" required><label for="gender">Gender</label><select id="gender" name="Gender" required><option value="">Select Gender</option><option value="Male">Male</option><option value="Female">Female</option></select><label for="emailId">Email ID</label><input type="email" id="emailId" name="Email ID" required><label for="location">Location</label><select id="location" name="Location" required><option value="">Select Location</option><option value="JP Nagar_Bangalore">JP Nagar_Bangalore</option><option value="Jayanagar_Bangalore">Jayanagar_Bangalore</option><option value="Pune">Pune</option><option value="Mumbai">Mumbai</option></select></div>
+                <div class="btn-group"><button class="btn" onclick="nextStep()" type="button">Next</button></div>
+            </div>
+            <div class="step-section" id="step-2"><div class="section"><h2>IMPORTANT DISCLAIMER</h2><p class="disclaimer-text">This self-assessment is designed to help you reflect on your mental health across various areas such as **anxiety, stress, emotional well-being, and work-life balance.**</p><p class="disclaimer-text">**Your responses are strictly confidential and will not be shared without your explicit consent.**</p></div><div class="btn-group"><button class="btn secondary" onclick="prevStep()" type="button">Back</button><button class="btn" onclick="nextStep()" type="button">Next</button></div></div>
+            <div class="step-section" id="step-3"><div class="section"><h2>Self-Assessment Instructions</h2><p class="disclaimer-text">**Please Note:** This assessment is for awareness purposes only and is not a diagnostic tool.</p><ul><li>**0:** Never</li><li>**1:** Rarely</li><li>**2:** Sometimes</li><li>**3:** Often</li><li>**4:** Always</li></ul></div><div class="btn-group"><button class="btn secondary" onclick="prevStep()" type="button">Back</button><button class="btn" onclick="nextStep()" type="button">Start Questions</button></div></div>
+            <div id="questionsContainer"></div>
+            <div class="step-section" id="step-9">
+                <div class="section"><h2>Your Wellbeing Snapshot</h2><p class="disclaimer-text">Below is a breakdown of your scores.</p><div id="scoreBreakdown"></div><h3>Scoring Guidelines:</h3><p>**For Anxiety, Stress, and Work-Life Balance:**<br><span class="score-healthy">0–13:</span> Healthy Range ✅<br><span class="score-moderate">14–26:</span> Moderate ⚠️<br><span class="score-concern">27–40:</span> Area of Concern ❗</p><p>**For Overall Happiness and Emotional Well-Being:**<br><span class="score-concern">0–13:</span> Area of Concern ❗<br><span class="score-moderate">14–26:</span> Moderate ⚠️<br><span class="score-healthy">27–40:</span> Healthy Range ✅</p></div>
+                <div class="btn-group"><button class="btn secondary" onclick="prevStep()" type="button">Back</button><button class="btn" type="submit">Submit Final</button></div>
+            </div>
+        `;
+        renderQuestions();
+    }
+
+    function renderQuestions() {
+        const sections = [
+            { name: "Anxiety", questions: ["I feel nervous, anxious, or on edge.", "I worry excessively about different things.", "I experience racing thoughts that are hard to control.", "I feel a sense of panic in everyday situations.", "I avoid certain places or situations because they make me anxious.", "I find it difficult to calm myself when upset.", "I experience physical symptoms like trembling or a racing heart.", "I feel tense or jumpy for no apparent reason.", "I feel a constant sense of dread or worry.", "I find it hard to stop worrying once I’ve started."] },
+            { name: "Stress", questions: ["I feel overwhelmed by my responsibilities.", "I struggle to keep up with day-to-day tasks.", "I have difficulty sleeping due to racing thoughts.", "I often feel emotionally drained.", "I feel that I am constantly under pressure.", "I get irritated or angry more easily than usual.", "I feel tired even after a full night's sleep.", "I notice physical signs of stress (headaches, stomachaches, etc.).", "I find it difficult to relax or unwind.", "I feel like I’m losing control over parts of my life."] },
+            { name: "Work-Life Balance", questions: ["I find it hard to disconnect from work during personal time.", "I feel guilty when taking breaks or days off.", "My personal relationships suffer due to work stress.", "I frequently bring work-related problems home.", "I struggle to set boundaries between work and home.", "I miss meals, rest, or social time because of work.", "I constantly check work emails/messages outside work hours.", "I struggle to set boundaries between work and home.", "I feel that work consumes most of my time and energy.", "I feel fulfilled by both my work and personal life."] },
+            { name: "Overall Happiness", questions: ["I feel a sense of purpose and meaning in life.", "I enjoy the things I do each day.", "I feel hopeful about my future.", "I often find things that make me laugh or smile.", "I have a sense of accomplishment in my day-to-day life.", "I feel connected to the people around me.", "I engage in activities that make me happy.", "I am satisfied with where my life is right now.", "I feel grateful for what I have.", "I am optimistic about tomorrow."] },
+            { name: "Emotional Well-Being", questions: ["I am aware of my emotions throughout the day.", "I can express my feelings clearly to others.", "I know healthy ways to cope when I’m feeling low.", "I can bounce back after facing a setback.", "I feel comfortable asking for help when I need to.", "I am able to accept things I cannot change.", "I feel confident in my ability to manage my emotions.", "I make time for self-care regularly.", "I feel emotionally supported by people in my life.", "I feel in control of how I respond to emotional challenges."] }
+        ];
+        const container = document.getElementById("questionsContainer");
+        container.innerHTML = '';
+        let stepId = 4;
+        sections.forEach((sectionData, index) => {
+            const div = document.createElement("div");
+            div.className = "step-section";
+            div.id = `step-${stepId}`;
+            let innerHTML = `<div class="section"><h2>Section ${index + 1}: ${sectionData.name}</h2>`;
+            sectionData.questions.forEach(q => {
+                innerHTML += `<label>${q}</label><select name="${q}" required><option value="">Select</option><option value="0">Never</option><option value="1">Rarely</option><option value="2">Sometimes</option><option value="3">Often</option><option value="4">Always</option></select>`;
+            });
+            innerHTML += `</div><div class='btn-group'><button class='btn secondary' type='button' onclick='prevStep()'>Back</button><button class='btn' type='button' onclick='nextStep()'>Next</button></div>`;
+            div.innerHTML = innerHTML;
+            container.appendChild(div);
+            stepId++;
+        });
+    }
+
+    // --- 3. RESOURCES LOGIC ---
+    function setupResources() {
+        populateResourceContainer();
+        initializeResourceToggles();
+    }
+    
+    function initializeResourceToggles() {
+        const resourceContainer = document.getElementById('resource-content-container');
+        resourceContainer.addEventListener('click', function(e) {
+            const mainFolderCard = e.target.closest('.folder-card');
+            const nestedCard = e.target.closest('.nested-resource-card');
+            const videoPlaceholder = e.target.closest('.video-placeholder');
+
+            if (mainFolderCard) {
+                const targetId = mainFolderCard.dataset.target;
+                const targetContent = document.getElementById(targetId);
+                // Hide all other main sections
+                document.querySelectorAll('.resource-section-container').forEach(section => {
+                    if (section.id !== targetId) {
+                        section.style.display = 'none';
+                        // also hide nested content inside the section being closed
+                        section.querySelectorAll('.actual-content-container').forEach(nested => nested.style.display = 'none');
+                    }
+                });
+                if (targetContent) {
+                    const isVisible = targetContent.style.display === 'block';
+                    targetContent.style.display = isVisible ? 'none' : 'block';
+                if (!isVisible) {
+                    targetContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+                    if(isVisible) { // if we are closing it, also close its children
+                         targetContent.querySelectorAll('.actual-content-container').forEach(nested => nested.style.display = 'none');
+                    }
+                }
+            }
+            if (nestedCard) {
+                const targetContentId = nestedCard.dataset.targetContent;
+                const parentSection = nestedCard.closest('.resource-section-container');
+                const actualContent = document.getElementById(targetContentId);
+                // Hide other nested content within the same parent
+                parentSection.querySelectorAll('.actual-content-container').forEach(otherContent => {
+                    if (otherContent.id !== targetContentId) otherContent.style.display = 'none';
+                });
+                if (actualContent) {
+                    const isVisible = actualContent.style.display === 'block';
+                    actualContent.style.display = isVisible ? 'none' : 'block';
+                }
+            }
+            if (videoPlaceholder) {
+                const iframe = document.createElement('iframe');
+                iframe.setAttribute('src', videoPlaceholder.dataset.src + '?autoplay=1');
+                iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+                iframe.setAttribute('allowfullscreen', '');
+                videoPlaceholder.parentNode.replaceChild(iframe, videoPlaceholder);
+            }
+        });
+    }
+
+    function populateResourceContainer() {
+        const container = document.getElementById('resource-content-container');
+        if (container) {
+            container.innerHTML = `
+            <div class="folder-card-grid">
+                <button type="button" class="folder-card" data-target="anxietyResourceSection"><h1>😰</h1><p> Anxiety</p></button>
+                <button type="button" class="folder-card" data-target="stressResourceSection"><h1>😓</h1><p> Stress</p></button>
+                <button type="button" class="folder-card" data-target="worklifeResourceSection"><h1>⚖️</h1><p> Work-Life Balance</p></button>
+                <button type="button" class="folder-card" data-target="happinessResourceSection"><h1>😊</h1><p>Overall Happiness</p></button>
+                <button type="button" class="folder-card" data-target="emotionalWellbeingResourceSection"><h1>💖</h1><p>Emotional Well-Being</p></button>
+                <button type="button" class="folder-card" data-target="usdcWellnessResourceSection"><h1>🌿</h1><p>USDC Wellness</p></button>
+                <button type="button" class="folder-card" data-target="adaptabilityResourceSection"><h1>🌊</h1><p>Adaptability</p></button>
+                <button type="button" class="folder-card" data-target="affirmationcardsResourceSection"><h1>💌</h1><p>Affirmation Cards</p></button>
+                <button type="button" class="folder-card" data-target="assertivenessResourceSection"><h1>💬</h1><p>Assertiveness</p></button>
+                <button type="button" class="folder-card" data-target="assertivenesshowtosaynoResourceSection"><h1>✋</h1><p>Assertiveness (How To Say No)</p></button>
+                <button type="button" class="folder-card" data-target="booksummariesResourceSection"><h1>📚</h1><p>Book Summaries</p></button>
+                <button type="button" class="folder-card" data-target="buildbetterroutinesResourceSection"><h1>⏰</h1><p>Build Better Routines</p></button>
+                <button type="button" class="folder-card" data-target="burnoutResourceSection"><h1>🔥</h1><p>Burnout</p></button>
+                <button type="button" class="folder-card" data-target="confidenceResourceSection"><h1>💪</h1><p>Confidence</p></button>
+                <button type="button" class="folder-card" data-target="conflictresolutionResourceSection"><h1>🤝</h1><p> Conflict Resolution</p></button>
+                <button type="button" class="folder-card" data-target="engagementsResourceSection"><h1>📢</h1><p>Engagements</p></button>
+                <button type="button" class="folder-card" data-target="flashcardResourceSection"><h1>🔖</h1><p> Flashcard</p></button>
+                <button type="button" class="folder-card" data-target="funpersonalitytestsResourceSection"><h1>🎭</h1><p>Fun Personality Tests</p></button>
+                <button type="button" class="folder-card" data-target="goalsettingResourceSection"><h1>🎯</h1><p>Goal Setting</p></button>
+                <button type="button" class="folder-card" data-target="gratitudeResourceSection"><h1>🙏</h1><p>Gratitude</p></button>
+                <button type="button" class="folder-card" data-target="habitsResourceSection"><h1>🔁</h1><p>Habits</p></button>
+                <button type="button" class="folder-card" data-target="hobbiesResourceSection"><h1>🎨</h1><p>Hobbies</p></button>
+                <button type="button" class="folder-card" data-target="managingsocialmediaResourceSection"><h1>📱</h1><p>Managing Social Media</p></button>
+                <button type="button" class="folder-card" data-target="mindsetResourceSection"><h1>🧠</h1><p>Mindset</p></button>
+                <button type="button" class="folder-card" data-target="procrastinationResourceSection"><h1>🐢</h1><p> Procrastination</p></button>
+                <button type="button" class="folder-card" data-target="sleephygieneResourceSection"><h1>🛌</h1><p>Sleep Hygiene</p></button>
+            </div>
+
+            <!-- ANXIETY -->
+            <div class="resource-section-container" id="anxietyResourceSection">
+                <h5 class="sub-folder-heading">Anxiety Resources</h5>
+                <div class="nested-resource-grid">
+                    <button type="button" class="nested-resource-card" data-target-content="anxietyActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="anxietyActualArticles"><h1>📑</h1><p>Articles</p></button>
+                </div>
+                <div class="actual-content-container" id="anxietyActualVideos">
+                    <h6 class="inner-content-heading">Anxiety Video Collection</h6>
+                    <div class="video-grid">
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/QPyNeGHlMao"><img src="https://img.youtube.com/vi/QPyNeGHlMao/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/dM--lHKJeA4"><img src="https://img.youtube.com/vi/dM--lHKJeA4/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/fgNetu6EiZw"><img src="https://img.youtube.com/vi/fgNetu6EiZw/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/ibdrvXVwdN8"><img src="https://img.youtube.com/vi/ibdrvXVwdN8/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/XujjmPmclbU"><img src="https://img.youtube.com/vi/XujjmPmclbU/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/TGUouL4ZAN4"><img src="https://img.youtube.com/vi/TGUouL4ZAN4/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/whrN7ujh3Yk"><img src="https://img.youtube.com/vi/whrN7ujh3Yk/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/FpiWSFcL3-c"><img src="https://img.youtube.com/vi/FpiWSFcL3-c/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                    </div>
+                </div>
+                <div class="actual-content-container" id="anxietyActualArticles">
+                    <h6 class="inner-content-heading">Anxiety Article Collection</h6>
+                    <ul class="article-link-list"><li><a href="https://www.mcleanhospital.org/essential/anxiety" target="_blank">Understanding Anxiety: Symptoms, Causes, and Treatment - McLean Hospital</a></li><li><a href="https://www.psychiatry.org/patients-families/anxiety-disorders/what-are-anxiety-disorders" target="_blank">What are Anxiety Disorders? - American Psychiatric Association</a></li><li><a href="https://www.mentalhealth.org.uk/our-work/public-engagement/mental-health-awareness-week/anxiety-report/what-causes-anxiety" target="_blank">What causes anxiety? | Mental Health Foundation</a></li><li><a href="https://www.rethink.org/news-and-stories/news-and-views/2024/10-tips-to-manage-anxiety-and-stress/" target="_blank">10 tips to Manage Anxiety and Stress - Rethink Mental Illness</a></li><li><a href="https://www.paho.org/en/noncommunicable-diseases-and-mental-health/noncommunicable-diseases-and-mental-health-data-portal-2" target="_blank">Anxiety disorders - World Health Organization (WHO)</a></li><li><a href="https://www.beyondblue.org.au/mental-health/anxiety" target="_blank">Understand Anxiety disorders - Beyond Blue</a></li><li><a href="https://www.nhs.uk/every-mind-matters/mental-wellbeing-tips/self-help-cbt-techniques/tackling-your-worries/" target="_blank">Tackling your worries - Every Mind Matters - NHS</a></li><li><a href="https://www.mentalhealth.org.uk/explore-mental-health/publications/how-overcome-anxiety-and-fear" target="_blank">How to manage fear and anxiety | Mental Health Foundation</a></li><li><a href="https://www.healthline.com/health/stress-and-anxiety" target="_blank">Stress and Anxiety: How They Differ and How to Manage Them - Healthline</a></li><li><a href="https://thrivingcenterofpsych.com/blog/understanding-anxiety-disorders-causes-and-coping-strategies/" target="_blank">Understanding Anxiety Disorders: Causes &amp; Coping - Thriving Center of Psychology</a></li></ul>
+                </div>
+            </div>
+            
+            <!-- STRESS -->
+            <div class="resource-section-container" id="stressResourceSection">
+                <h5 class="sub-folder-heading">Stress Resources</h5>
+                <div class="nested-resource-grid">
+                    <button type="button" class="nested-resource-card" data-target-content="stressActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="stressActualArticles"><h1>📑</h1><p>Articles</p></button>
+                </div>
+                <div class="actual-content-container" id="stressActualVideos">
+                    <h6 class="inner-content-heading">Stress Video Collection</h6>
+                    <div class="video-grid">
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/hnpQrMqDoqE"><img src="https://img.youtube.com/vi/hnpQrMqDoqE/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/nzVzO0vFEBo"><img src="https://img.youtube.com/vi/nzVzO0vFEBo/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/ZvsHI_OoCG0"><img src="https://img.youtube.com/vi/ZvsHI_OoCG0/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/RcGyVTAoXEU"><img src="https://img.youtube.com/vi/RcGyVTAoXEU/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/WuyPuH9ojCE"><img src="https://img.youtube.com/vi/WuyPuH9ojCE/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/3FlIfFt3Pp4"><img src="https://img.youtube.com/vi/3FlIfFt3Pp4/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/6OzKD1YWHRI"><img src="https://img.youtube.com/vi/6OzKD1YWHRI/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/ntfcfJ28eiU"><img src="https://img.youtube.com/vi/ntfcfJ28eiU/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                    </div>
+                </div>
+                <div class="actual-content-container" id="stressActualArticles">
+                    <h6 class="inner-content-heading">Stress Article Collection</h6>
+                    <ul class="article-link-list"><li><a href="https://www.everydayhealth.com/anxiety/guide/" target="_blank">Stress vs. Anxiety: What's the Difference? - WebMD</a></li><li><a href="https://www.everydayhealth.com/anxiety/guide/" target="_blank">Understanding the Difference Between Stress and Anxiety - Everyday Health</a></li><li><a href="https://www.medicalnewstoday.com/articles/stress-vs-anxiety" target="_blank">Stress vs. Anxiety: What's the Difference? - Verywell Mind</a></li><li><a href="https://www.psychologytoday.com/us/blog/addiction-recovery/202105/the-difference-between-stress-and-anxiety-disorder" target="_blank">The Difference Between Stress and Anxiety (and What to Do About Both) - Psychology Today</a></li><li><a href="https://www.apa.org/topics/anxiety" target="_blank">What's the Difference Between Stress, Anxiety, and Fear? - APA</a></li><li><a href="https://my.clevelandclinic.org/health/diseases/11874-stress" target="_blank">Is it Stress or Anxiety? Know the Difference to Cope Better - Cleveland Clinic</a></li><li><a href="https://www.talkspace.com/blog/worry-vs-anxiety/" target="_blank">Understanding Stress and Anxiety: Key Differences and Management - Talkspace</a></li><li><a href="https://www.yalemedicine.org/conditions/stress-disorder" target="_blank">Is it Stress or Anxiety? A Guide to Recognizing the Differences - Yale Medicine</a></li><li><a href="https://www.healthvolunteers.in/post/finding-calm-in-chaos-your-complete-guide-to-managing-anxiety-and-stress" target="_blank">The Difference Between Stress and Anxiety — and How to Manage Both - Health</a></li><li><a href="https://www.uofmhealth.org/health-library/zu1121" target="_blank">Stress vs. Anxiety - University of Michigan Health</a></li></ul>
+                </div>
+            </div>
+
+            <!-- WORK LIFE BALANCE -->
+            <div class="resource-section-container" id="worklifeResourceSection">
+                <h5 class="sub-folder-heading">Work-Life Balance Resources</h5>
+                <div class="nested-resource-grid">
+                    <button type="button" class="nested-resource-card" data-target-content="worklifeActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="worklifeActualArticles"><h1>📑</h1><p>Articles</p></button>
+                </div>
+                <div class="actual-content-container" id="worklifeActualVideos">
+                    <h6 class="inner-content-heading">Work-Life Balance Video Collection</h6>
+                    <div class="video-grid">
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/teE-xVO-ljw"><img src="https://img.youtube.com/vi/teE-xVO-ljw/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/iLxeoeWyK6w"><img src="https://img.youtube.com/vi/iLxeoeWyK6w/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/MPR3o6Hnf2g"><img src="https://img.youtube.com/vi/MPR3o6Hnf2g/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/_8CPZT5tY4o"><img src="https://img.youtube.com/vi/_8CPZT5tY4o/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/Mvxr3OOU5WY"><img src="https://img.youtube.com/vi/Mvxr3OOU5WY/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/8QUuGwyX4j0"><img src="https://img.youtube.com/vi/8QUuGwyX4j0/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/UeHTqZ4UH8M"><img src="https://img.youtube.com/vi/UeHTqZ4UH8M/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/OjTzArA32YA"><img src="https://img.youtube.com/vi/OjTzArA32YA/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/H3CqFjVKofQ"><img src="https://img.youtube.com/vi/H3CqFjVKofQ/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/-nvD-t77Z-U"><img src="https://img.youtube.com/vi/-nvD-t77Z-U/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/fOTTKjmDluo"><img src="https://img.youtube.com/vi/fOTTKjmDluo/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                    </div>
+                </div>
+                <div class="actual-content-container" id="worklifeActualArticles">
+                    <h6 class="inner-content-heading">Work-Life Balance Article Collection</h6>
+                    <ul class="article-link-list"><li><a href="https://www.achievers.com/blog/employee-wellbeing/" target="_blank">Work-life balance and how to improve It</a></li><li><a href="https://www.betterup.com/blog/how-to-have-good-work-life-balance" target="_blank">12 Tips to Achieve a Healthy Work-Life Balance</a></li><li><a href="https://www.jakson.com/blogs/work-life-balance-in-the-21st-centurylets-talk-about-it/" target="_blank">Work-Life Balance in the 21st Century…Let's Talk About It!</a></li><li><a href="https://novoresume.com/career-blog/work-life-balance" target="_blank">6 Guaranteed Ways to Improve Work-Life Balance in 2025</a></li><li><a href="https://www.amyshamblen.com/blog/the-ultimate-guide-for-a-better-work-life-balance" target="_blank">The Ultimate Guide for a Better Work-Life Balance</a></li><li><a href="https://www.vantagecircle.com/en/blog/work-life-balance/" target="_blank">25 Best Ways to Celebrate Work-Life Balance and Its Benefits</a></li><li><a href="https://www.healthdirect.gov.au/work-life-balance" target="_blank">Work-life balance - strategies and where to get help</a></li><li><a href="https://www.virtuallatinos.com/blog/rethinking-work-life-balance-strategies/" target="_blank">Work-Life Balance Strategies That Actually Work</a></li><li><a href="https://ckfamilyservices.org/blog/benefits-flying-kites" target="_blank">The Benefits of Flying Kites</a></li><li><a href="https://medium.com/@rey01v/soaring-to-new-heights-comparing-human-life-to-a-kite-6e5447bf16e" target="_blank">Soaring to New Heights: Comparing Human Life to a Kite</a></li></ul>
+                </div>
+            </div>
+
+            <!-- HAPPINESS -->
+            <div class="resource-section-container" id="happinessResourceSection">
+                <h5 class="sub-folder-heading">Overall Happiness Resources</h5>
+                <div class="nested-resource-grid">
+                    <button type="button" class="nested-resource-card" data-target-content="happinessActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="happinessActualArticles"><h1>📑</h1><p>Articles</p></button>
+                </div>
+                <div class="actual-content-container" id="happinessActualVideos">
+                    <h6 class="inner-content-heading">Overall Happiness Video Collection</h6>
+                    <div class="video-grid">
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/TIsDtP11UrQ"><img src="https://img.youtube.com/vi/TIsDtP11UrQ/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/m4Ics03xzUQ"><img src="https://img.youtube.com/vi/m4Ics03xzUQ/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/WVadFpErn9w"><img src="https://img.youtube.com/vi/WVadFpErn9w/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/qRY-foz-ZAw"><img src="https://img.youtube.com/vi/qRY-foz-ZAw/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/5jnEizYzQl0"><img src="https://img.youtube.com/vi/5jnEizYzQl0/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/FNv8sJ28RjY"><img src="https://img.youtube.com/vi/FNv8sJ28RjY/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/NGE8BgxEOd4"><img src="https://img.youtube.com/vi/NGE8BgxEOd4/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                    </div>
+                </div>
+                <div class="actual-content-container" id="happinessActualArticles">
+                    <h6 class="inner-content-heading">Happiness Article Collection</h6>
+                    <ul class="article-link-list"><li><a href="https://www.healthline.com/health/how-to-be-happy" target="_blank">How to Be Happy: 12 Habits to Add to Your Routine</a></li><li><a href="https://www.unh.edu/pacs/positive-psychology-strategies-increased-happiness" target="_blank">Positive Psychology Strategies for Increased Happiness</a></li><li><a href="https://greatergood.berkeley.edu/article/item/five_science_backed_strategies_for_more_happiness" target="_blank">Five Science-Backed Strategies for More Happiness</a></li><li><a href="https://buffer.com/resources/be-happy-today/" target="_blank">11 Simple Things That Will Make You Happier</a></li><li><a href="https://www.helpguide.org/mental-health/wellbeing/cultivating-happiness" target="_blank">Cultivating Happiness</a></li><li><a href="https://afaeducation.org/blog/how-to-be-happy-10-tips-and-strategies-for-a-fulfilling-life/" target="_blank">How to Be Happy: 10 Tips and Strategies</a></li><li><a href="https://www.verywellmind.com/what-is-happiness-4869755" target="_blank">Happiness: What It Really Means and How to Find It</a></li><li><a href="https://kingamnich.com/2021/08/10/increase-happiness-with-these-positive-psychology-strategies/" target="_blank">Increase Happiness with These Positive Psychology Strategies</a></li><li><a href="https://www.positivityblog.com/" target="_blank">The Positivity Blog: Practical Happiness Advice</a></li><li><a href="https://blog.mediassist.in/science-of-happiness/" target="_blank">Science of Happiness - Medi Assist Blog &amp; News</a></li></ul>
+                </div>
+            </div>
+            
+            <!-- EMOTIONAL WELLBEING -->
+            <div class="resource-section-container" id="emotionalWellbeingResourceSection">
+                <h5 class="sub-folder-heading">Emotional Well-Being Resources</h5>
+                <div class="nested-resource-grid">
+                    <button type="button" class="nested-resource-card" data-target-content="emotionalWellbeingActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="emotionalWellbeingActualArticles"><h1>📑</h1><p>Articles</p></button>
+                </div>
+                <div class="actual-content-container" id="emotionalWellbeingActualVideos">
+                    <h6 class="inner-content-heading">Emotional Well-Being Video Collection</h6>
+                    <div class="video-grid">
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/_gJ5V525SCk"><img src="https://img.youtube.com/vi/_gJ5V525SCk/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/mxz8KyV3Ydc"><img src="https://img.youtube.com/vi/mxz8KyV3Ydc/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/PAestsXAWsw"><img src="https://img.youtube.com/vi/PAestsXAWsw/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/hxCvJJv2vw8"><img src="https://img.youtube.com/vi/hxCvJJv2vw8/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/petg12b36UA"><img src="https://img.youtube.com/vi/petg12b36UA/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/Uew5BbvmLks"><img src="https://img.youtube.com/vi/Uew5BbvmLks/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/JEBFZ0U7ZZI"><img src="https://img.youtube.com/vi/JEBFZ0U7ZZI/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                    </div>
+                </div>
+                <div class="actual-content-container" id="emotionalWellbeingActualArticles">
+                    <h6 class="inner-content-heading">Emotional Well-Being Article Collection</h6>
+                    <ul class="article-link-list"><li><a href="https://www.bu.edu/studentwellbeing/what-is-wellbeing/emotional-wellbeing/" target="_blank">What is Emotional Wellbeing - Boston University</a></li><li><a href="https://www.harmonyhealthmedical.com.au/emotional-health-and-well-being" target="_blank">Emotional Health and Wellbeing - Harmony Health</a></li><li><a href="https://www.webmd.com/balance/what-to-know-about-emotional-health" target="_blank">What to Know About Emotional Health - WebMD</a></li><li><a href="https://www.cdc.gov/emotional-well-being/improve-your-emotional-well-being/index.html" target="_blank">Improve Your Emotional Well-Being - CDC</a></li><li><a href="https://ghcscw.com/mental-health-matters-nurturing-your-emotional-well-being/" target="_blank">Mental Health Matters - GHC-SCW</a></li><li><a href="https://happimynd.com/blog/6-ways-to-improve-your-emotional-health-and-maintain-a-balanced-life" target="_blank">6 Ways to Improve Your Emotional Health</a></li><li><a href="https://www.cinim.org/blog/emotional-well-being-a-simple-guide-to-being-happier" target="_blank">Emotional Well-Being: A Simple Guide to Being Happier - Cinim</a></li><li><a href="https://continentalhospitals.com/blog/importance-of-emotional-wellbeing/" target="_blank">Importance of Emotional Wellbeing - Continental Hospitals</a></li><li><a href="https://www.nih.gov/health-information/your-healthiest-self-wellness-toolkits/emotional-wellness-toolkit/emotional-wellness-toolkit-more-resources" target="_blank">Emotional Wellness Toolkit — NIH</a></li><li><a href="https://www.thisiscalmer.com/blog" target="_blank">Mental Health &amp; Wellbeing Blog - Calmer</a></li></ul>
+                </div>
+            </div>
+
+            <!-- USDC WELLNESS -->
+            <div class="resource-section-container" id="usdcWellnessResourceSection">
+                <h5 class="sub-folder-heading">USDC Wellness Resources</h5>
+                <div class="nested-resource-grid">
+                    <button type="button" class="nested-resource-card" data-target-content="usdcWellnessActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                </div>
+                <div class="actual-content-container" id="usdcWellnessActualVideos">
+                    <h6 class="inner-content-heading">USDC Wellness Video Collection</h6>
+                    <div class="video-grid">
+                        <a class="usdc-video-item" href="https://drive.google.com/file/d/1mi4RtoLzroFayecKtkreSygUoE-ev9eM/view" target="_blank"><img alt="Video Thumbnail" src="https://placehold.co/640x480/4CAF50/ffffff?text=Mastering+Your+Mindset" crossorigin="anonymous" referrerpolicy="no-referrer"/><p>Mastering Your Mindset</p></a>
+                        <a class="usdc-video-item" href="https://drive.google.com/file/d/1cCQOJfOLWxYpzpWWf3LiyIIYYeaIiqui/view" target="_blank"><img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=Building+Resilience+Daily" crossorigin="anonymous" referrerpolicy="no-referrer"/><p>Building Resilience Daily</p></a>
+                        <a class="usdc-video-item" href="https://drive.google.com/file/d/18EWTPigJcqOGqw91kj8h1gghy73OmT12/view" target="_blank"><img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=Stress+Reduction+Techniques" crossorigin="anonymous" referrerpolicy="no-referrer"/><p>Stress Reduction Techniques</p></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADAPTABILITY -->
+            <div class="resource-section-container" id="adaptabilityResourceSection">
+                <h5 class="sub-folder-heading">Adaptability Resources</h5>
+                <div class="nested-resource-grid"><button type="button" class="nested-resource-card" data-target-content="adaptabilityActualVideos"><h1>▶️</h1><p>Videos</p></button><button type="button" class="nested-resource-card" data-target-content="adaptabilityActualArticles"><h1>📑</h1><p>Articles</p></button></div>
+                <div class="actual-content-container" id="adaptabilityActualVideos"><h6 class="inner-content-heading">Adaptability Video Collection</h6><div class="video-grid"><div class="video-placeholder" data-src="https://www.youtube.com/embed/JLUZbKhZ0Dw"><img src="https://img.youtube.com/vi/JLUZbKhZ0Dw/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div><div class="video-placeholder" data-src="https://www.youtube.com/embed/1CNITFBrb4E"><img src="https://img.youtube.com/vi/1CNITFBrb4E/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div><div class="video-placeholder" data-src="https://www.youtube.com/embed/ZsfPua2zAjw"><img src="https://img.youtube.com/vi/ZsfPua2zAjw/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div><div class="video-placeholder" data-src="https://www.youtube.com/embed/empWHZh6Oho"><img src="https://img.youtube.com/vi/empWHZh6Oho/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div><div class="video-placeholder" data-src="https://www.youtube.com/embed/eSX-Kuo4ulw"><img src="https://img.youtube.com/vi/eSX-Kuo4ulw/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div><div class="video-placeholder" data-src="https://www.youtube.com/embed/QijH4UAqGD8"><img src="https://img.youtube.com/vi/QijH4UAqGD8/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div><div class="video-placeholder" data-src="https://www.youtube.com/embed/SbMqoHrjnLM"><img src="https://img.youtube.com/vi/SbMqoHrjnLM/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div></div></div>
+                <div class="actual-content-container" id="adaptabilityActualArticles"><h6 class="inner-content-heading">Adaptability Article Collection</h6><ul class="article-link-list"><li><a href="https://www.verywellmind.com/psychological-flexibility-7509628" target="_blank">Psychological Flexibility: What It Means and Why It Matters</a></li><li><a href="https://nypost.com/2024/06/24/lifestyle/the-number-one-trait-you-need-to-be-successful-in-your-career/" target="_blank">The One Trait Shared by Extremely Successful People—and It’s a ‘Muscle’ You Can Build</a></li><li><a href="https://www.businessinsider.com/job-search-job-security-adaptability-communication-work-skills-2024-2" target="_blank">If You’re Looking for a Job, the Most Important Skill Is Adaptability Amid AI Rise</a></li><li><a href="https://www.robertwalters.com.au/insights/career-advice/blog/mastering-adaptability-in-the-workplace.html" target="_blank">Mastering Adaptability in the Workplace: Your Guide to Thriving in Change</a></li><li><a href="https://www.abroad.io/blog/8-tips-enhance-workplace-adaptability" target="_blank">8 Tips to Enhance Your Adaptability Skills in the Workplace</a></li><li><a href="https://www.betterup.com/blog/how-to-increase-adaptability" target="_blank">How to Improve Adaptability Skills and Embrace Change</a></li><li><a href="https://www.smartsheet.com/content/workplace-adaptability" target="_blank">How to Build Adaptability in the Workplace</a></li><li><a href="https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights/future-proof-solving-the-adaptability-paradox-for-the-long-term/" target="_blank">Future Proof: Solving the ‘Adaptability Paradox’</a></li><li><a href="https://asana.com/resources/workplace-adaptability-skills" target="_blank">6 Tips to Increase Your Adaptability in the Workplace</a></li></ul></div>
+            </div>
+
+            <!-- ASSERTIVENESS -->
+            <div class="resource-section-container" id="assertivenessResourceSection">
+                <h5 class="sub-folder-heading">Assertiveness Resources</h5>
+                <div class="nested-resource-grid">
+                    <button type="button" class="nested-resource-card" data-target-content="assertivenessActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="assertivenessActualArticles"><h1>📑</h1><p>Articles</p></button>
+                </div>
+                <div class="actual-content-container" id="assertivenessActualVideos">
+                    <h6 class="inner-content-heading">Assertiveness Video Collection</h6>
+                    <div class="video-grid">
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/gUfHh1Qv__A"><img src="https://img.youtube.com/vi/gUfHh1Qv__A/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/B6Za75SwA3E"><img src="https://img.youtube.com/vi/B6Za75SwA3E/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/vnmLnPuYcqY"><img src="https://img.youtube.com/vi/vnmLnPuYcqY/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/4tbPzlLwyrA"><img src="https://img.youtube.com/vi/4tbPzlLwyrA/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/Nh7DwRKRolg"><img src="https://img.youtube.com/vi/Nh7DwRKRolg/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/KmrokQdsjTA"><img src="https://img.youtube.com/vi/KmrokQdsjTA/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/hAxCpAnV3-E"><img src="https://img.youtube.com/vi/hAxCpAnV3-E/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                    </div>
+                </div>
+                <div class="actual-content-container" id="assertivenessActualArticles">
+                    <h6 class="inner-content-heading">Assertiveness Article Collection</h6>
+                    <ul class="article-link-list">
+                        <li><a href="https://www.psychologytoday.com/intl/blog/adaptation/201708/want-to-be-more-assertive-at-work-do-these-four-things" target="_blank">Want to Be More Assertive at Work? Do These Four Things — Psychology Today</a></li>
+                        <li><a href="https://www.self.com/story/6-ways-assertive-workplace" target="_blank">6 Ways You Can Be More Assertive in the Workplace — Self</a></li>
+                        <li><a href="https://www.forbes.com/sites/lucianapaulise/2023/11/07/why-you-need-to-speak-up-3-ways-to-master-assertiveness-at-work" target="_blank">Why You Need To Speak Up: 3 Ways To Master Assertiveness At Work — Forbes</a></li>
+                        <li><a href="https://www.indeed.com/career-advice/career-development/assertiveness-skills" target="_blank">Assertiveness Skills: Definition, Examples and Tips — Indeed</a></li>
+                        <li><a href="https://www.mayoclinic.org/healthy-lifestyle/stress-management/in-depth/assertive/art-20044644" target="_blank">Being assertive: Reduce stress, communicate better — Mayo Clinic</a></li>
+                        <li><a href="https://www.skillabilly.com/building-confidence-and-assertiveness-in-the-workplace" target="_blank">Building Confidence And Assertiveness In The Workplace — Skillabilly</a></li>
+                        <li><a href="https://clickup.com/blog/how-to-be-more-assertive-at-work" target="_blank">How to Be More Assertive at Work — ClickUp</a></li>
+                        <li><a href="https://thesli.co.uk/5-tips-for-being-more-assertive-in-the-workplace" target="_blank">5 Tips for Being More Assertive in the Workplace — The Self Leadership Initiative</a></li>
+                        <li><a href="https://positivepsychology.com/assertiveness" target="_blank">Assertiveness in the Workplace: A Quick Guide — PositivePsychology.com</a></li>
+                        <li><a href="https://sg.indeed.com/career-advice/career-development/assertiveness" target="_blank">Assertiveness in the Workplace: Benefits and When to Use It — Indeed Singapore</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ASSERTIVENESS (HOW TO SAY NO) -->
+            <div class="resource-section-container" id="assertivenesshowtosaynoResourceSection">
+                <h5 class="sub-folder-heading">Assertiveness (How To Say No) Resources</h5>
+                <div class="nested-resource-grid">
+                    <button type="button" class="nested-resource-card" data-target-content="assertivenesshowtosaynoActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="assertivenesshowtosaynoActualArticles"><h1>📑</h1><p>Articles</p></button>
+                </div>
+                <div class="actual-content-container" id="assertivenesshowtosaynoActualVideos">
+                    <h6 class="inner-content-heading">Assertiveness (How To Say No) Video Collection</h6>
+                    <div class="video-grid">
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/78d1dmmSMrY"><img src="https://img.youtube.com/vi/78d1dmmSMrY/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/fecHD0qGKoM"><img src="https://img.youtube.com/vi/fecHD0qGKoM/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/nSUhfFj9TRc"><img src="https://img.youtube.com/vi/nSUhfFj9TRc/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/oSShE5lNT1U"><img src="https://img.youtube.com/vi/oSShE5lNT1U/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/rGnBnlrTW1Q"><img src="https://img.youtube.com/vi/rGnBnlrTW1Q/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/tgl-zcp8lAo"><img src="https://img.youtube.com/vi/tgl-zcp8lAo/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/uGjL1WE9zTw"><img src="https://img.youtube.com/vi/uGjL1WE9zTw/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/vgkiVSlFCXs"><img src="https://img.youtube.com/vi/vgkiVSlFCXs/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/yVGkxd-tmAE"><img src="https://img.youtube.com/vi/yVGkxd-tmAE/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                    </div>
+                </div>
+                <div class="actual-content-container" id="assertivenesshowtosaynoActualArticles">
+                    <h6 class="inner-content-heading">Assertiveness (How To Say No) Article Collection</h6>
+                    <ul class="article-link-list">
+                        <li><a href="https://apnews.com/article/b33ef0e904f9be67e06591bcd3d74b80" target="_blank">Workplace Boundaries and Well‑Being – AP News</a></li>
+                        <li><a href="https://careerservices.upenn.edu/blog/2023/08/31/3-times-its-okay-to-say-no-at-work/" target="_blank">3 Times It’s OK to Say No – UPenn Career Services</a></li>
+                        <li><a href="https://mitsu.care/blog/how-to-say-no-at-work/" target="_blank">5 Tips on How to Say No in the Workplace – Mitsu Care</a></li>
+                        <li><a href="https://time.com/6332017/how-to-say-no-better/" target="_blank">Yes, You Can Get Better at Saying No – Time</a></li>
+                        <li><a href="https://www.businessinsider.com/how-to-say-no-at-work-set-boundaries-etiquette-experts-2025-5" target="_blank">It's Hard to Say 'No' at Work: Etiquette Tips – Business Insider</a></li>
+                        <li><a href="https://www.hays.com/career-advice/article/how-to-say-no-at-work_en-us" target="_blank">How to Say No at Work – Hays</a></li>
+                        <li><a href="https://www.indeed.com/career-advice/career-development/how-to-nicely-say-no" target="_blank">How To Nicely Say “No” – Indeed</a></li>
+                        <li><a href="https://www.journalofaccountancy.com/newsletters/2019/jun/say-no.html" target="_blank">How to Say ‘No’ at Work Without Burning Bridges – Journal of Accountancy</a></li>
+                        <li><a href="https://www.paymoapp.com/blog/say-no-at-work/" target="_blank">7 Tips For Long-Term #Success Saying No – Paymo</a></li>
+                        <li><a href="https://www.theguardian.com/science/2025/jul/07/one-change‑worked‑i‑stopped‑saying‑yes‑to‑everything‑found‑phrase‑that‑made‑it‑easier" target="_blank">One Change That Made Saying No Easier – The Guardian</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- BOOK SUMMARIES -->
+            <div class="resource-section-container" id="booksummariesResourceSection">
+                <h5 class="sub-folder-heading">Book Summaries</h5>
+                <div class="nested-resource-grid">
+                    <button type="button" class="nested-resource-card" data-target-content="booksummariesActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="booksummariesActualArticles"><h1>📑</h1><p>Articles</p></button>
+                </div>
+                <div class="actual-content-container" id="booksummariesActualVideos">
+                    <h6 class="inner-content-heading">Book Summaries Video Collection</h6>
+                    <div class="video-grid">
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/0hbFgnfChug"><img src="https://img.youtube.com/vi/0hbFgnfChug/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/1CCzq0JD0L0"><img src="https://img.youtube.com/vi/1CCzq0JD0L0/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/2l68hbI5n_o"><img src="https://img.youtube.com/vi/2l68hbI5n_o/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/34frdiFNVgA"><img src="https://img.youtube.com/vi/34frdiFNVgA/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/3Ky7oUYHo7A"><img src="https://img.youtube.com/vi/3Ky7oUYHo7A/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/4-ac9uQhEIA"><img src="https://img.youtube.com/vi/4-ac9uQhEIA/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/4Pw3Y5p9UKg"><img src="https://img.youtube.com/vi/4Pw3Y5p9UKg/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/5bwypZkwl6c"><img src="https://img.youtube.com/vi/5bwypZkwl6c/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/75bO_XWk7fw"><img src="https://img.youtube.com/vi/75bO_XWk7fw/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/8UfF7oRs0TU"><img src="https://img.youtube.com/vi/8UfF7oRs0TU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/A4ub7WsCFPs"><img src="https://img.youtube.com/vi/A4ub7WsCFPs/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/AzwUBz_PqHU"><img src="https://img.youtube.com/vi/AzwUBz_PqHU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/CGQwTALSL6U"><img src="https://img.youtube.com/vi/CGQwTALSL6U/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/HiJoWWjWVQ8"><img src="https://img.youtube.com/vi/HiJoWWjWVQ8/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/HuUh0yO_0Sw"><img src="https://img.youtube.com/vi/HuUh0yO_0Sw/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/Kxvp3eOYphY"><img src="https://img.youtube.com/vi/Kxvp3eOYphY/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/ObxKL19JWSk"><img src="https://img.youtube.com/vi/ObxKL19JWSk/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/QTDSr8PCI90"><img src="https://img.youtube.com/vi/QTDSr8PCI90/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/SiW_QLs8VqA"><img src="https://img.youtube.com/vi/SiW_QLs8VqA/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/U3Uxd-MARco"><img src="https://img.youtube.com/vi/U3Uxd-MARco/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/UctSZthDEn8"><img src="https://img.youtube.com/vi/UctSZthDEn8/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/Ulx5d6nhqz8"><img src="https://img.youtube.com/vi/Ulx5d6nhqz8/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/W9DV2K4Aebw"><img src="https://img.youtube.com/vi/W9DV2K4Aebw/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/WkS78fkM1uk"><img src="https://img.youtube.com/vi/WkS78fkM1uk/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/YLBDkz0TwLM"><img src="https://img.youtube.com/vi/YLBDkz0TwLM/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/ZQShPXyDtSA"><img src="https://img.youtube.com/vi/ZQShPXyDtSA/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/_uA_HkOJGjY"><img src="https://img.youtube.com/vi/_uA_HkOJGjY/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/btp-sbwb7zM"><img src="https://img.youtube.com/vi/btp-sbwb7zM/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/diZOX7ja2vY"><img src="https://img.youtube.com/vi/diZOX7ja2vY/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/eDBYci4Vy2k"><img src="https://img.youtube.com/vi/eDBYci4Vy2k/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/fUabJO4UAso"><img src="https://img.youtube.com/vi/fUabJO4UAso/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/guM6XXTmJ4k"><img src="https://img.youtube.com/vi/guM6XXTmJ4k/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/hmwxa5Ol8Z0"><img src="https://img.youtube.com/vi/hmwxa5Ol8Z0/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/iL3wPPNUbdY"><img src="https://img.youtube.com/vi/iL3wPPNUbdY/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/iqTjCE-bHPM"><img src="https://img.youtube.com/vi/iqTjCE-bHPM/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/jIwuUTxhE9w"><img src="https://img.youtube.com/vi/jIwuUTxhE9w/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/ktlTxC4QG8g"><img src="https://img.youtube.com/vi/ktlTxC4QG8g/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/llEOiazjVeA"><img src="https://img.youtube.com/vi/llEOiazjVeA/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/m5CRha_PmAM"><img src="https://img.youtube.com/vi/m5CRha_PmAM/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/neIfuuLNUzU"><img src="https://img.youtube.com/vi/neIfuuLNUzU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/oayYMJ5FfXE"><img src="https://img.youtube.com/vi/oayYMJ5FfXE/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/sBNFDrNrMpw"><img src="https://img.youtube.com/vi/sBNFDrNrMpw/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/sWctLEdIgi4"><img src="https://img.youtube.com/vi/sWctLEdIgi4/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/sc2F1-a_ATI"><img src="https://img.youtube.com/vi/sc2F1-a_ATI/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/u32L34GZz3w"><img src="https://img.youtube.com/vi/u32L34GZz3w/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/un2SdGwxgmo"><img src="https://img.youtube.com/vi/un2SdGwxgmo/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/vep8tB_XTuI"><img src="https://img.youtube.com/vi/vep8tB_XTuI/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/xJujfW_0-3A"><img src="https://img.youtube.com/vi/xJujfW_0-3A/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/ygJvFTnUJUA"><img src="https://img.youtube.com/vi/ygJvFTnUJUA/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/z45v0xRS2KA"><img src="https://img.youtube.com/vi/z45v0xRS2KA/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                    </div>
+                </div>
+                <div class="actual-content-container" id="booksummariesActualArticles">
+                    <h6 class="inner-content-heading">Book Summaries Article Collection</h6>
+                    <ul class="article-link-list">
+                        <li><a href="https://alexchen373.medium.com/limitless-book-summary-and-application-be23e3dedf35" target="_blank">Limitless</a></li>
+                        <li><a href="https://dailystoic.com/stillness-is-the-key/" target="_blank">Stillness Is the Key</a></li>
+                        <li><a href="https://dantekim.com/notes/the-happiness-advantage/" target="_blank">The Happiness Advantage</a></li>
+                        <li><a href="https://deliberateowl.com/blog/book-review-focus-hidden-driver-excellence-daniel-goleman" target="_blank">Focus</a></li>
+                        <li><a href="https://fourminutebooks.com/boundaries-summary/" target="_blank">Boundaries</a></li>
+                        <li><a href="https://fourminutebooks.com/daring-greatly-summary/" target="_blank">Daring Greatly</a></li>
+                        <li><a href="https://fourminutebooks.com/quiet-summary/" target="_blank">Quiet</a></li>
+                        <li><a href="https://fourminutebooks.com/the-courage-to-be-disliked-summary/" target="_blank">The Courage to Be Disliked</a></li>
+                        <li><a href="https://fourminutebooks.com/the-power-of-positive-thinking-summary/" target="_blank">The Power of Positive Thinking</a></li>
+                        <li><a href="https://fourminutebooks.com/the-productivity-project-summary/" target="_blank">The Productivity Project</a></li>
+                        <li><a href="https://fourminutebooks.com/the-slight-edge-summary/" target="_blank">The Slight Edge</a></li>
+                        <li><a href="https://fs.blog/carol-dweck-mindset/" target="_blank">Mindset</a></li>
+                        <li><a href="https://fs.blog/how-to-win-friends-and-influence-people/" target="_blank">How to Win Friends and Influence People</a></li>
+                        <li><a href="https://jamesclear.com/atomic-habits-summary" target="_blank">Atomic Habits</a></li>
+                        <li><a href="https://jamesclear.com/book-summaries/the-compound-effect" target="_blank">The Compound Effect</a></li>
+                        <li><a href="https://managementforstartups.com/articles/book-summary-radical-candor/" target="_blank">Radical Candor</a></li>
+                        <li><a href="https://martinboss.com/book-notes-no-hard-feelings/" target="_blank">No Hard Feelings</a></li>
+                        <li><a href="https://medium.com/@aidanhornsby/notes-on-the-80-20-principle-1912002d73c5" target="_blank">The 80/20 Principle</a></li>
+                        <li><a href="https://medium.com/@brandoncannady/book-summary-the-happiness-project-bfd4ae86782a" target="_blank">The Happiness Project</a></li>
+                        <li><a href="https://medium.com/@selfhelpchampion4/book-summary-the-daily-stoic-by-ryan-holiday-stephen-hanselman-853ee8f9d343" target="_blank">The Daily Stoic</a></li>
+                        <li><a href="https://medium.com/@soumyakumar97/book-bytes-the-art-of-saying-no-how-to-stand-your-ground-reclaim-your-time-and-energy-and-48e205fb1ed1" target="_blank">The Art of Saying No</a></li>
+                        <li><a href="https://notesbythalia.com/the-mountain-is-you-by-brianna-wiest-book-review/" target="_blank">The Mountain Is You</a></li>
+                        <li><a href="https://readersbooksclub.com/ikigai/" target="_blank">Ikigai</a></li>
+                        <li><a href="https://readersbooksclub.com/rewire-your-brain/" target="_blank">Rewire Your Brain</a></li>
+                        <li><a href="https://readingraphics.com/book-summary-the-energy-bus/" target="_blank">The Energy Bus</a></li>
+                        <li><a href="https://readingraphics.com/book-summary-you-are-a-badass/" target="_blank">You Are a Badass</a></li>
+                        <li><a href="https://warriorhabits.com/summary-of-flow-by-mihaly-csikszentmihalyi/" target="_blank">Flow</a></li>
+                        <li><a href="https://www.atozlibrary.in/start-with-why-summary/" target="_blank">Start With Why</a></li>
+                        <li><a href="https://www.getstoryshots.com/books/burnout-summary/#:~:text=Burnout%20delves%20into%20societal%20expectations,others%2C%20leading%20to%20emotional%20exhaustion." target="_blank">Burnout</a></li>
+                        <li><a href="https://www.hustleescape.com/book-summary-the-5am-club-by-robin-sharma/" target="_blank">The 5 AM Club</a></li>
+                        <li><a href="https://www.johnolivant.com/the-magic-of-thinking-big-david-schwartz-book-summary/" target="_blank">The Magic of Thinking Big</a></li>
+                        <li><a href="https://www.litcharts.com/lit/grit/summary" target="_blank">Grit</a></li>
+                        <li><a href="https://www.runn.io/blog/5-dysfunctions-of-a-team-summary" target="_blank">The Five Dysfunctions of a Team</a></li>
+                        <li><a href="https://www.runn.io/blog/emotional-intelligence-summary" target="_blank">Emotional Intelligence</a></li>
+                        <li><a href="https://www.runn.io/blog/the-one-thing-summary" target="_blank">The One Thing</a></li>
+                        <li><a href="https://www.samuelthomasdavies.com/book-summaries/business/deep-work/" target="_blank">Deep Work</a></li>
+                        <li><a href="https://www.samuelthomasdavies.com/book-summaries/business/drive/" target="_blank">Drive</a></li>
+                        <li><a href="https://www.samuelthomasdavies.com/book-summaries/business/eat-that-frog/" target="_blank">Eat That Frog!</a></li>
+                        <li><a href="https://www.samuelthomasdavies.com/book-summaries/business/essentialism/" target="_blank">Essentialism</a></li>
+                        <li><a href="https://www.samuelthomasdavies.com/book-summaries/business/getting-things-done/" target="_blank">Getting Things Done</a></li>
+                        <li><a href="https://www.samuelthomasdavies.com/book-summaries/business/indistractable/" target="_blank">Indistractable</a></li>
+                        <li><a href="https://www.samuelthomasdavies.com/book-summaries/business/the-war-of-art/" target="_blank">The War of Art</a></li>
+                        <li><a href="https://www.samuelthomasdavies.com/book-summaries/business/who-moved-my-cheese/" target="_blank">Who Moved My Cheese?</a></li>
+                        <li><a href="https://www.sloww.co/power-of-now-eckhart-tolle/#PON-intro" target="_blank">The Power of Now</a></li>
+                        <li><a href="https://www.supersummary.com/the-7-habits-of-highly-effective-people/summary/" target="_blank">The 7 Habits of Highly Effective People</a></li>
+                        <li><a href="https://www.supersummary.com/the-art-of-happiness/summary/" target="_blank">The Art of Happiness</a></li>
+                        <li><a href="https://www.supersummary.com/the-gifts-of-imperfection/summary/" target="_blank">The Gifts of Imperfection</a></li>
+                        <li><a href="https://www.weeklywisdomblog.com/post/think-like-a-monk-book-summary-and-application" target="_blank">Think Like a Monk</a></li>
+                        <li><a href="https://youtu.be/hmwxa5Ol8Z0?si=qP-c0zzUK_fYuAis" target="_blank">Make Time</a></li>
+                        <li><a href="https://youtu.be/un2SdGwxgmo" target="_blank">The Confidence Code</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- BUILD BETTER ROUTINES -->
+            <div class="resource-section-container" id="buildbetterroutinesResourceSection">
+                <h5 class="sub-folder-heading">Build Better Routines</h5>
+                <div class="nested-resource-grid">
+                    <button type="button" class="nested-resource-card" data-target-content="buildbetterroutinesActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="buildbetterroutinesActualArticles"><h1>📑</h1><p>Articles</p></button>
+                </div>
+                <div class="actual-content-container" id="buildbetterroutinesActualVideos">
+                    <h6 class="inner-content-heading">Build Better Routines Video Collection</h6>
+                    <div class="video-grid">
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/0m2a6-h01T0"><img src="https://img.youtube.com/vi/0m2a6-h01T0/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/EvOWGRLnQQA"><img src="https://img.youtube.com/vi/EvOWGRLnQQA/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/FCXlBoby6js"><img src="https://img.youtube.com/vi/FCXlBoby6js/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/SIWv5d0gkhw"><img src="https://img.youtube.com/vi/SIWv5d0gkhw/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/TbPyvw6EhcY"><img src="https://img.youtube.com/vi/TbPyvw6EhcY/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/_SgqfwUesRU"><img src="https://img.youtube.com/vi/_SgqfwUesRU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/dfv2d1ItzOQ"><img src="https://img.youtube.com/vi/dfv2d1ItzOQ/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/eT7F9W2en-8"><img src="https://img.youtube.com/vi/eT7F9W2en-8/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/hHmw32DML-s"><img src="https://img.youtube.com/vi/hHmw32DML-s/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/list=PLdYzX3jwib3FHPetDtSUqkJ6uQ71G9Mup"><img src="https://img.youtube.com/vi/PLdYzX3jwib3FHPetDtSUqkJ6uQ71G9Mup/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/vAAQu9nXcf4"><img src="https://img.youtube.com/vi/vAAQu9nXcf4/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                    </div>
+                </div>
+                <div class="actual-content-container" id="buildbetterroutinesActualArticles">
+                    <h6 class="inner-content-heading">Build Better Routines Article Collection</h6>
+                    <ul class="article-link-list">
+                        <li><a href="https://blog.dropbox.com/topics/work-culture/do-these-6-morning-routines-to-jumpstart-your-productivity" target="_blank">Do These 6 Morning Routines to Jumpstart Productivity – Dropbox</a></li>
+                        <li><a href="https://hubstaff.com/blog/daily-routines-and-habits-for-productivity/" target="_blank">Daily Routines and Habits of Highly Productive People – Hubstaff</a></li>
+                        <li><a href="https://jamesclear.com/three-steps-habit-change" target="_blank">How to Build Habits That Actually Last – James Clear (Author of Atomic Habits)</a></li>
+                        <li><a href="https://virtualspace.ai/blogs/8-best-daily-routines-that-boost-your-productivity" target="_blank">8 Routines for a Healthy Work-Life Balance – VirtualSpace</a></li>
+                        <li><a href="https://www.apa.org/news/press/releases/stress/2021/sticking-to-new-routine" target="_blank">5 Tips to Make a Routine Stick – American Psychological Association</a></li>
+                        <li><a href="https://www.grammarly.com/blog/work-schedule/" target="_blank">Building a Routine to Improve Focus – Grammarly Blog</a></li>
+                        <li><a href="https://www.headspace.com/articles/building-a-daily-routine" target="_blank">How to Build a Better Daily Routine – Headspace</a></li>
+                        <li><a href="https://www.healthline.com/health/how-to-start-a-routine" target="_blank">How to Maintain a Routine and Stay on Track – Healthline</a></li>
+                        <li><a href="https://www.npr.org/2020/04/01/825177351/routine-mental-health-coronavirus" target="_blank">Why Routines Help During Stressful Times – NPR</a></li>
+                        <li><a href="https://www.verywellmind.com/simple-daily-habits-to-improve-mental-health-5185934" target="_blank">6 Simple Habits That Improve Mental Health – Verywell Mind</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- BURNOUT -->
+            <div class="resource-section-container" id="burnoutResourceSection">
+                <h5 class="sub-folder-heading">Burnout</h5>
+                <div class="nested-resource-grid">
+                    <button type="button" class="nested-resource-card" data-target-content="burnoutActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="burnoutActualArticles"><h1>📑</h1><p>Articles</p></button>
+                </div>
+                <div class="actual-content-container" id="burnoutActualVideos">
+                    <h6 class="inner-content-heading">Burnout Video Collection</h6>
+                    <div class="video-grid">
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/CQ8a1RRDrzg"><img src="https://img.youtube.com/vi/CQ8a1RRDrzg/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/LjpN-HHaAbY"><img src="https://img.youtube.com/vi/LjpN-HHaAbY/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/VMbhM59K5FQ"><img src="https://img.youtube.com/vi/VMbhM59K5FQ/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/XB6Oq5YoHiU"><img src="https://img.youtube.com/vi/XB6Oq5YoHiU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/smjGAcyqDnk"><img src="https://img.youtube.com/vi/smjGAcyqDnk/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                    </div>
+                </div>
+                <div class="actual-content-container" id="burnoutActualArticles">
+                    <h6 class="inner-content-heading">Burnout Article Collection</h6>
+                    <ul class="article-link-list">
+                        <li><a href="https://mhanational.org/resources/burnout-signs-causes-recover/" target="_blank">Understanding Burnout - HelpGuide.org</a></li>
+                        <li><a href="https://www.googleadservices.com/pagead/aclk?sa=L&ai=DChsSEwiitcj38sWOAxV-lEsFHVb0CcMYACICCAEQAhoCc2Y&co=1&ase=2&gclid=CjwKCAjw4efDBhATEiwAaDBpbpxPxbVnqMjsuCLieyAcIYQrvXH3Dla7diQ8XtQM4wyj8ERTBKQvzBoCbCoQAvD_BwE&ei=efl5aNqpKdaC4-EP0dvhEA&ohost=www.google.com&cid=CAESVOD2DEYTE2VOrx7Pp_civ0eP86IKgG1L_livqCCbeVok426hAsMON5fRVcjDNbMLlMfwfZqmDe1GfXPiiQvDW7srjecm3W_rIh0wD8TYpuqbe7iz3Q&category=acrcp_v1_40&sig=AOD64_2nY7a-_50qeqMGZAdQHCSdut91Bw&q&sqi=2&nis=4&adurl&ved=2ahUKEwiaysP38sWOAxVWwTgGHdFtGAIQ0Qx6BAhREAE" target="_blank">Overcoming Burnout: Causes, Effects, and Recovery Strategies</a></li>
+                        <li><a href="https://www.healthline.com/health/tips-for-identifying-and-preventing-burnout" target="_blank">Overcoming Burnout: Causes, Effects, and Recovery Strategies</a></li>
+                        <li><a href="https://www.helpguide.org/mental-health/stress/burnout-prevention-and-recovery" target="_blank">Burnout: Symptoms, causes, and prevention</a></li>
+                        <li><a href="https://www.mayoclinic.org/healthy-lifestyle/adult-health/in-depth/burnout/art-20046642" target="_blank">Burnout: Symptoms and signs - Mayo Clinic</a></li>
+                        <li><a href="https://www.mayoclinic.org/healthy-lifestyle/adult-health/in-depth/burnout/art-20046642" target="_blank">Job burnout: How to spot it and act</a></li>
+                        <li><a href="https://www.medicalnewstoday.com/articles/preventing-burnout" target="_blank">Overcoming Burnout: Causes, Effects, and Recovery Strategies</a></li>
+                        <li><a href="https://www.psychiatry.org/news-room/apa-blogs/preventing-burnout-protecting-your-well-being" target="_blank">Preventing Burnout: A Guide to Protecting Your Well-Being - American Psychiatric Assoc.</a></li>
+                        <li><a href="https://www.sciencedirect.com/topics/medicine-and-dentistry/burnout" target="_blank">Burnout: Symptoms and signs</a></li>
+                        <li><a href="https://www.who.int/news/item/28-05-2019-burn-out-an-occupational-phenomenon-international-classification-of-diseases" target="_blank">Burnout recognized as an occupational phenomenon - WHO</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- CONFIDENCE -->
+            <div class="resource-section-container" id="confidenceResourceSection">
+                <h5 class="sub-folder-heading">Confidence</h5>
+                <div class="nested-resource-grid">
+                    <button type="button" class="nested-resource-card" data-target-content="confidenceActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="confidenceActualArticles"><h1>📑</h1><p>Articles</p></button>
+                </div>
+                <div class="actual-content-container" id="confidenceActualVideos">
+                    <h6 class="inner-content-heading">Confidence Video Collection</h6>
+                    <div class="video-grid">
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/3FlIfFt3Pp4"><img src="https://img.youtube.com/vi/3FlIfFt3Pp4/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/6OzKD1YWHRI"><img src="https://img.youtube.com/vi/6OzKD1YWHRI/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/RcGyVTAoXEU"><img src="https://img.youtube.com/vi/RcGyVTAoXEU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/WuyPuH9ojCE"><img src="https://img.youtube.com/vi/WuyPuH9ojCE/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/ZvsHI_OoCG0"><img src="https://img.youtube.com/vi/ZvsHI_OoCG0/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/hnpQrMqDoqE"><img src="https://img.youtube.com/vi/hnpQrMqDoqE/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/ntfcfJ28eiU"><img src="https://img.youtube.com/vi/ntfcfJ28eiU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/nzVzO0vFEBo"><img src="https://img.youtube.com/vi/nzVzO0vFEBo/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                    </div>
+                </div>
+                <div class="actual-content-container" id="confidenceActualArticles">
+                    <h6 class="inner-content-heading">Confidence Article Collection</h6>
+                    <ul class="article-link-list">
+                        <li><a href="https://my.clevelandclinic.org/health/diseases/11874-stress" target="_blank">Is it Stress or Anxiety? Know the Difference to Cope Better - Cleveland Clinic</a></li>
+                        <li><a href="https://www.apa.org/topics/anxiety" target="_blank">What's the Difference Between Stress, Anxiety, and Fear? - APA</a></li>
+                        <li><a href="https://www.everydayhealth.com/anxiety/guide/" target="_blank">Stress vs. Anxiety: What's the Difference? - WebMD</a></li>
+                        <li><a href="https://www.everydayhealth.com/anxiety/guide/" target="_blank">Understanding the Difference Between Stress and Anxiety - Everyday Health</a></li>
+                        <li><a href="https://www.healthvolunteers.in/post/finding-calm-in-chaos-your-complete-guide-to-managing-anxiety-and-stress" target="_blank">The Difference Between Stress and Anxiety — and How to Manage Both - Health</a></li>
+                        <li><a href="https://www.medicalnewstoday.com/articles/stress-vs-anxiety" target="_blank">Stress vs. Anxiety: What's the Difference? - Verywell Mind</a></li>
+                        <li><a href="https://www.psychologytoday.com/us/blog/addiction-recovery/202105/the-difference-between-stress-and-anxiety-disorder" target="_blank">The Difference Between Stress and Anxiety (and What to Do About Both) - Psychology Today</a></li>
+                        <li><a href="https://www.talkspace.com/blog/worry-vs-anxiety/" target="_blank">Understanding Stress and Anxiety: Key Differences and Management - Talkspace</a></li>
+                        <li><a href="https://www.uofmhealth.org/health-library/zu1121" target="_blank">Stress vs. Anxiety - University of Michigan Health</a></li>
+                        <li><a href="https://www.yalemedicine.org/conditions/stress-disorder" target="_blank">Is it Stress or Anxiety? A Guide to Recognizing the Differences - Yale Medicine</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- CONFLICT RESOLUTION -->
+            <div class="resource-section-container" id="conflictresolutionResourceSection">
+                <h5 class="sub-folder-heading">Conflict Resolution</h5>
+                <div class="nested-resource-grid">
+                    <button type="button" class="nested-resource-card" data-target-content="conflictresolutionActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="conflictresolutionActualArticles"><h1>📑</h1><p>Articles</p></button>
+                </div>
+                <div class="actual-content-container" id="conflictresolutionActualVideos">
+                    <h6 class="inner-content-heading">Conflict Resolution Video Collection</h6>
+                    <div class="video-grid">
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/7s8gmPph0S0"><img src="https://img.youtube.com/vi/7s8gmPph0S0/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/EDMY39JE1sY"><img src="https://img.youtube.com/vi/EDMY39JE1sY/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/KY5TWVz5ZDU"><img src="https://img.youtube.com/vi/KY5TWVz5ZDU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/qDfSYz0PX9g"><img src="https://img.youtube.com/vi/qDfSYz0PX9g/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/rXiMGT-Ie0M"><img src="https://img.youtube.com/vi/rXiMGT-Ie0M/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/sfn4VImLlu8"><img src="https://img.youtube.com/vi/sfn4VImLlu8/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/v3nH0Fnbs94"><img src="https://img.youtube.com/vi/v3nH0Fnbs94/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                    </div>
+                </div>
+                <div class="actual-content-container" id="conflictresolutionActualArticles">
+                    <h6 class="inner-content-heading">Conflict Resolution Article Collection</h6>
+                    <ul class="article-link-list">
+                        <li><a href="https://apnews.com/article/e6f189a5435fff3c6da9b1c4d9a7454b" target="_blank">Managing Workplace Conflict with Humility – AP News</a></li>
+                        <li><a href="https://counseling.dasa.ncsu.edu/support-and-resources/self-help-resources/conflict-resolution/" target="_blank">Conflict Resolution – Self-Help Guide – NC State Counseling Center</a></li>
+                        <li><a href="https://glossary.psywellpath.com/conflict-resolution" target="_blank">Mastering Conflict Resolution – PsyWellPath Glossary</a></li>
+                        <li><a href="https://hps.unt.edu/padm/conflict-resolution.html" target="_blank">Conflict Resolution Techniques – University of North Texas</a></li>
+                        <li><a href="https://online.hbs.edu/blog/post/strategies-for-conflict-resolution-in-the-workplace" target="_blank">5 Strategies for Conflict Resolution in the Workplace – Harvard Business School Online</a></li>
+                        <li><a href="https://www.pon.harvard.edu/daily/conflict-resolution/what-is-conflict-resolution-and-how-does-it-work/" target="_blank">What is Conflict Resolution & How Does It Work? – Harvard Law School (Program on Negotiation)</a></li>
+                        <li><a href="https://www.scientiaeducare.com/study-notes-on-conflict-resolution-in-the-workplace-psychological-approaches/" target="_blank">Psychological Approaches to Conflict Resolution – Scientia Educare</a></li>
+                        <li><a href="https://www.trinet.com/insights/conflict-resolution-in-the-workplace" target="_blank">Conflict Resolution in the Workplace – HR Perspective – TriNet</a></li>
+                        <li><a href="https://www.verywellmind.com/conflict-resolution-skills-for-healthy-relationships-3144953" target="_blank">Conflict Resolution Skills for Healthy Relationships – Verywell Mind</a></li>
+                        <li><a href="https://www.verywellmind.com/how-to-deal-with-difficult-people-7500775" target="_blank">How to Deal with Difficult People – Verywell Mind</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ENGAGEMENTS -->
+            <div class="resource-section-container" id="engagementsResourceSection">
+                <h5 class="sub-folder-heading">Engagements</h5>
+                <div class="nested-resource-grid">
+                    <button type="button" class="nested-resource-card" data-target-content="engagementsActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="engagementsActualArticles"><h1>📑</h1><p>Articles</p></button>
+                </div>
+                <div class="actual-content-container" id="engagementsActualVideos">
+                    <h6 class="inner-content-heading">Engagements Video Collection</h6>
+                    <div class="video-grid">
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/3FlIfFt3Pp4"><img src="https://img.youtube.com/vi/3FlIfFt3Pp4/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/6OzKD1YWHRI"><img src="https://img.youtube.com/vi/6OzKD1YWHRI/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/RcGyVTAoXEU"><img src="https://img.youtube.com/vi/RcGyVTAoXEU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/WuyPuH9ojCE"><img src="https://img.youtube.com/vi/WuyPuH9ojCE/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/ZvsHI_OoCG0"><img src="https://img.youtube.com/vi/ZvsHI_OoCG0/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/hnpQrMqDoqE"><img src="https://img.youtube.com/vi/hnpQrMqDoqE/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/ntfcfJ28eiU"><img src="https://img.youtube.com/vi/ntfcfJ28eiU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/nzVzO0vFEBo"><img src="https://img.youtube.com/vi/nzVzO0vFEBo/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                    </div>
+                </div>
+                <div class="actual-content-container" id="engagementsActualArticles">
+                    <h6 class="inner-content-heading">Engagements Article Collection</h6>
+                    <ul class="article-link-list">
+                        <li><a href="https://my.clevelandclinic.org/health/diseases/11874-stress" target="_blank">Is it Stress or Anxiety? Know the Difference to Cope Better - Cleveland Clinic</a></li>
+                        <li><a href="https://www.apa.org/topics/anxiety" target="_blank">What's the Difference Between Stress, Anxiety, and Fear? - APA</a></li>
+                        <li><a href="https://www.everydayhealth.com/anxiety/guide/" target="_blank">Stress vs. Anxiety: What's the Difference? - WebMD</a></li>
+                        <li><a href="https://www.everydayhealth.com/anxiety/guide/" target="_blank">Understanding the Difference Between Stress and Anxiety - Everyday Health</a></li>
+                        <li><a href="https://www.healthvolunteers.in/post/finding-calm-in-chaos-your-complete-guide-to-managing-anxiety-and-stress" target="_blank">The Difference Between Stress and Anxiety — and How to Manage Both - Health</a></li>
+                        <li><a href="https://www.medicalnewstoday.com/articles/stress-vs-anxiety" target="_blank">Stress vs. Anxiety: What's the Difference? - Verywell Mind</a></li>
+                        <li><a href="https://www.psychologytoday.com/us/blog/addiction-recovery/202105/the-difference-between-stress-and-anxiety-disorder" target="_blank">The Difference Between Stress and Anxiety (and What to Do About Both) - Psychology Today</a></li>
+                        <li><a href="https://www.talkspace.com/blog/worry-vs-anxiety/" target="_blank">Understanding Stress and Anxiety: Key Differences and Management - Talkspace</a></li>
+                        <li><a href="https://www.uofmhealth.org/health-library/zu1121" target="_blank">Stress vs. Anxiety - University of Michigan Health</a></li>
+                        <li><a href="https://www.yalemedicine.org/conditions/stress-disorder" target="_blank">Is it Stress or Anxiety? A Guide to Recognizing the Differences - Yale Medicine</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- FLASHCARD -->
+            <div class="resource-section-container" id="flashcardResourceSection">
+                <h5 class="sub-folder-heading">Flashcard</h5>
+                <div class="nested-resource-grid">
+                    <button type="button" class="nested-resource-card" data-target-content="flashcardActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="flashcardActualArticles"><h1>📑</h1><p>Articles</p></button>
+                </div>
+                <div class="actual-content-container" id="flashcardActualVideos">
+                    <h6 class="inner-content-heading">Flashcard Video Collection</h6>
+                    <div class="video-grid">
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/3FlIfFt3Pp4"><img src="https://img.youtube.com/vi/3FlIfFt3Pp4/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/6OzKD1YWHRI"><img src="https://img.youtube.com/vi/6OzKD1YWHRI/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/RcGyVTAoXEU"><img src="https://img.youtube.com/vi/RcGyVTAoXEU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/WuyPuH9ojCE"><img src="https://img.youtube.com/vi/WuyPuH9ojCE/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/ZvsHI_OoCG0"><img src="https://img.youtube.com/vi/ZvsHI_OoCG0/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/hnpQrMqDoqE"><img src="https://img.youtube.com/vi/hnpQrMqDoqE/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/ntfcfJ28eiU"><img src="https://img.youtube.com/vi/ntfcfJ28eiU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/nzVzO0vFEBo"><img src="https://img.youtube.com/vi/nzVzO0vFEBo/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                    </div>
+                </div>
+                <div class="actual-content-container" id="flashcardActualArticles">
+                    <h6 class="inner-content-heading">Flashcard Article Collection</h6>
+                    <ul class="article-link-list">
+                        <li><a href="https://my.clevelandclinic.org/health/diseases/11874-stress" target="_blank">Is it Stress or Anxiety? Know the Difference to Cope Better - Cleveland Clinic</a></li>
+                        <li><a href="https://www.apa.org/topics/anxiety" target="_blank">What's the Difference Between Stress, Anxiety, and Fear? - APA</a></li>
+                        <li><a href="https://www.everydayhealth.com/anxiety/guide/" target="_blank">Stress vs. Anxiety: What's the Difference? - WebMD</a></li>
+                        <li><a href="https://www.everydayhealth.com/anxiety/guide/" target="_blank">Understanding the Difference Between Stress and Anxiety - Everyday Health</a></li>
+                        <li><a href="https://www.healthvolunteers.in/post/finding-calm-in-chaos-your-complete-guide-to-managing-anxiety-and-stress" target="_blank">The Difference Between Stress and Anxiety — and How to Manage Both - Health</a></li>
+                        <li><a href="https://www.medicalnewstoday.com/articles/stress-vs-anxiety" target="_blank">Stress vs. Anxiety: What's the Difference? - Verywell Mind</a></li>
+                        <li><a href="https://www.psychologytoday.com/us/blog/addiction-recovery/202105/the-difference-between-stress-and-anxiety-disorder" target="_blank">The Difference Between Stress and Anxiety (and What to Do About Both) - Psychology Today</a></li>
+                        <li><a href="https://www.talkspace.com/blog/worry-vs-anxiety/" target="_blank">Understanding Stress and Anxiety: Key Differences and Management - Talkspace</a></li>
+                        <li><a href="https://www.uofmhealth.org/health-library/zu1121" target="_blank">Stress vs. Anxiety - University of Michigan Health</a></li>
+                        <li><a href="https://www.yalemedicine.org/conditions/stress-disorder" target="_blank">Is it Stress or Anxiety? A Guide to Recognizing the Differences - Yale Medicine</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- FUN PERSONALITY TESTS -->
+            <div class="resource-section-container" id="funpersonalitytestsResourceSection">
+                <h5 class="sub-folder-heading">Fun Personality Tests</h5>
+                <div class="nested-resource-grid">
+                    <button type="button" class="nested-resource-card" data-target-content="funpersonalitytestsActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="funpersonalitytestsActualArticles"><h1>📑</h1><p>Articles</p></button>
+                </div>
+                <div class="actual-content-container" id="funpersonalitytestsActualVideos">
+                    <h6 class="inner-content-heading">Fun Personality Tests Video Collection</h6>
+                    <div class="video-grid">
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/3FlIfFt3Pp4"><img src="https://img.youtube.com/vi/3FlIfFt3Pp4/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/6OzKD1YWHRI"><img src="https://img.youtube.com/vi/6OzKD1YWHRI/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/RcGyVTAoXEU"><img src="https://img.youtube.com/vi/RcGyVTAoXEU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/WuyPuH9ojCE"><img src="https://img.youtube.com/vi/WuyPuH9ojCE/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/ZvsHI_OoCG0"><img src="https://img.youtube.com/vi/ZvsHI_OoCG0/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/hnpQrMqDoqE"><img src="https://img.youtube.com/vi/hnpQrMqDoqE/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/ntfcfJ28eiU"><img src="https://img.youtube.com/vi/ntfcfJ28eiU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/nzVzO0vFEBo"><img src="https://img.youtube.com/vi/nzVzO0vFEBo/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                    </div>
+                </div>
+                <div class="actual-content-container" id="funpersonalitytestsActualArticles">
+                    <h6 class="inner-content-heading">Fun Personality Tests Article Collection</h6>
+                    <ul class="article-link-list">
+                        <li><a href="https://my.clevelandclinic.org/health/diseases/11874-stress" target="_blank">Is it Stress or Anxiety? Know the Difference to Cope Better - Cleveland Clinic</a></li>
+                        <li><a href="https://www.apa.org/topics/anxiety" target="_blank">What's the Difference Between Stress, Anxiety, and Fear? - APA</a></li>
+                        <li><a href="https://www.everydayhealth.com/anxiety/guide/" target="_blank">Stress vs. Anxiety: What's the Difference? - WebMD</a></li>
+                        <li><a href="https://www.everydayhealth.com/anxiety/guide/" target="_blank">Understanding the Difference Between Stress and Anxiety - Everyday Health</a></li>
+                        <li><a href="https://www.healthvolunteers.in/post/finding-calm-in-chaos-your-complete-guide-to-managing-anxiety-and-stress" target="_blank">The Difference Between Stress and Anxiety — and How to Manage Both - Health</a></li>
+                        <li><a href="https://www.medicalnewstoday.com/articles/stress-vs-anxiety" target="_blank">Stress vs. Anxiety: What's the Difference? - Verywell Mind</a></li>
+                        <li><a href="https://www.psychologytoday.com/us/blog/addiction-recovery/202105/the-difference-between-stress-and-anxiety-disorder" target="_blank">The Difference Between Stress and Anxiety (and What to Do About Both) - Psychology Today</a></li>
+                        <li><a href="https://www.talkspace.com/blog/worry-vs-anxiety/" target="_blank">Understanding Stress and Anxiety: Key Differences and Management - Talkspace</a></li>
+                        <li><a href="https://www.uofmhealth.org/health-library/zu1121" target="_blank">Stress vs. Anxiety - University of Michigan Health</a></li>
+                        <li><a href="https://www.yalemedicine.org/conditions/stress-disorder" target="_blank">Is it Stress or Anxiety? A Guide to Recognizing the Differences - Yale Medicine</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- GOAL SETTING -->
+            <div class="resource-section-container" id="goalsettingResourceSection">
+                <h5 class="sub-folder-heading">Goal Setting</h5>
+                <div class="nested-resource-grid">
+                    <button type="button" class="nested-resource-card" data-target-content="goalsettingActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="goalsettingActualArticles"><h1>📑</h1><p>Articles</p></button>
+                </div>
+                <div class="actual-content-container" id="goalsettingActualVideos">
+                    <h6 class="inner-content-heading">Goal Setting Video Collection</h6>
+                    <div class="video-grid">
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/0NSBslUWsH8"><img src="https://img.youtube.com/vi/0NSBslUWsH8/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/CVAzhASMSBQ"><img src="https://img.youtube.com/vi/CVAzhASMSBQ/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/L4N1q4RNi9I"><img src="https://img.youtube.com/vi/L4N1q4RNi9I/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/Mt0sq8MVAU4"><img src="https://img.youtube.com/vi/Mt0sq8MVAU4/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/lHZ54TBXbiI"><img src="https://img.youtube.com/vi/lHZ54TBXbiI/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                    </div>
+                </div>
+                <div class="actual-content-container" id="goalsettingActualArticles">
+                    <h6 class="inner-content-heading">Goal Setting Article Collection</h6>
+                    <ul class="article-link-list">
+                        <li><a href="https://engagedly.com/blog/7-reasons-why-goal-setting-is-important/" target="_blank">Importance of Goal Setting for Employees: 7 Key Reasons</a></li>
+                        <li><a href="https://www.betterup.com/blog/professional-goals" target="_blank">Achieving Career Success: How to Set and Reach Professional Goals</a></li>
+                        <li><a href="https://www.careeraddict.com/6-steps-to-effective-goal-setting" target="_blank">How to Set Goals at Work: A Step-by-Step Guide</a></li>
+                        <li><a href="https://www.forbes.com/sites/carolinecastrillon/2021/12/26/how-to-set-career-goals-and-achieve-them/" target="_blank">How to Set Career Goals and Achieve Them</a></li>
+                        <li><a href="https://www.gallup.com/workplace/236441/set-goals-drive-employee-engagement.aspx" target="_blank">How to Set Goals That Drive Employee Engagement</a></li>
+                        <li><a href="https://www.indeed.com/career-advice/career-development/how-to-achieve-goals" target="_blank">How to Achieve Your Workplace Goals in 10 Steps</a></li>
+                        <li><a href="https://www.indeed.com/career-advice/career-development/how-to-set-goal-and-achieve-them" target="_blank">How to Set Goals and Achieve Them</a></li>
+                        <li><a href="https://www.indeed.com/career-advice/career-development/set-goals-at-work" target="_blank">How to Set and Achieve Goals at Work</a></li>
+                        <li><a href="https://www.liveabout.com/how-to-set-and-achieve-goals-1918137" target="_blank">How to Set and Stick to Your Goals: Expert Tips & Structure</a></li>
+                        <li><a href="https://www.managementcenter.org/resources/7-tips-getting-started-goal-setting/" target="_blank">Goal Setting for Teams: 7 SMARTIE Framework Tips</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- GRATITUDE -->
+            <div class="resource-section-container" id="gratitudeResourceSection">
+                <h5 class="sub-folder-heading">Gratitude</h5>
+                <div class="nested-resource-grid">
+                    <button type="button" class="nested-resource-card" data-target-content="gratitudeActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="gratitudeActualArticles"><h1>📑</h1><p>Articles</p></button>
+                </div>
+                <div class="actual-content-container" id="gratitudeActualVideos">
+                    <h6 class="inner-content-heading">Gratitude Video Collection</h6>
+                    <div class="video-grid">
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/2wvAhZUj1AA"><img src="https://img.youtube.com/vi/2wvAhZUj1AA/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/E6WOvEtCfLo"><img src="https://img.youtube.com/vi/E6WOvEtCfLo/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/Gwed919jYhw"><img src="https://img.youtube.com/vi/Gwed919jYhw/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/JMd1CcGZYwU"><img src="https://img.youtube.com/vi/JMd1CcGZYwU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/KVjfFN89qvQ"><img src="https://img.youtube.com/vi/KVjfFN89qvQ/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/NJerBBTy074"><img src="https://img.youtube.com/vi/NJerBBTy074/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/UtBsl3j0YRQ"><img src="https://img.youtube.com/vi/UtBsl3j0YRQ/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/ZaQ1MY8xftE"><img src="https://img.youtube.com/vi/ZaQ1MY8xftE/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/rmcvmwpluW0"><img src="https://img.youtube.com/vi/rmcvmwpluW0/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/sPEYnmV_fHQ"><img src="https://img.youtube.com/vi/sPEYnmV_fHQ/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                    </div>
+                </div>
+                <div class="actual-content-container" id="gratitudeActualArticles">
+                    <h6 class="inner-content-heading">Gratitude Article Collection</h6>
+                    <ul class="article-link-list">
+                        <li><a href="https://greatergood.berkeley.edu/article/item/gratitude_personal_essay" target="_blank">Greater Good – Gratitude Is a Survival Skill (Personal essay, practical)</a></li>
+                        <li><a href="https://greatergood.berkeley.edu/article/item/how_gratitude_can_help_you_through_hard_times" target="_blank">Greater Good – How Gratitude Can Help You Through Hard Times (Resilience guide)</a></li>
+                        <li><a href="https://greatergood.berkeley.edu/article/item/how_gratitude_changes_you_and_your_brain" target="_blank">Greater Good – How Gratitude Changes You and Your Brain (Scientific insight)</a></li>
+                        <li><a href="https://greatergood.berkeley.edu/article/item/is_gratitude_good_for_your_health" target="_blank">Greater Good – Is Gratitude Good for Your Health? (Health impacts review)</a></li>
+                        <li><a href="https://greatergood.berkeley.edu/topic/gratitude" target="_blank">Greater Good Science Center – What Is Gratitude? (Overview & resources)</a></li>
+                        <li><a href="https://www.health.harvard.edu/blog/gratitude-enhances-health-brings-happiness-and-may-even-lengthen-lives-202409113071" target="_blank">Harvard Health – Gratitude enhances health, brings happiness…may lengthen lives</a></li>
+                        <li><a href="https://www.health.harvard.edu/blog/in-praise-of-gratitude-201211215561" target="_blank">Harvard Health – In Praise of Gratitude (Health & emotional well-being)</a></li>
+                        <li><a href="https://www.health.harvard.edu/blog/staying-positive-during-difficult-times-202010012285" target="_blank">Harvard Health – Staying Positive During Difficult Times (Includes gratitude)</a></li>
+                        <li><a href="https://www.health.harvard.edu/healthbeat/giving-thanks-can-make-you-happier" target="_blank">Harvard Health – Giving Thanks Can Make You Happier (Evidence-based article)</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- HABITS -->
+            <div class="resource-section-container" id="habitsResourceSection">
+                <h5 class="sub-folder-heading">Habits</h5>
+                <div class="nested-resource-grid">
+                    <button type="button" class="nested-resource-card" data-target-content="habitsActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="habitsActualArticles"><h1>📑</h1><p>Articles</p></button>
+                </div>
+                <div class="actual-content-container" id="habitsActualVideos">
+                    <h6 class="inner-content-heading">Habits Video Collection</h6>
+                    <div class="video-grid">
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/BwG7-O3GxtE"><img src="https://img.youtube.com/vi/BwG7-O3GxtE/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/DIWznfl7hBE"><img src="https://img.youtube.com/vi/DIWznfl7hBE/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/IA-UZ4Q7zs8"><img src="https://img.youtube.com/vi/IA-UZ4Q7zs8/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/KMcWZi0hiL0"><img src="https://img.youtube.com/vi/KMcWZi0hiL0/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/PZ7lDrwYdZc"><img src="https://img.youtube.com/vi/PZ7lDrwYdZc/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/kqQLQZ7vTcI"><img src="https://img.youtube.com/vi/kqQLQZ7vTcI/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/mN5w13ztN54"><img src="https://img.youtube.com/vi/mN5w13ztN54/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                    </div>
+                </div>
+                <div class="actual-content-container" id="habitsActualArticles">
+                    <h6 class="inner-content-heading">Habits Article Collection</h6>
+                    <ul class="article-link-list">
+                        <li><a href="https://fellow.app/blog/productivity/maximize-efficiency-with-these-work-habits" target="_blank">Maximize Efficiency With These 11 Work Habits (Fellow.app)</a></li>
+                        <li><a href="https://on.forbes.com/64938T3Ex" target="_blank">5 Science-Backed Tips to Start Better Habits (and Break Bad Ones) (Forbes)</a></li>
+                        <li><a href="https://slack.com/blog/productivity/build-productive-work-habits" target="_blank">Keep your day in check: Build productive work habits in 5 steps (Slack blog)</a></li>
+                        <li><a href="https://www.activecampaign.com/blog/habits-of-highly-productive-people" target="_blank">18 Habits of Highly Productive People (ActiveCampaign)</a></li>
+                        <li><a href="https://www.forbes.com/councils/theyec/2022/07/25/nine-work-habits-that-can-improve-your-productivity-and-focus/" target="_blank">Nine Work Habits That Can Improve Your Productivity and Focus</a></li>
+                        <li><a href="https://www.forbes.com/sites/bernardmarr/2023/05/22/15-habits-to-achieve-a-better-work-life-balance-in-todays-fast-paced-world/" target="_blank">15 Habits to Achieve a Better Work-Life Balance (Forbes)</a></li>
+                        <li><a href="https://www.forbes.com/sites/rodgerdeanduncan/2023/08/15/good-habits-they-build-your-value-in-the-workplace/" target="_blank">Good Habits: They Build Your Value in the Workplace</a></li>
+                        <li><a href="https://www.indeed.com/career-advice/career-development/working-habits" target="_blank">30 Working Habits to Incorporate into Your Workplace Routine</a></li>
+                        <li><a href="https://www.minimalistphone.com/blog/5-productive-work-habits-that-can-transform-your-career" target="_blank">5 Productive Work Habits That Can Transform Your Career</a></li>
+                        <li><a href="https://www.paymoapp.com/blog/work-habits/" target="_blank">30 Good Work Habits to Boost Your Career (Slack, Paymo)</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- HOBBIES -->
+            <div class="resource-section-container" id="hobbiesResourceSection">
+                <h5 class="sub-folder-heading">Hobbies</h5>
+                <div class="nested-resource-grid">
+                    <button type="button" class="nested-resource-card" data-target-content="hobbiesActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="hobbiesActualArticles"><h1>📑</h1><p>Articles</p></button>
+                </div>
+                <div class="actual-content-container" id="hobbiesActualVideos">
+                    <h6 class="inner-content-heading">Hobbies Video Collection</h6>
+                    <div class="video-grid">
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/BwG7-O3GxtE"><img src="https://img.youtube.com/vi/BwG7-O3GxtE/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/DIWznfl7hBE"><img src="https://img.youtube.com/vi/DIWznfl7hBE/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/IA-UZ4Q7zs8"><img src="https://img.youtube.com/vi/IA-UZ4Q7zs8/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/KMcWZi0hiL0"><img src="https://img.youtube.com/vi/KMcWZi0hiL0/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/PZ7lDrwYdZc"><img src="https://img.youtube.com/vi/PZ7lDrwYdZc/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/kqQLQZ7vTcI"><img src="https://img.youtube.com/vi/kqQLQZ7vTcI/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/mN5w13ztN54"><img src="https://img.youtube.com/vi/mN5w13ztN54/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                    </div>
+                </div>
+                <div class="actual-content-container" id="hobbiesActualArticles">
+                    <h6 class="inner-content-heading">Hobbies Article Collection</h6>
+                    <ul class="article-link-list">
+                        <li><a href="https://fellow.app/blog/productivity/maximize-efficiency-with-these-work-habits" target="_blank">Maximize Efficiency With These 11 Work Habits (Fellow.app)</a></li>
+                        <li><a href="https://on.forbes.com/64938T3Ex" target="_blank">5 Science-Backed Tips to Start Better Habits (and Break Bad Ones) (Forbes)</a></li>
+                        <li><a href="https://slack.com/blog/productivity/build-productive-work-habits" target="_blank">Keep your day in check: Build productive work habits in 5 steps (Slack blog)</a></li>
+                        <li><a href="https://www.activecampaign.com/blog/habits-of-highly-productive-people" target="_blank">18 Habits of Highly Productive People (ActiveCampaign)</a></li>
+                        <li><a href="https://www.forbes.com/councils/theyec/2022/07/25/nine-work-habits-that-can-improve-your-productivity-and-focus/" target="_blank">Nine Work Habits That Can Improve Your Productivity and Focus</a></li>
+                        <li><a href="https://www.forbes.com/sites/bernardmarr/2023/05/22/15-habits-to-achieve-a-better-work-life-balance-in-todays-fast-paced-world/" target="_blank">15 Habits to Achieve a Better Work-Life Balance (Forbes)</a></li>
+                        <li><a href="https://www.forbes.com/sites/rodgerdeanduncan/2023/08/15/good-habits-they-build-your-value-in-the-workplace/" target="_blank">Good Habits: They Build Your Value in the Workplace</a></li>
+                        <li><a href="https://www.indeed.com/career-advice/career-development/working-habits" target="_blank">30 Working Habits to Incorporate into Your Workplace Routine</a></li>
+                        <li><a href="https://www.minimalistphone.com/blog/5-productive-work-habits-that-can-transform-your-career" target="_blank">5 Productive Work Habits That Can Transform Your Career</a></li>
+                        <li><a href="https://www.paymoapp.com/blog/work-habits/" target="_blank">30 Good Work Habits to Boost Your Career (Slack, Paymo)</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- MANAGING SOCIAL MEDIA -->
+            <div class="resource-section-container" id="managingsocialmediaResourceSection">
+                <h5 class="sub-folder-heading">Managing Social Media</h5>
+                <div class="nested-resource-grid">
+                    <button type="button" class="nested-resource-card" data-target-content="managingsocialmediaActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="managingsocialmediaActualArticles"><h1>📑</h1><p>Articles</p></button>
+                </div>
+                <div class="actual-content-container" id="managingsocialmediaActualVideos">
+                    <h6 class="inner-content-heading">Managing Social Media Video Collection</h6>
+                    <div class="video-grid">
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/3E7hkPZ-HTk"><img src="https://img.youtube.com/vi/3E7hkPZ-HTk/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/66cD5En8Vfg"><img src="https://img.youtube.com/vi/66cD5En8Vfg/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/Czg_9C7gw0o"><img src="https://img.youtube.com/vi/Czg_9C7gw0o/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/JH5bC-SLvb4"><img src="https://img.youtube.com/vi/JH5bC-SLvb4/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/pCM0VWFC2v4"><img src="https://img.youtube.com/vi/pCM0VWFC2v4/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                    </div>
+                </div>
+                <div class="actual-content-container" id="managingsocialmediaActualArticles">
+                    <h6 class="inner-content-heading">Managing Social Media Article Collection</h6>
+                    <ul class="article-link-list">
+                        <li><a href="https://bizcorplaw.com/impact-of-social-media-on-employment/" target="_blank">Social Media’s Impact on Employment Opportunities and Risks</a></li>
+                        <li><a href="https://breakthrough3x.com/resources/social-media-and-mental-health-in-the-workplace-a-comprehensive-guide/" target="_blank">Social Media and Mental Health Effects on Productivity & Turnover Intentions</a></li>
+                        <li><a href="https://cgl-llp.com/insights/social-media-workplace-culture/" target="_blank">The Impact of Social Media on Workplace Culture</a></li>
+                        <li><a href="https://n-ergohealth.com/the-role-of-social-media-in-workplace-stress" target="_blank">Role of Social Media in Workplace Stress: Balancing Online Presence & Professional Pressure</a></li>
+                        <li><a href="https://pubmed.ncbi.nlm.nih.gov/38301407/" target="_blank">Social Comparison via Social Media Links to Envy, Cyber Loafing & Job Performance</a></li>
+                        <li><a href="https://www.corporatewellnessmagazine.com/article/the-impact-of-social-media-on-employee-mental-healt" target="_blank">The Impact of Social Media on Employee Mental Health</a></li>
+                        <li><a href="https://www.hraddict.com/negative-effects-of-social-media-in-the-workplace" target="_blank">The Negative Effects of Social Media in the Workplace</a></li>
+                        <li><a href="https://www.isaca.org/resources/news-and-trends/industry-news/2023/social-media-as-a-growing-threat-to-the-workplace/" target="_blank">Enterprise Social Media: Risks of Privacy, Phishing, & Burnout</a></li>
+                        <li><a href="https://www.ndtv.com/world-news/social-media-affecting-workplace-productivity-says-study-1475746" target="_blank">Social Media Affecting Workplace Productivity: Indians Study</a></li>
+                        <li><a href="https://www.pewresearch.org/internet/2016/06/22/social-media-and-the-workplace/" target="_blank">How Americans Use Social Media at Work – Pew Research (2016)</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- MINDSET -->
+            <div class="resource-section-container" id="mindsetResourceSection">
+                <h5 class="sub-folder-heading">Mindset</h5>
+                <div class="nested-resource-grid">
+                    <button type="button" class="nested-resource-card" data-target-content="mindsetActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="mindsetActualArticles"><h1>📑</h1><p>Articles</p></button>
+                </div>
+                <div class="actual-content-container" id="mindsetActualVideos">
+                    <h6 class="inner-content-heading">Mindset Video Collection</h6>
+                    <div class="video-grid">
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/JfdoJxPjp1k"><img src="https://img.youtube.com/vi/JfdoJxPjp1k/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/TVfmVm9e1QQ"><img src="https://img.youtube.com/vi/TVfmVm9e1QQ/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/ZUG73T9ntNA"><img src="https://img.youtube.com/vi/ZUG73T9ntNA/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/g7u6UwtmGyE"><img src="https://img.youtube.com/vi/g7u6UwtmGyE/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/hiiEeMN7vbQ"><img src="https://img.youtube.com/vi/hiiEeMN7vbQ/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/jYNG5XhrvGQ"><img src="https://img.youtube.com/vi/jYNG5XhrvGQ/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/lwuJ8Kj7hFg"><img src="https://img.youtube.com/vi/lwuJ8Kj7hFg/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                    </div>
+                </div>
+                <div class="actual-content-container" id="mindsetActualArticles">
+                    <h6 class="inner-content-heading">Mindset Article Collection</h6>
+                    <ul class="article-link-list">
+                        <li><a href="https://7mindsets.com/how-to-change-your-mindset/" target="_blank">How to Change Your Mindset – Learn 7 Ways Today</a></li>
+                        <li><a href="https://apnews.com/article/39fb842af1cf9c08fe5c0bfa0ac368ec" target="_blank">Develop Your Mindset and Watch Your Life Improve</a></li>
+                        <li><a href="https://doortraining.com/insights/blog/how-to-build-a-growth-mindset-a-practical-guide-to-unlocking-your-potential/" target="_blank">How to Build a Growth Mindset: A Practical Guide</a></li>
+                        <li><a href="https://drbcoach.com/10-strategies-how-to-change-your-mindset-and-achieve-success/" target="_blank">10 Strategies: How to Change Your Mindset and Achieve Success</a></li>
+                        <li><a href="https://mentorloop.com/blog/growth-mindset-vs-fixed-mindset-what-do-they-really-mean/" target="_blank">Understanding Growth Mindset vs Fixed Mindset</a></li>
+                        <li><a href="https://news.stanford.edu/stories/2021/09/mindsets-clearing-lens-life/" target="_blank">Your Powerful, Changeable Mindset (Growth Mindset Explained)</a></li>
+                        <li><a href="https://timesofindia.indiatimes.com/life-style/soul-search/7-game-changing-secrets-to-rewire-the-subconscious-mind-for-wealth-and-happiness/photostory/122113215.cms" target="_blank">10 Game‑Changing Secrets to Rewire the Subconscious Mind for Wealth & Happiness</a></li>
+                        <li><a href="https://www.mycg.uscg.mil/News/Article/3191988/mastering-your-mindset-could-improve-your-performance-your-life/" target="_blank">Mastering Your Mindset Could Improve Your Performance, Your Life</a></li>
+                        <li><a href="https://www.thesimplicityhabit.com/change-your-mindset/" target="_blank">15 Ways to Change Your Mindset & Improve How You’re Feeling</a></li>
+                        <li><a href="https://www.womenshealthmag.com/life/a62851236/how-to-develop-growth-mindset/" target="_blank">How To Develop A Growth Mindset In 6 Expert‑Approved Steps</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- PROCRASTINATION -->
+            <div class="resource-section-container" id="procrastinationResourceSection">
+                <h5 class="sub-folder-heading">Procrastination</h5>
+                <div class="nested-resource-grid">
+                    <button type="button" class="nested-resource-card" data-target-content="procrastinationActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="procrastinationActualArticles"><h1>📑</h1><p>Articles</p></button>
+                </div>
+                <div class="actual-content-container" id="procrastinationActualVideos">
+                    <h6 class="inner-content-heading">Procrastination Video Collection</h6>
+                    <div class="video-grid">
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/0CmtDk-joT4"><img src="https://img.youtube.com/vi/0CmtDk-joT4/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/4x7MkLDGnu8"><img src="https://img.youtube.com/vi/4x7MkLDGnu8/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/FWTNMzK9vG4"><img src="https://img.youtube.com/vi/FWTNMzK9vG4/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/bmRCGdU3Nkk"><img src="https://img.youtube.com/vi/bmRCGdU3Nkk/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/rRid6GCJtgc"><img src="https://img.youtube.com/vi/rRid6GCJtgc/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                    </div>
+                </div>
+                <div class="actual-content-container" id="procrastinationActualArticles">
+                    <h6 class="inner-content-heading">Procrastination Article Collection</h6>
+                    <ul class="article-link-list">
+                        <li><a href="https://asana.com/resources/tips-stop-procrastinating" target="_blank">7 Tips to Stop Procrastinating at Work – Asana</a></li>
+                        <li><a href="https://in.indeed.com/career-advice/career-development/how-to-stop-procrastinating" target="_blank">How to Stop Procrastinating at Work – Indeed India</a></li>
+                        <li><a href="https://minutedock.com/academy/6-tips-to-stop-procrastinating-and-improve-productivity" target="_blank">6 Tips to Stop Procrastinating & Improve Productivity – MinuteDock</a></li>
+                        <li><a href="https://my.jobstreet.com/career-advice/article/productivity-hacks-beat-procrastination" target="_blank">Set Realistic Targets & Work in Short Bursts – JobStreet</a></li>
+                        <li><a href="https://myport.port.ac.uk/study-skills/organisation-and-time-management/how-to-beat-procrastination" target="_blank">How to Beat Procrastination – University of Portsmouth</a></li>
+                        <li><a href="https://uk.indeed.com/career-advice/career-development/how-to-overcome-procrastination" target="_blank">Set & Keep Clear Deadlines, Scale Down Tasks, Remove Distractions – Indeed (UK)</a></li>
+                        <li><a href="https://www.acc.com/resource-library/ten-steps-overcome-procrastination" target="_blank">Ten Steps to Overcome Procrastination – Association of Corporate Counsel</a></li>
+                        <li><a href="https://www.indeed.com/career-advice/career-development/stop-procrastinating" target="_blank">12 Tips to Stop Procrastinating at Work – Indeed (US)</a></li>
+                        <li><a href="https://www.nextstepliving.com/work-career/career-tips/overcome-procrastination-at-work" target="_blank">10 Strategies to Overcome Procrastination – NextStep Living</a></li>
+                        <li><a href="https://www.randstad.ca/job-seeker/career-resources/workplace-culture/10-ways-to-bust-procrastination-habits-at-work/" target="_blank">10 Ways to Beat Bad Procrastination Habits – Randstad Canada</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- SLEEP HYGIENE -->
+            <div class="resource-section-container" id="sleephygieneResourceSection">
+                <h5 class="sub-folder-heading">Sleep Hygiene</h5>
+                <div class="nested-resource-grid">
+                    <button type="button" class="nested-resource-card" data-target-content="sleephygieneActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="sleephygieneActualArticles"><h1>📑</h1><p>Articles</p></button>
+                </div>
+                <div class="actual-content-container" id="sleephygieneActualVideos">
+                    <h6 class="inner-content-heading">Sleep Hygiene Video Collection</h6>
+                    <div class="video-grid">
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/IzQ2siryQrM"><img src="https://img.youtube.com/vi/IzQ2siryQrM/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/LmwgGkJ64CM"><img src="https://img.youtube.com/vi/LmwgGkJ64CM/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/MEe6dnetwuE"><img src="https://img.youtube.com/vi/MEe6dnetwuE/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/TQ8uc85cEu4"><img src="https://img.youtube.com/vi/TQ8uc85cEu4/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/dqONk48l5vY"><img src="https://img.youtube.com/vi/dqONk48l5vY/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/eTgNgGO_bLs"><img src="https://img.youtube.com/vi/eTgNgGO_bLs/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/fjVA_mmFmxU"><img src="https://img.youtube.com/vi/fjVA_mmFmxU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/fk-_SwHhLLc"><img src="https://img.youtube.com/vi/fk-_SwHhLLc/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                    </div>
+                </div>
+                <div class="actual-content-container" id="sleephygieneActualArticles">
+                    <h6 class="inner-content-heading">Sleep Hygiene Article Collection</h6>
+                    <ul class="article-link-list">
+                        <li><a href="https://greatergood.berkeley.edu/images/uploads/Wood_et_al._2009_.pdf" target="_blank">Gratitude Influences Sleep Through the Mechanism of Pre‑Sleep Cognitions (PDF)</a></li>
+                        <li><a href="https://health.ucdavis.edu/blog/cultivating-health/better-sleep-why-its-important-for-your-health-and-tips-to-sleep-soundly/2023/03" target="_blank">Better Sleep: Why It’s Important and Tips to Sleep Soundly</a></li>
+                        <li><a href="https://newsinhealth.nih.gov/2021/04/good-sleep-good-health" target="_blank">Good Sleep for Good Health</a></li>
+                        <li><a href="https://sleep.biomedcentral.com/articles/10.1186/s41606-025-00125-y" target="_blank">Sleep Hygiene Practices and Sleep Quality Among Medical Students</a></li>
+                        <li><a href="https://sleep.hms.harvard.edu/education-training/public-education/sleep-and-health-education-program/sleep-health-education-41" target="_blank">Why Sleep Matters: Benefits of Sleep</a></li>
+                        <li><a href="https://www.health.harvard.edu/blog/how-much-sleep-do-you-actually-need-202310302986" target="_blank">How Much Sleep Do You Actually Need?</a></li>
+                        <li><a href="https://www.health.harvard.edu/staying-healthy/sleep-hygiene-simple-practices-for-better-rest" target="_blank">Sleep Hygiene: Simple Practices for Better Rest</a></li>
+                        <li><a href="https://www.health.harvard.edu/staying-healthy/what-happens-during-sleep-and-how-to-improve-it" target="_blank">What Happens During Sleep — and How to Improve It</a></li>
+                        <li><a href="https://www.healthline.com/nutrition/17-tips-to-sleep-better" target="_blank">Top 15 Proven Tips to Sleep Better at Night</a></li>
+                        <li><a href="https://www.sleepfoundation.org/sleep-hygiene" target="_blank">Mastering Sleep Hygiene: Your Path to Quality Sleep</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            `;
+        }
+    }
+    
+    // --- 4. BOOKING FORM LOGIC ---
+    function setupBookingForm() {
+        const form = document.getElementById('bookingForm');
+        if (!form) return;
+
+        const nameEl = document.getElementById('bfName');
+        const emailEl = document.getElementById('bfEmail');
+        const dateEl = document.getElementById('bfDate');
+        const timeEl = document.getElementById('bfTime');
+        const typeEl = document.getElementById('bfType');
+        const locationEl = document.getElementById('bfLocation');
+        const confWrap = document.getElementById('bookingConfirmation');
+        const confName = document.getElementById('_confName');
+        const confDate = document.getElementById('_confDate');
+        const confTime = document.getElementById('_confTime');
+        const confType = document.getElementById('_confType');
+        const confLocation = document.getElementById('_confLocation');
+
+        // Limit dates to today or later
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        dateEl.min = today.toISOString().split('T')[0];
+
+        let currentDay = null; // 0=Sun ... 6=Sat
+
+        function formatDatePretty(str) {
+            const d = new Date(str + 'T00:00');
+            const opts = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+            return d.toLocaleDateString(undefined, opts);
+        }
+
+        function setSessionTypeOptions(day) {
+            // Friday => only Online
+            const offlineOpt = Array.from(typeEl.options).find(o => o.value === 'Offline');
+            if (day === 5) {
+                typeEl.value = 'Online';
+                if (offlineOpt) offlineOpt.disabled = true;
+            } else {
+                if (offlineOpt) offlineOpt.disabled = false;
+            }
+        }
+
+        function setLocationOptions(day) {
+            const type = typeEl.value;
+            locationEl.innerHTML = ''; // reset
+            if (type === 'Online') {
+                locationEl.insertAdjacentHTML('beforeend', '<option value="Online">Online</option>');
+                return;
+            }
+            // Offline
+            if (day === 1 || day === 2) { // Mon/Tue
+                locationEl.insertAdjacentHTML('beforeend', '<option value="JP Nagar">JP Nagar</option>');
+            } else if (day === 3 || day === 4) { // Wed/Thu
+                locationEl.insertAdjacentHTML('beforeend', '<option value="Jayanagar">Jayanagar</option>');
+            } else if (day === 5) { // Fri
+                // Force type back to Online on Fridays
+                typeEl.value = 'Online';
+                setLocationOptions(day);
+                return;
+            } else {
+                // Weekends not available
+                locationEl.insertAdjacentHTML('beforeend', '<option value="">Not available</option>');
+            }
+        }
+
+        function updateForDate() {
+            const val = dateEl.value;
+            if (!val) return;
+            const d = new Date(val + 'T00:00');
+            currentDay = d.getDay(); // local
+            if (currentDay === 0 || currentDay === 6) {
+                dateEl.setCustomValidity('Sessions are available Monday to Friday only.');
+            } else {
+                dateEl.setCustomValidity('');
+            }
+            setSessionTypeOptions(currentDay);
+            setLocationOptions(currentDay);
+        }
+
+        // Enforce time bounds 09:00-16:00
+        function validTime() {
+            if (!timeEl.value) return false;
+            const [hh, mm] = timeEl.value.split(':').map(Number);
+            const mins = hh * 60 + mm;
+            return mins >= 9*60 && mins <= 16*60;
+        }
+
+        dateEl.addEventListener('change', updateForDate);
+        typeEl.addEventListener('change', () => setLocationOptions(currentDay));
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            updateForDate();
+
+            if (!dateEl.value || dateEl.validationMessage) {
+                alert(dateEl.validationMessage || 'Please pick a valid weekday.');
+                return;
+            }
+            if (!validTime()) {
+                alert('Please pick a time between 09:00 and 16:00.');
+                return;
+            }
+            if (typeEl.value === 'Offline' && !locationEl.value) {
+                alert('Please pick a valid location for an offline session.');
+                return;
+            }
+
+            // Show confirmation
+            confName.textContent = nameEl.value.trim();
+            confDate.textContent = formatDatePretty(dateEl.value);
+            confTime.textContent = timeEl.value;
+            confType.textContent = typeEl.value;
+            confLocation.textContent = locationEl.value;
+            form.style.display = 'none';
+            confWrap.style.display = 'block';
+            // In a real app, you would POST this to a backend or Apps Script here.
+            console.log('Booking request:', {
+                name: nameEl.value,
+                email: emailEl.value,
+                date: dateEl.value,
+                time: timeEl.value,
+                type: typeEl.value,
+                location: locationEl.value,
+                notes: document.getElementById('bfNotes').value
+            });
+        });
+
+        // Initialize with today
+        dateEl.value = dateEl.min;
+        updateForDate();
+    }
+
+</script>
+
+</body>
+</html>
