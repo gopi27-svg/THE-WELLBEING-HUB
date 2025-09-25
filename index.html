@@ -481,13 +481,15 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // --- 2. ASSESSMENT LOGIC ---
+    // --- 2. ASSESSMENT LOGIC (INTEGRATED WITH GOOGLE SHEETS) ---
     let currentStep = 1;
     const totalQuestionSections = 5;
 
     function setupAssessment() {
-        const startBtn = document.getElementById('startAssessmentBtn');
+        // IMPORTANT: Replace this with your own Web App URL after deploying the Code.gs script
+        const scriptURL = "https://script.google.com/macros/s/AKfycbxQEjAOd_BlfZaUYD9R9_7oOSmq9q6PESa6RtFxoLHMToWYDp98QCee0wbABiBguG-_TQ/exec";
         const formContainer = document.getElementById('wellbeingForm');
+        const startBtn = document.getElementById('startAssessmentBtn');
         const introContainer = document.getElementById('assessment-intro');
         const thankYouContainer = document.getElementById('thankYouMessage');
 
@@ -501,10 +503,88 @@
 
         formContainer.addEventListener('submit', function(e) {
             e.preventDefault();
-            console.log("Form submitted to Google Apps Script (placeholder).");
-            formContainer.style.display = 'none';
-            thankYouContainer.style.display = 'block';
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            
+            // --- DATA COLLECTION ---
+            const data = {
+                formType: 'assessment',
+                userName: formContainer.querySelector('#userName').value,
+                employmentCode: formContainer.querySelector('#employmentCode').value,
+                gender: formContainer.querySelector('#gender').value,
+                emailId: formContainer.querySelector('#emailId').value,
+                location: formContainer.querySelector('#location').value,
+            };
+
+            // Calculate scores and add them to the data object
+            Object.assign(data, calculateAllScores());
+
+            // Capture all individual questions and answers
+            const fullResponses = {};
+            const sections = ["Anxiety", "Stress", "Work-Life Balance", "Overall Happiness", "Emotional Well-Being"];
+            sections.forEach((sectionName, index) => {
+                const stepId = index + 4; // Questions start at step 4
+                fullResponses[sectionName] = [];
+                const questionLabels = document.querySelectorAll(`#step-${stepId} label`);
+                questionLabels.forEach(labelEl => {
+                    const selectEl = labelEl.nextElementSibling;
+                    if (selectEl && selectEl.tagName === 'SELECT') {
+                        const questionText = labelEl.textContent;
+                        const answerValue = selectEl.value;
+                        const answerText = selectEl.options[selectEl.selectedIndex].text;
+                        
+                        fullResponses[sectionName].push({
+                            question: questionText,
+                            answerValue: answerValue,
+                            answerText: answerText
+                        });
+                    }
+                });
+            });
+            data.fullResponses = fullResponses;
+
+            // --- SEND DATA TO GOOGLE SCRIPT ---
+            fetch(scriptURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log('Success!', result);
+                if (result.status === 'success') {
+                    formContainer.style.display = 'none';
+                    thankYouContainer.style.display = 'block';
+                } else {
+                    throw new Error(result.message || 'An unknown error occurred.');
+                }
+            })
+            .catch(error => {
+                console.error('Error!', error.message);
+                alert('An error occurred. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Final';
+            });
         });
+    }
+
+    function calculateAllScores() {
+        const scores = {};
+        const sections = ["Anxiety", "Stress", "Work-Life Balance", "Overall Happiness", "Emotional Well-Being"];
+        sections.forEach((sectionName, index) => {
+            let score = 0;
+            const stepId = index + 4;
+            const selects = document.querySelectorAll(`#step-${stepId} select`);
+            selects.forEach(selectElement => {
+                if (selectElement.value) score += parseInt(selectElement.value);
+            });
+            let key = sectionName.replace(/-(\w)/g, (match, p1) => p1.toUpperCase()).replace(/\s+/g, '');
+            key = key.charAt(0).toLowerCase() + key.slice(1) + 'Score';
+            scores[key] = score;
+        });
+        return scores;
     }
     
     window.nextStep = function() {
@@ -548,14 +628,14 @@
         if (!scoreDiv) return;
         scoreDiv.innerHTML = "";
         
+        const allScores = calculateAllScores();
+
         for (let i = 0; i < sections.length; i++) {
             const sectionName = sections[i];
-            let score = 0;
-            const stepId = i + 4;
-            const selects = document.querySelectorAll(`#step-${stepId} select`);
-            selects.forEach(selectElement => {
-                if (selectElement.value) score += parseInt(selectElement.value);
-            });
+            let key = sectionName.replace(/-(\w)/g, (match, p1) => p1.toUpperCase()).replace(/\s+/g, '');
+            key = key.charAt(0).toLowerCase() + key.slice(1) + 'Score';
+            const score = allScores[key];
+
             let rangeText = "", rangeClass = "";
             if (["Overall Happiness", "Emotional Well-Being"].includes(sectionName)) {
                 if (score <= 13) { rangeText = "Area of Concern ❗"; rangeClass = "score-concern"; }
@@ -574,7 +654,7 @@
         const formContainer = document.getElementById('wellbeingForm');
         formContainer.innerHTML = `
             <div class="step-section" id="step-1">
-                <div class="section"><h2>Basic Details</h2><label for="userName">Full Name</label><input type="text" id="userName" name="Full Name" required><label for="employmentCode">Employment Code</label><input type="text" id="employmentCode" name="Employment Code" required><label for="gender">Gender</label><select id="gender" name="Gender" required><option value="">Select Gender</option><option value="Male">Male</option><option value="Female">Female</option></select><label for="emailId">Email ID</label><input type="email" id="emailId" name="Email ID" required><label for="location">Location</label><select id="location" name="Location" required><option value="">Select Location</option><option value="JP Nagar_Bangalore">JP Nagar_Bangalore</option><option value="Jayanagar_Bangalore">Jayanagar_Bangalore</option><option value="Pune">Pune</option><option value="Mumbai">Mumbai</option></select></div>
+                <div class="section"><h2>Basic Details</h2><label for="userName">Full Name</label><input type="text" id="userName" name="userName" required><label for="employmentCode">Employment Code</label><input type="text" id="employmentCode" name="employmentCode" required><label for="gender">Gender</label><select id="gender" name="gender" required><option value="">Select Gender</option><option value="Male">Male</option><option value="Female">Female</option></select><label for="emailId">Email ID</label><input type="email" id="emailId" name="emailId" required><label for="location">Location</label><select id="location" name="location" required><option value="">Select Location</option><option value="JP Nagar_Bangalore">JP Nagar_Bangalore</option><option value="Jayanagar_Bangalore">Jayanagar_Bangalore</option><option value="Pune">Pune</option><option value="Mumbai">Mumbai</option></select></div>
                 <div class="btn-group"><button class="btn" onclick="nextStep()" type="button">Next</button></div>
             </div>
             <div class="step-section" id="step-2"><div class="section"><h2>IMPORTANT DISCLAIMER</h2><p class="disclaimer-text">This self-assessment is designed to help you reflect on your mental health across various areas such as **anxiety, stress, emotional well-being, and work-life balance.**</p><p class="disclaimer-text">**Your responses are strictly confidential and will not be shared without your explicit consent.**</p></div><div class="btn-group"><button class="btn secondary" onclick="prevStep()" type="button">Back</button><button class="btn" onclick="nextStep()" type="button">Next</button></div></div>
@@ -604,8 +684,9 @@
             div.className = "step-section";
             div.id = `step-${stepId}`;
             let innerHTML = `<div class="section"><h2>Section ${index + 1}: ${sectionData.name}</h2>`;
-            sectionData.questions.forEach(q => {
-                innerHTML += `<label>${q}</label><select name="${q}" required><option value="">Select</option><option value="0">Never</option><option value="1">Rarely</option><option value="2">Sometimes</option><option value="3">Often</option><option value="4">Always</option></select>`;
+            sectionData.questions.forEach((q, qIndex) => {
+                const name = sectionData.name.replace(/\s+/g, '') + qIndex;
+                innerHTML += `<label>${q}</label><select name="${name}" required><option value="">Select</option><option value="0">Never</option><option value="1">Rarely</option><option value="2">Sometimes</option><option value="3">Often</option><option value="4">Always</option></select>`;
             });
             innerHTML += `</div><div class='btn-group'><button class='btn secondary' type='button' onclick='prevStep()'>Back</button><button class='btn' type='button' onclick='nextStep()'>Next</button></div>`;
             div.innerHTML = innerHTML;
@@ -705,11 +786,18 @@
                 <button type="button" class="folder-card" data-target="sleephygieneResourceSection"><h1>🛌</h1><p>Sleep Hygiene</p></button>
             </div>
 
+            <!-- ===== FIX STARTS HERE ===== -->
+            <!-- AFFIRMATION CARDS (Container for Patch script) -->
+            <div class="resource-section-container" id="affirmationcardsResourceSection">
+                <!-- Content for this section is injected dynamically by the patch script -->
+            </div>
+            <!-- ===== FIX ENDS HERE ===== -->
+
             <!-- ANXIETY -->
             <div class="resource-section-container" id="anxietyResourceSection">
                 <h5 class="sub-folder-heading">Anxiety Resources</h5>
                 <div class="nested-resource-grid">
-                    <button type="button" class="nested-resource-card" data-target-content="anxietyActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="anxietyActualVideos"><h1>▶</h1><p>Videos</p></button>
                     <button type="button" class="nested-resource-card" data-target-content="anxietyActualArticles"><h1>📑</h1><p>Articles</p></button>
                 </div>
                 <div class="actual-content-container" id="anxietyActualVideos">
@@ -735,7 +823,7 @@
             <div class="resource-section-container" id="stressResourceSection">
                 <h5 class="sub-folder-heading">Stress Resources</h5>
                 <div class="nested-resource-grid">
-                    <button type="button" class="nested-resource-card" data-target-content="stressActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="stressActualVideos"><h1>▶</h1><p>Videos</p></button>
                     <button type="button" class="nested-resource-card" data-target-content="stressActualArticles"><h1>📑</h1><p>Articles</p></button>
                 </div>
                 <div class="actual-content-container" id="stressActualVideos">
@@ -761,7 +849,7 @@
             <div class="resource-section-container" id="worklifeResourceSection">
                 <h5 class="sub-folder-heading">Work-Life Balance Resources</h5>
                 <div class="nested-resource-grid">
-                    <button type="button" class="nested-resource-card" data-target-content="worklifeActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="worklifeActualVideos"><h1>▶</h1><p>Videos</p></button>
                     <button type="button" class="nested-resource-card" data-target-content="worklifeActualArticles"><h1>📑</h1><p>Articles</p></button>
                 </div>
                 <div class="actual-content-container" id="worklifeActualVideos">
@@ -790,7 +878,7 @@
             <div class="resource-section-container" id="happinessResourceSection">
                 <h5 class="sub-folder-heading">Overall Happiness Resources</h5>
                 <div class="nested-resource-grid">
-                    <button type="button" class="nested-resource-card" data-target-content="happinessActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="happinessActualVideos"><h1>▶</h1><p>Videos</p></button>
                     <button type="button" class="nested-resource-card" data-target-content="happinessActualArticles"><h1>📑</h1><p>Articles</p></button>
                 </div>
                 <div class="actual-content-container" id="happinessActualVideos">
@@ -815,7 +903,7 @@
             <div class="resource-section-container" id="emotionalWellbeingResourceSection">
                 <h5 class="sub-folder-heading">Emotional Well-Being Resources</h5>
                 <div class="nested-resource-grid">
-                    <button type="button" class="nested-resource-card" data-target-content="emotionalWellbeingActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="emotionalWellbeingActualVideos"><h1>▶</h1><p>Videos</p></button>
                     <button type="button" class="nested-resource-card" data-target-content="emotionalWellbeingActualArticles"><h1>📑</h1><p>Articles</p></button>
                 </div>
                 <div class="actual-content-container" id="emotionalWellbeingActualVideos">
@@ -840,7 +928,7 @@
             <div class="resource-section-container" id="usdcWellnessResourceSection">
                 <h5 class="sub-folder-heading">USDC Wellness Resources</h5>
                 <div class="nested-resource-grid">
-                    <button type="button" class="nested-resource-card" data-target-content="usdcWellnessActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="usdcWellnessActualVideos"><h1>▶</h1><p>Videos</p></button>
                 </div>
                 <div class="actual-content-container" id="usdcWellnessActualVideos">
                     <h6 class="inner-content-heading">USDC Wellness Video Collection</h6>
@@ -855,7 +943,7 @@
             <!-- ADAPTABILITY -->
             <div class="resource-section-container" id="adaptabilityResourceSection">
                 <h5 class="sub-folder-heading">Adaptability Resources</h5>
-                <div class="nested-resource-grid"><button type="button" class="nested-resource-card" data-target-content="adaptabilityActualVideos"><h1>▶️</h1><p>Videos</p></button><button type="button" class="nested-resource-card" data-target-content="adaptabilityActualArticles"><h1>📑</h1><p>Articles</p></button></div>
+                <div class="nested-resource-grid"><button type="button" class="nested-resource-card" data-target-content="adaptabilityActualVideos"><h1>▶</h1><p>Videos</p></button><button type="button" class="nested-resource-card" data-target-content="adaptabilityActualArticles"><h1>📑</h1><p>Articles</p></button></div>
                 <div class="actual-content-container" id="adaptabilityActualVideos"><h6 class="inner-content-heading">Adaptability Video Collection</h6><div class="video-grid"><div class="video-placeholder" data-src="https://www.youtube.com/embed/JLUZbKhZ0Dw"><img src="https://img.youtube.com/vi/JLUZbKhZ0Dw/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div><div class="video-placeholder" data-src="https://www.youtube.com/embed/1CNITFBrb4E"><img src="https://img.youtube.com/vi/1CNITFBrb4E/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div><div class="video-placeholder" data-src="https://www.youtube.com/embed/ZsfPua2zAjw"><img src="https://img.youtube.com/vi/ZsfPua2zAjw/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div><div class="video-placeholder" data-src="https://www.youtube.com/embed/empWHZh6Oho"><img src="https://img.youtube.com/vi/empWHZh6Oho/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div><div class="video-placeholder" data-src="https://www.youtube.com/embed/eSX-Kuo4ulw"><img src="https://img.youtube.com/vi/eSX-Kuo4ulw/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div><div class="video-placeholder" data-src="https://www.youtube.com/embed/QijH4UAqGD8"><img src="https://img.youtube.com/vi/QijH4UAqGD8/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div><div class="video-placeholder" data-src="https://www.youtube.com/embed/SbMqoHrjnLM"><img src="https://img.youtube.com/vi/SbMqoHrjnLM/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div></div></div>
                 <div class="actual-content-container" id="adaptabilityActualArticles"><h6 class="inner-content-heading">Adaptability Article Collection</h6><ul class="article-link-list"><li><a href="https://www.verywellmind.com/psychological-flexibility-7509628" target="_blank">Psychological Flexibility: What It Means and Why It Matters</a></li><li><a href="https://nypost.com/2024/06/24/lifestyle/the-number-one-trait-you-need-to-be-successful-in-your-career/" target="_blank">The One Trait Shared by Extremely Successful People—and It’s a ‘Muscle’ You Can Build</a></li><li><a href="https://www.businessinsider.com/job-search-job-security-adaptability-communication-work-skills-2024-2" target="_blank">If You’re Looking for a Job, the Most Important Skill Is Adaptability Amid AI Rise</a></li><li><a href="https://www.robertwalters.com.au/insights/career-advice/blog/mastering-adaptability-in-the-workplace.html" target="_blank">Mastering Adaptability in the Workplace: Your Guide to Thriving in Change</a></li><li><a href="https://www.abroad.io/blog/8-tips-enhance-workplace-adaptability" target="_blank">8 Tips to Enhance Your Adaptability Skills in the Workplace</a></li><li><a href="https://www.betterup.com/blog/how-to-increase-adaptability" target="_blank">How to Improve Adaptability Skills and Embrace Change</a></li><li><a href="https://www.smartsheet.com/content/workplace-adaptability" target="_blank">How to Build Adaptability in the Workplace</a></li><li><a href="https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights/future-proof-solving-the-adaptability-paradox-for-the-long-term/" target="_blank">Future Proof: Solving the ‘Adaptability Paradox’</a></li><li><a href="https://asana.com/resources/workplace-adaptability-skills" target="_blank">6 Tips to Increase Your Adaptability in the Workplace</a></li></ul></div>
             </div>
@@ -864,7 +952,7 @@
             <div class="resource-section-container" id="assertivenessResourceSection">
                 <h5 class="sub-folder-heading">Assertiveness Resources</h5>
                 <div class="nested-resource-grid">
-                    <button type="button" class="nested-resource-card" data-target-content="assertivenessActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="assertivenessActualVideos"><h1>▶</h1><p>Videos</p></button>
                     <button type="button" class="nested-resource-card" data-target-content="assertivenessActualArticles"><h1>📑</h1><p>Articles</p></button>
                 </div>
                 <div class="actual-content-container" id="assertivenessActualVideos">
@@ -900,7 +988,7 @@
             <div class="resource-section-container" id="assertivenesshowtosaynoResourceSection">
                 <h5 class="sub-folder-heading">Assertiveness (How To Say No) Resources</h5>
                 <div class="nested-resource-grid">
-                    <button type="button" class="nested-resource-card" data-target-content="assertivenesshowtosaynoActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="assertivenesshowtosaynoActualVideos"><h1>▶</h1><p>Videos</p></button>
                     <button type="button" class="nested-resource-card" data-target-content="assertivenesshowtosaynoActualArticles"><h1>📑</h1><p>Articles</p></button>
                 </div>
                 <div class="actual-content-container" id="assertivenesshowtosaynoActualVideos">
@@ -938,7 +1026,7 @@
             <div class="resource-section-container" id="booksummariesResourceSection">
                 <h5 class="sub-folder-heading">Book Summaries</h5>
                 <div class="nested-resource-grid">
-                    <button type="button" class="nested-resource-card" data-target-content="booksummariesActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="booksummariesActualVideos"><h1>▶</h1><p>Videos</p></button>
                     <button type="button" class="nested-resource-card" data-target-content="booksummariesActualArticles"><h1>📑</h1><p>Articles</p></button>
                 </div>
                 <div class="actual-content-container" id="booksummariesActualVideos">
@@ -1057,7 +1145,7 @@
             <div class="resource-section-container" id="buildbetterroutinesResourceSection">
                 <h5 class="sub-folder-heading">Build Better Routines</h5>
                 <div class="nested-resource-grid">
-                    <button type="button" class="nested-resource-card" data-target-content="buildbetterroutinesActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="buildbetterroutinesActualVideos"><h1>▶</h1><p>Videos</p></button>
                     <button type="button" class="nested-resource-card" data-target-content="buildbetterroutinesActualArticles"><h1>📑</h1><p>Articles</p></button>
                 </div>
                 <div class="actual-content-container" id="buildbetterroutinesActualVideos">
@@ -1097,7 +1185,7 @@
             <div class="resource-section-container" id="burnoutResourceSection">
                 <h5 class="sub-folder-heading">Burnout</h5>
                 <div class="nested-resource-grid">
-                    <button type="button" class="nested-resource-card" data-target-content="burnoutActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="burnoutActualVideos"><h1>▶</h1><p>Videos</p></button>
                     <button type="button" class="nested-resource-card" data-target-content="burnoutActualArticles"><h1>📑</h1><p>Articles</p></button>
                 </div>
                 <div class="actual-content-container" id="burnoutActualVideos">
@@ -1131,7 +1219,7 @@
             <div class="resource-section-container" id="confidenceResourceSection">
                 <h5 class="sub-folder-heading">Confidence</h5>
                 <div class="nested-resource-grid">
-                    <button type="button" class="nested-resource-card" data-target-content="confidenceActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="confidenceActualVideos"><h1>▶</h1><p>Videos</p></button>
                     <button type="button" class="nested-resource-card" data-target-content="confidenceActualArticles"><h1>📑</h1><p>Articles</p></button>
                 </div>
                 <div class="actual-content-container" id="confidenceActualVideos">
@@ -1168,7 +1256,7 @@
             <div class="resource-section-container" id="conflictresolutionResourceSection">
                 <h5 class="sub-folder-heading">Conflict Resolution</h5>
                 <div class="nested-resource-grid">
-                    <button type="button" class="nested-resource-card" data-target-content="conflictresolutionActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="conflictresolutionActualVideos"><h1>▶</h1><p>Videos</p></button>
                     <button type="button" class="nested-resource-card" data-target-content="conflictresolutionActualArticles"><h1>📑</h1><p>Articles</p></button>
                 </div>
                 <div class="actual-content-container" id="conflictresolutionActualVideos">
@@ -1204,7 +1292,7 @@
             <div class="resource-section-container" id="engagementsResourceSection">
                 <h5 class="sub-folder-heading">Engagements</h5>
                 <div class="nested-resource-grid">
-                    <button type="button" class="nested-resource-card" data-target-content="engagementsActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="engagementsActualVideos"><h1>▶</h1><p>Videos</p></button>
                     <button type="button" class="nested-resource-card" data-target-content="engagementsActualArticles"><h1>📑</h1><p>Articles</p></button>
                 </div>
                 <div class="actual-content-container" id="engagementsActualVideos">
@@ -1241,7 +1329,7 @@
             <div class="resource-section-container" id="flashcardResourceSection">
                 <h5 class="sub-folder-heading">Flashcard</h5>
                 <div class="nested-resource-grid">
-                    <button type="button" class="nested-resource-card" data-target-content="flashcardActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="flashcardActualVideos"><h1>▶</h1><p>Videos</p></button>
                     <button type="button" class="nested-resource-card" data-target-content="flashcardActualArticles"><h1>📑</h1><p>Articles</p></button>
                 </div>
                 <div class="actual-content-container" id="flashcardActualVideos">
@@ -1278,7 +1366,7 @@
             <div class="resource-section-container" id="funpersonalitytestsResourceSection">
                 <h5 class="sub-folder-heading">Fun Personality Tests</h5>
                 <div class="nested-resource-grid">
-                    <button type="button" class="nested-resource-card" data-target-content="funpersonalitytestsActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="funpersonalitytestsActualVideos"><h1>▶</h1><p>Videos</p></button>
                     <button type="button" class="nested-resource-card" data-target-content="funpersonalitytestsActualArticles"><h1>📑</h1><p>Articles</p></button>
                 </div>
                 <div class="actual-content-container" id="funpersonalitytestsActualVideos">
@@ -1315,7 +1403,7 @@
             <div class="resource-section-container" id="goalsettingResourceSection">
                 <h5 class="sub-folder-heading">Goal Setting</h5>
                 <div class="nested-resource-grid">
-                    <button type="button" class="nested-resource-card" data-target-content="goalsettingActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="goalsettingActualVideos"><h1>▶</h1><p>Videos</p></button>
                     <button type="button" class="nested-resource-card" data-target-content="goalsettingActualArticles"><h1>📑</h1><p>Articles</p></button>
                 </div>
                 <div class="actual-content-container" id="goalsettingActualVideos">
@@ -1349,7 +1437,7 @@
             <div class="resource-section-container" id="gratitudeResourceSection">
                 <h5 class="sub-folder-heading">Gratitude</h5>
                 <div class="nested-resource-grid">
-                    <button type="button" class="nested-resource-card" data-target-content="gratitudeActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="gratitudeActualVideos"><h1>▶</h1><p>Videos</p></button>
                     <button type="button" class="nested-resource-card" data-target-content="gratitudeActualArticles"><h1>📑</h1><p>Articles</p></button>
                 </div>
                 <div class="actual-content-container" id="gratitudeActualVideos">
@@ -1387,7 +1475,7 @@
             <div class="resource-section-container" id="habitsResourceSection">
                 <h5 class="sub-folder-heading">Habits</h5>
                 <div class="nested-resource-grid">
-                    <button type="button" class="nested-resource-card" data-target-content="habitsActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="habitsActualVideos"><h1>▶</h1><p>Videos</p></button>
                     <button type="button" class="nested-resource-card" data-target-content="habitsActualArticles"><h1>📑</h1><p>Articles</p></button>
                 </div>
                 <div class="actual-content-container" id="habitsActualVideos">
@@ -1423,7 +1511,7 @@
             <div class="resource-section-container" id="hobbiesResourceSection">
                 <h5 class="sub-folder-heading">Hobbies</h5>
                 <div class="nested-resource-grid">
-                    <button type="button" class="nested-resource-card" data-target-content="hobbiesActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="hobbiesActualVideos"><h1>▶</h1><p>Videos</p></button>
                     <button type="button" class="nested-resource-card" data-target-content="hobbiesActualArticles"><h1>📑</h1><p>Articles</p></button>
                 </div>
                 <div class="actual-content-container" id="hobbiesActualVideos">
@@ -1459,7 +1547,7 @@
             <div class="resource-section-container" id="managingsocialmediaResourceSection">
                 <h5 class="sub-folder-heading">Managing Social Media</h5>
                 <div class="nested-resource-grid">
-                    <button type="button" class="nested-resource-card" data-target-content="managingsocialmediaActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="managingsocialmediaActualVideos"><h1>▶</h1><p>Videos</p></button>
                     <button type="button" class="nested-resource-card" data-target-content="managingsocialmediaActualArticles"><h1>📑</h1><p>Articles</p></button>
                 </div>
                 <div class="actual-content-container" id="managingsocialmediaActualVideos">
@@ -1493,7 +1581,7 @@
             <div class="resource-section-container" id="mindsetResourceSection">
                 <h5 class="sub-folder-heading">Mindset</h5>
                 <div class="nested-resource-grid">
-                    <button type="button" class="nested-resource-card" data-target-content="mindsetActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="mindsetActualVideos"><h1>▶</h1><p>Videos</p></button>
                     <button type="button" class="nested-resource-card" data-target-content="mindsetActualArticles"><h1>📑</h1><p>Articles</p></button>
                 </div>
                 <div class="actual-content-container" id="mindsetActualVideos">
@@ -1529,7 +1617,7 @@
             <div class="resource-section-container" id="procrastinationResourceSection">
                 <h5 class="sub-folder-heading">Procrastination</h5>
                 <div class="nested-resource-grid">
-                    <button type="button" class="nested-resource-card" data-target-content="procrastinationActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="procrastinationActualVideos"><h1>▶</h1><p>Videos</p></button>
                     <button type="button" class="nested-resource-card" data-target-content="procrastinationActualArticles"><h1>📑</h1><p>Articles</p></button>
                 </div>
                 <div class="actual-content-container" id="procrastinationActualVideos">
@@ -1563,7 +1651,7 @@
             <div class="resource-section-container" id="sleephygieneResourceSection">
                 <h5 class="sub-folder-heading">Sleep Hygiene</h5>
                 <div class="nested-resource-grid">
-                    <button type="button" class="nested-resource-card" data-target-content="sleephygieneActualVideos"><h1>▶️</h1><p>Videos</p></button>
+                    <button type="button" class="nested-resource-card" data-target-content="sleephygieneActualVideos"><h1>▶</h1><p>Videos</p></button>
                     <button type="button" class="nested-resource-card" data-target-content="sleephygieneActualArticles"><h1>📑</h1><p>Articles</p></button>
                 </div>
                 <div class="actual-content-container" id="sleephygieneActualVideos">
@@ -1600,8 +1688,10 @@
         }
     }
     
-    // --- 4. BOOKING FORM LOGIC ---
+    // --- 4. BOOKING FORM LOGIC (INTEGRATED WITH GOOGLE SHEETS & AVAILABILITY CHECK) ---
     function setupBookingForm() {
+        // IMPORTANT: Ensure this is the correct URL from your deployed Web App
+        const scriptURL = "https://script.google.com/macros/s/AKfycbxQEjAOd_BlfZaUYD9R9_7oOSmq9q6PESa6RtFxoLHMToWYDp98QCee0wbABiBguG-_TQ/exec";
         const form = document.getElementById('bookingForm');
         if (!form) return;
 
@@ -1620,21 +1710,32 @@
 
         // Limit dates to today or later
         const today = new Date();
-        today.setHours(0,0,0,0);
-        dateEl.min = today.toISOString().split('T')[0];
+        const offset = today.getTimezoneOffset();
+        const localToday = new Date(today.getTime() - (offset*60*1000));
+        dateEl.min = localToday.toISOString().split('T')[0];
 
         let currentDay = null; // 0=Sun ... 6=Sat
 
+        function timeTo12HourFormat(timeString) {
+            if (!timeString) return '';
+            const [hour, minute] = timeString.split(':');
+            const h = parseInt(hour, 10);
+            const m = parseInt(minute, 10);
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            const formattedHour = h % 12 === 0 ? 12 : h % 12;
+            const formattedMinute = m < 10 ? '0' + m : m;
+            return `${formattedHour}:${formattedMinute} ${ampm}`;
+        }
+        
         function formatDatePretty(str) {
-            const d = new Date(str + 'T00:00');
-            const opts = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+            const d = new Date(str + 'T00:00:00');
+            const opts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             return d.toLocaleDateString(undefined, opts);
         }
 
         function setSessionTypeOptions(day) {
-            // Friday => only Online
             const offlineOpt = Array.from(typeEl.options).find(o => o.value === 'Offline');
-            if (day === 5) {
+            if (day === 5) { // Friday
                 typeEl.value = 'Online';
                 if (offlineOpt) offlineOpt.disabled = true;
             } else {
@@ -1649,18 +1750,11 @@
                 locationEl.insertAdjacentHTML('beforeend', '<option value="Online">Online</option>');
                 return;
             }
-            // Offline
             if (day === 1 || day === 2) { // Mon/Tue
                 locationEl.insertAdjacentHTML('beforeend', '<option value="JP Nagar">JP Nagar</option>');
             } else if (day === 3 || day === 4) { // Wed/Thu
                 locationEl.insertAdjacentHTML('beforeend', '<option value="Jayanagar">Jayanagar</option>');
-            } else if (day === 5) { // Fri
-                // Force type back to Online on Fridays
-                typeEl.value = 'Online';
-                setLocationOptions(day);
-                return;
             } else {
-                // Weekends not available
                 locationEl.insertAdjacentHTML('beforeend', '<option value="">Not available</option>');
             }
         }
@@ -1668,8 +1762,8 @@
         function updateForDate() {
             const val = dateEl.value;
             if (!val) return;
-            const d = new Date(val + 'T00:00');
-            currentDay = d.getDay(); // local
+            const d = new Date(val + 'T12:00:00Z'); // Use UTC noon to avoid timezone shift issues
+            currentDay = d.getUTCDay();
             if (currentDay === 0 || currentDay === 6) {
                 dateEl.setCustomValidity('Sessions are available Monday to Friday only.');
             } else {
@@ -1679,7 +1773,6 @@
             setLocationOptions(currentDay);
         }
 
-        // Enforce time bounds 09:00-16:00
         function validTime() {
             if (!timeEl.value) return false;
             const [hh, mm] = timeEl.value.split(':').map(Number);
@@ -1690,33 +1783,54 @@
         dateEl.addEventListener('change', updateForDate);
         typeEl.addEventListener('change', () => setLocationOptions(currentDay));
 
-        form.addEventListener('submit', (e) => {
+        // Use async function to allow 'await' for the availability check
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
             updateForDate();
 
-            if (!dateEl.value || dateEl.validationMessage) {
+            if (!dateEl.checkValidity()) {
                 alert(dateEl.validationMessage || 'Please pick a valid weekday.');
+                dateEl.reportValidity();
                 return;
             }
             if (!validTime()) {
-                alert('Please pick a time between 09:00 and 16:00.');
+                alert('Please pick a time between 09:00 AM and 04:00 PM.');
                 return;
             }
             if (typeEl.value === 'Offline' && !locationEl.value) {
                 alert('Please pick a valid location for an offline session.');
                 return;
             }
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Checking Slot...';
 
-            // Show confirmation
-            confName.textContent = nameEl.value.trim();
-            confDate.textContent = formatDatePretty(dateEl.value);
-            confTime.textContent = timeEl.value;
-            confType.textContent = typeEl.value;
-            confLocation.textContent = locationEl.value;
-            form.style.display = 'none';
-            confWrap.style.display = 'block';
-            // In a real app, you would POST this to a backend or Apps Script here.
-            console.log('Booking request:', {
+            // --- REAL-TIME AVAILABILITY CHECK ---
+            try {
+                const checkUrl = `${scriptURL}?action=checkBooking&date=${dateEl.value}&time=${timeEl.value}`;
+                const availabilityResponse = await fetch(checkUrl);
+                const availabilityData = await availabilityResponse.json();
+
+                if (!availabilityData.isAvailable) {
+                    alert('This time slot is already booked. Please select a different time or date.');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Request Appointment';
+                    return; // Stop the submission
+                }
+            } catch (error) {
+                console.error('Error checking availability:', error);
+                alert('Could not verify the appointment time. Please check your connection and try again.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Request Appointment';
+                return; // Stop the submission
+            }
+            
+            submitBtn.textContent = 'Requesting...';
+
+            // Construct data object for submission
+            const data = {
+                formType: 'booking',
                 name: nameEl.value,
                 email: emailEl.value,
                 date: dateEl.value,
@@ -1724,15 +1838,393 @@
                 type: typeEl.value,
                 location: locationEl.value,
                 notes: document.getElementById('bfNotes').value
+            };
+            
+            // Proceed with the POST request
+            fetch(scriptURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.status === 'success') {
+                    confName.textContent = nameEl.value.trim();
+                    confDate.textContent = formatDatePretty(dateEl.value);
+                    confTime.textContent = timeTo12HourFormat(timeEl.value);
+                    confType.textContent = typeEl.value;
+                    confLocation.textContent = locationEl.value;
+                    form.style.display = 'none';
+                    confWrap.style.display = 'block';
+                } else {
+                    // Handle server-side errors, including the final double-booking check
+                    throw new Error(result.message || 'An unknown error occurred on the server.');
+                }
+            })
+            .catch(error => {
+                console.error('Error!', error.message);
+                alert(`An error occurred: ${error.message}`);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Request Appointment';
             });
         });
 
-        // Initialize with today
-        dateEl.value = dateEl.min;
+        // Initialize with today's date
+        if (!dateEl.value) {
+           dateEl.value = dateEl.min;
+        }
         updateForDate();
     }
 
 </script>
 
+
+<!-- ===== Affirmation Cards — SINGLE FILE OVERLAY (v8, INLINE images) ===== -->
+<style>
+  #aff-gallery-overlay{position:fixed;inset:0;display:none;z-index:9999;background:#f6f7fb}
+  #aff-gallery-overlay.open{display:block}
+  #aff-head{position:sticky;top:0;background:#fff;padding:12px 16px;box-shadow:0 2px 8px rgba(0,0,0,.06);z-index:1;display:flex;gap:12px;align-items:center}
+  #aff-back{margin-right:auto;text-decoration:none;border:1px solid #ddd;background:#fff;padding:6px 10px;border-radius:10px;font-size:13px;cursor:pointer}
+  #aff-title{margin:0;font-size:18px}
+  #aff-wrap{max-width:1200px;margin:18px auto 40px;padding:0 16px}
+  #aff-status{margin:0 0 14px;color:#555}
+  #aff-grid{display:grid;grid-template-columns:1fr;gap:18px;justify-items:center}
+  @media (min-width:700px){#aff-grid{grid-template-columns:repeat(2,1fr)}}
+  @media (min-width:1024px){#aff-grid{grid-template-columns:repeat(3,1fr)}}
+  .aff-card{width:100%;max-width:360px;position:relative}
+  .aff-flip{width:100%;perspective:1200px;position:relative}
+  .aff-flip-inner{width:100%;aspect-ratio:3/4;transition:transform .6s;transform-style:preserve-3d;border-radius:18px;background:#fff;box-shadow:6px 10px 18px rgba(0,0,0,.06),-4px -4px 12px rgba(255,255,255,.9);cursor:pointer}
+  .aff-flip:hover .aff-flip-inner,.aff-flip.is-flipped .aff-flip-inner{transform:rotateY(180deg)}
+  .aff-face{position:absolute;inset:0;backface-visibility:hidden;overflow:hidden;border-radius:18px;display:flex;align-items:center;justify-content:center;background:#fff}
+  .aff-face img{width:100%;height:100%;object-fit:contain;image-rendering:auto}
+  .aff-back{transform:rotateY(180deg)}
+  .aff-label{margin-top:8px;text-align:center;font-weight:600;font-size:.98rem}
+  .aff-menu{position:absolute;top:8px;right:8px;z-index:5}
+  .aff-menubtn{border:none;background:rgba(255,255,255,.9);padding:6px 10px;border-radius:50%;cursor:pointer;font-size:18px;line-height:1;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+  .aff-menubtn:after{content:'⋯'}
+  .aff-menulist{position:absolute;right:0;top:34px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;box-shadow:0 6px 16px rgba(0,0,0,.15);display:none;min-width:220px;overflow:hidden}
+  .aff-menulist.open{display:block}
+  .aff-menuitem{padding:10px 12px;cursor:pointer;font-size:14px}
+  .aff-menuitem:hover{background:#f5f5f5}
+  #aff-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;padding:20px;z-index:10000}
+  #aff-modal.open{display:flex}
+  #aff-mwrap{width:auto;max-width:92vw;max-height:92vh;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.3);display:flex;flex-direction:column}
+  #aff-mbar{display:flex;gap:8px;justify-content:flex-end;padding:10px;border-bottom:1px solid #eee}
+  .aff-mbtn{border:1px solid #ddd;background:#fff;padding:6px 10px;border-radius:10px;cursor:pointer;font-size:13px}
+  #aff-mcontent{flex:1;display:flex;align-items:center;justify-content:center;padding:10px}
+  #aff-mimg{max-width:88vw;max-height:80vh;width:auto;height:auto;object-fit:contain;display:block;background:#fff}
+</style>
+<div id="aff-gallery-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+  <header id="aff-head">
+    <button id="aff-back">← Back to The Wellbeing Hub</button>
+    <h1 id="aff-title">Affirmation Cards — Gallery</h1>
+  </header>
+  <div id="aff-wrap">
+    <div id="aff-status">Loading cards…</div>
+    <div id="aff-grid" aria-live="polite"></div>
+  </div>
+  <div id="aff-modal" aria-hidden="true">
+    <div id="aff-mwrap">
+      <div id="aff-mbar">
+        <button class="aff-mbtn" id="aff-front">Front</button>
+        <button class="aff-mbtn" id="aff-backbtn">Back</button>
+        <button class="aff-mbtn" id="aff-close">Close</button>
+      </div>
+      <div id="aff-mcontent">
+        <img id="aff-mimg" alt="Preview">
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  const WEBAPP = "https://script.google.com/macros/s/AKfycbxc4iTJ4gNDeEE2ss4s2e2bURWiigKdu60U2wgQYHpnYBBCeh8BCjCiXaSUNbv7ol9fRg/exec";
+  const FOLDER = "1oWEwJEAFE9Smnmuj3zacAM-9Bhjfdd4e";
+
+  // Click on existing "Affirmation Cards" tile
+  document.addEventListener('click', (e)=>{
+    const card = e.target.closest('.folder-card');
+    if(card){
+      const label=(card.textContent||'').toLowerCase();
+      if(label.includes('affirmation cards')){
+        e.preventDefault();
+        const o=document.getElementById('aff-gallery-overlay');
+        o.classList.add('open'); o.setAttribute('aria-hidden','false');
+        window.scrollTo({top:0,behavior:'smooth'});
+      }
+    }
+  });
+
+  // Back
+  document.getElementById('aff-back').addEventListener('click', ()=>{
+    const o=document.getElementById('aff-gallery-overlay');
+    o.classList.remove('open'); o.setAttribute('aria-hidden','true');
+    try{ const res=document.getElementById('resources-page')||document.querySelector('[id*=resources]'); if(res){res.scrollIntoView({behavior:'smooth'});}
+      location.hash='resources'; }catch(e){}
+  });
+
+  // Modal controls
+  const modalState={front:'',back:'',side:'front'};
+  function openModal(front,back){ modalState.front=front; modalState.back=back; modalState.side='front';
+    document.getElementById('aff-modal').classList.add('open'); document.getElementById('aff-mimg').src=front; }
+  function showSide(side){ modalState.side=side; document.getElementById('aff-mimg').src=(side==='front')?modalState.front:modalState.back; }
+  document.getElementById('aff-close').addEventListener('click',()=>{ document.getElementById('aff-mimg').src=''; document.getElementById('aff-modal').classList.remove('open'); });
+  document.getElementById('aff-front').addEventListener('click',()=>showSide('front'));
+  document.getElementById('aff-backbtn').addEventListener('click',()=>showSide('back'));
+
+  // Render (INLINE base64)
+  let pairs=[];
+  function render(){
+    const grid=document.getElementById('aff-grid');
+    const status=document.getElementById('aff-status');
+    status.textContent='Loaded '+pairs.length+' cards';
+    grid.innerHTML=pairs.map((p,idx)=>{
+      const label=p.label||('CARD '+String(idx+1).padStart(2,'0'));
+      const f=p.frontData || p.frontUrl || '';
+      const b=p.backData  || p.backUrl  || f;
+      return (
+        '<div class="aff-card" data-idx="'+idx+'">'+
+          '<div class="aff-menu">'+
+            '<button class="aff-menubtn" aria-label="More options"></button>'+
+            '<div class="aff-menulist">'+
+              '<div class="aff-menuitem" data-action="view">View</div>'+
+              '<div class="aff-menuitem" data-action="share">Share via WhatsApp (Front + Back)</div>'+
+            '</div>'+
+          '</div>'+
+          '<div class="aff-flip" title="Click to flip">'+
+            '<div class="aff-flip-inner">'+
+              '<div class="aff-face front"><img src="'+f+'" alt="'+label+' front"></div>'+
+              '<div class="aff-face back aff-back"><img src="'+b+'" alt="'+label+' back"></div>'+
+            '</div>'+
+          '</div>'+
+          '<div class="aff-label">'+label+'</div>'+
+        '</div>'
+      );
+    }).join('');
+  }
+
+  // Menu + flip
+  document.addEventListener('click', function(e){
+    const mb=e.target.closest('.aff-menubtn');
+    if(mb){ const list=mb.parentElement.querySelector('.aff-menulist');
+      document.querySelectorAll('.aff-menulist.open').forEach(m=>m.classList.remove('open'));
+      if(list) list.classList.toggle('open'); e.stopPropagation(); return; }
+    if(!e.target.closest('.aff-menu')) document.querySelectorAll('.aff-menulist.open').forEach(m=>m.classList.remove('open'));
+    const item=e.target.closest('.aff-menuitem');
+    if(item){
+      const card=item.closest('.aff-card'); const idx=Number(card?.dataset?.idx||-1); const pair=pairs[idx]||{};
+      const label=card.querySelector('.aff-label')?.textContent||'CARD';
+      const f=pair.frontData||pair.frontUrl||''; const b=pair.backData||pair.backUrl||f;
+      if(item.dataset.action==='view'){ openModal(f,b); }
+      if(item.dataset.action==='share'){ const text=label+'\nFront: '+f+'\nBack: '+b; window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank','noopener'); }
+      item.parentElement.classList.remove('open');
+    }
+    const fi=e.target.closest('.aff-flip-inner'); if(fi && !e.target.closest('.aff-menu')) fi.parentElement.classList.toggle('is-flipped');
+  });
+
+  // JSONP callback
+  window.affirmationMeta=function(data){
+    if(data && Array.isArray(data.pairs)){ pairs=data.pairs; render(); }
+    else { document.getElementById('aff-status').textContent='No cards found.'; }
+  };
+
+  // Inject JSONP (INLINE mode)
+  (function loadMeta(){
+    const s=document.createElement('script');
+    s.src = WEBAPP + '?folder=' + encodeURIComponent(FOLDER) + '&inline=1&callback=affirmationMeta&nocache=1&ts=' + Date.now();
+    document.body.appendChild(s);
+  })();
+})();
+</script>
+<!-- ===== /Overlay v8 ===== -->
+
+<!-- ======= AFFIRMATION CARDS: NON-DESTRUCTIVE PATCH (infinite scroll + load more) ======= -->
+<script>
+(function () {
+  const GAS_URL = "https://script.google.com/macros/s/AKfycbx-zrCM_Gza-AqFlPXpkJjznU4nTJQM4p099_Hjm2goIoviraIwvJ1y60eCcnR-oxY7IQ/exec";
+  const FOLDER_ID = "1oWEwJEAFE9Smnmuj3zacAM-9Bhjfdd4e";
+
+  const style = document.createElement('style');
+  style.textContent = `
+    #affirmToolbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:16px}
+    #affirmGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px}
+    .ac-card{background:#fff;border-radius:14px;box-shadow:6px 10px 18px rgba(0,0,0,.05),-4px -4px 12px rgba(255,255,255,.9);padding:10px;display:flex;flex-direction:column;align-items:center}
+    .ac-thumb{width:100%;aspect-ratio:2/3;position:relative;overflow:hidden;border-radius:10px;border:1px solid var(--border-light);background:#f4f7f6}
+    .ac-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+    .ac-label{font-weight:700;font-size:.95rem;margin-top:8px;text-align:center;color:var(--text-dark)}
+    .ac-side{font-size:.8rem;color:var(--text-medium);margin-top:2px}
+    .ac-skel{animation:pulse 1.1s ease-in-out infinite;background:linear-gradient(90deg,#eef2f3 25%,#f5f9f7 37%,#eef2f3 63%);background-size:400% 100%}
+    .ac-skel.thumb{width:100%;aspect-ratio:2/3;border-radius:10px}
+    @keyframes pulse{0%{background-position:100% 0}100%{background-position:0 0}}
+  `;
+  document.head.appendChild(style);
+
+  const state = { nextPageToken: "", loading: false, loadedOnce: false, io: null, sentinelIO: null, shown: 0, total: 0 };
+
+  document.addEventListener('click', function (e) {
+    const btn = e.target.closest('.folder-card');
+    if (!btn) return;
+    const targetId = btn.dataset.target;
+    if (targetId === 'affirmationcardsResourceSection') {
+      setTimeout(initAffirmIfNeeded, 0);
+    }
+  });
+
+  function initAffirmIfNeeded() {
+    const sec = document.getElementById('affirmationcardsResourceSection');
+    if (!sec || sec.dataset.acReady === '1') return;
+
+    sec.innerHTML = `
+      <h5 class="sub-folder-heading">Affirmation Cards</h5>
+      <div id="affirmToolbar">
+        <div class="disclaimer-text">Scroll to load more • 24 at a time. <span id="affirmCount" style="margin-left:8px;"></span></div>
+        <button class="btn secondary" id="affirmLoad">Loading…</button>
+      </div>
+      <div id="affirmGrid">
+        ${Array.from({length:12}).map(()=>`<div class="ac-card"><div class="ac-thumb ac-skel thumb"></div><div class="ac-label ac-skel" style="height:14px;width:60%;margin-top:10px;border-radius:10px"></div></div>`).join('')}
+      </div>
+      <div id="affirmSentinel" style="height:1px"></div>
+      <p id="affirmMsg" class="disclaimer-text" style="margin-top:10px;display:none"></p>
+    `;
+    sec.dataset.acReady = '1';
+
+    document.getElementById('affirmLoad').addEventListener('click', loadPage);
+    ensureSentinel();
+    loadPage();
+  }
+
+  function ensureSentinel(){
+    const sent = document.getElementById('affirmSentinel');
+    if (!sent) return;
+    if (!state.sentinelIO){
+      state.sentinelIO = new IntersectionObserver(entries => {
+        entries.forEach(en => {
+          if (en.isIntersecting){
+            if (!state.loading && state.nextPageToken){
+              loadPage();
+            }
+          }
+        });
+      }, {root: null, rootMargin: '600px 0px', threshold: 0.01});
+    }
+    state.sentinelIO.observe(sent);
+  }
+
+  function updateCountBadge(){
+    const badge = document.getElementById('affirmCount');
+    if (!badge) return;
+    if (state.total) {
+      badge.textContent = `(showing ${state.shown} of ${state.total})`;
+    } else {
+      badge.textContent = `(showing ${state.shown})`;
+    }
+  }
+
+  function loadPage() {
+    if (state.loading) return;
+    state.loading = true;
+
+    const loadBtn = document.getElementById('affirmLoad');
+    const grid = document.getElementById('affirmGrid');
+    const msg = document.getElementById('affirmMsg');
+
+    loadBtn.disabled = true;
+    loadBtn.textContent = 'Loading…';
+
+    const qs = new URLSearchParams({
+      action: 'list',
+      folder: FOLDER_ID,
+      pageSize: '24',
+      size: 'w400'
+    });
+    if (state.nextPageToken) qs.set('pageToken', state.nextPageToken);
+
+    fetch(`${GAS_URL}?${qs.toString()}`)
+      .then(r => r.json())
+      .then(data => {
+        const pairs = Array.isArray(data && data.pairs) ? data.pairs : [];
+        if (!state.loadedOnce) { grid.innerHTML = ''; }
+        if (typeof data.total === 'number') state.total = data.total;
+
+        if (!pairs.length && !state.loadedOnce) {
+          msg.style.display = 'block';
+          msg.textContent = 'No cards found. Check Drive API settings or the folder contents/sharing.';
+        }
+
+        renderPairs(pairs, grid);
+        state.shown += pairs.length;
+        updateCountBadge();
+
+        state.nextPageToken = (data && data.nextPageToken) ? data.nextPageToken : '';
+        state.loadedOnce = true;
+
+        if (state.nextPageToken) {
+          ensureSentinel();
+          loadBtn.disabled = false;
+          loadBtn.textContent = 'Load more';
+        } else {
+          loadBtn.disabled = true;
+          loadBtn.textContent = 'ALL LOADED';
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        msg.style.display = 'block';
+        msg.textContent = 'Failed to load cards. Please try again.';
+        loadBtn.disabled = false;
+        loadBtn.textContent = 'Retry';
+      })
+      .finally(() => { state.loading = false; });
+  }
+
+  function renderPairs(pairs, grid) {
+    if (!state.io) {
+      state.io = new IntersectionObserver(entries => {
+        entries.forEach(en => {
+          if (en.isIntersecting) {
+            const img = en.target;
+            if (img.dataset.src) { img.src = img.dataset.src; img.removeAttribute('data-src'); }
+            state.io.unobserve(img);
+          }
+        });
+      }, { root: null, rootMargin: '200px 0px', threshold: 0.01 });
+Use Arrow Up and Arrow Down to select a turn, Enter to jump to it, and Escape to return to the chat.
+ }, { root: null, rootMargin: '200px 0px', threshold: 0.01 });
+    }
+
+    const frag = document.createDocumentFragment();
+    pairs.forEach(p => {
+      const card = document.createElement('div'); card.className = 'ac-card'; card.dataset.side = 'front';
+
+      const wrap = document.createElement('div'); wrap.className = 'ac-thumb';
+      const img = document.createElement('img');
+      img.alt = p.label || 'Affirmation Card';
+      img.loading = 'lazy';
+      img.dataset.src = p.frontThumb || p.backThumb || '';
+      state.io.observe(img);
+      wrap.appendChild(img);
+
+      const label = document.createElement('div'); label.className = 'ac-label'; label.textContent = p.label || '';
+      const side = document.createElement('div'); side.className = 'ac-side'; side.textContent = 'Front';
+
+      const flip = document.createElement('button'); flip.className = 'btn secondary'; flip.type = 'button'; flip.style.marginTop = '10px'; flip.textContent = 'Flip';
+      flip.addEventListener('click', () => {
+        const isFront = card.dataset.side !== 'back';
+        card.dataset.side = isFront ? 'back' : 'front';
+        const nextSrc = isFront ? (p.backThumb || p.frontThumb) : (p.frontThumb || p.backThumb);
+        if (nextSrc && img.src !== nextSrc) img.src = nextSrc;
+        side.textContent = isFront ? 'Back' : 'Front';
+      });
+
+      card.appendChild(wrap);
+      card.appendChild(label);
+      card.appendChild(side);
+      card.appendChild(flip);
+      frag.appendChild(card);
+    });
+    grid.appendChild(frag);
+  }
+})();
+</script>
 </body>
 </html>
