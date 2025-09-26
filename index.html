@@ -764,6 +764,7 @@
                 <button type="button" class="folder-card" data-target="happinessResourceSection"><h1>😊</h1><p>Overall Happiness</p></button>
                 <button type="button" class="folder-card" data-target="emotionalWellbeingResourceSection"><h1>💖</h1><p>Emotional Well-Being</p></button>
                 <button type="button" class="folder-card" data-target="usdcWellnessResourceSection"><h1>🌿</h1><p>USDC Wellness</p></button>
+                <button type="button" class="folder-card" data-target="mindmattersResourceSection"><h1>💬</h1><p>Mind Matters: Real Talk on Mental Health</p></button>
                 <button type="button" class="folder-card" data-target="adaptabilityResourceSection"><h1>🌊</h1><p>Adaptability</p></button>
                 <button type="button" class="folder-card" data-target="affirmationcardsResourceSection"><h1>💌</h1><p>Affirmation Cards</p></button>
                 <button type="button" class="folder-card" data-target="assertivenessResourceSection"><h1>💬</h1><p>Assertiveness</p></button>
@@ -784,8 +785,14 @@
                 <button type="button" class="folder-card" data-target="mindsetResourceSection"><h1>🧠</h1><p>Mindset</p></button>
                 <button type="button" class="folder-card" data-target="procrastinationResourceSection"><h1>🐢</h1><p> Procrastination</p></button>
                 <button type="button" class="folder-card" data-target="sleephygieneResourceSection"><h1>🛌</h1><p>Sleep Hygiene</p></button>
-                <!-- FOLDER_BUTTON_INSERTION_POINT -->
             </div>
+
+            <!-- ===== FIX STARTS HERE ===== -->
+            <!-- AFFIRMATION CARDS (Container for Patch script) -->
+            <div class="resource-section-container" id="affirmationcardsResourceSection">
+                <!-- Content for this section is injected dynamically by the patch script -->
+            </div>
+            <!-- ===== FIX ENDS HERE ===== -->
 
             <!-- ANXIETY -->
             <div class="resource-section-container" id="anxietyResourceSection">
@@ -864,8 +871,7 @@
                 </div>
                 <div class="actual-content-container" id="worklifeActualArticles">
                     <h6 class="inner-content-heading">Work-Life Balance Article Collection</h6>
-                    <ul class="article-link-list"><li><a href="https://www.achievers.com/blog/employee-wellbeing/" target="_blank">Work-life balance and how to improve It</a></li><li><a href="https://www.betterup.com/blog/how-to-have-good-work-life-balance" target="_blank">12 Tips to Achieve a Healthy Work-Life Balance</a></li><li><a href="https://www.jakson.com/blogs/work-life-balance-in-the-21st-centurylets-talk-about-it/" target="_blank">Work-Life Balance in the 21st Century…Let's Talk About It!</a></li><li><a href="https://novoresume.com/career-blog/work-life-balance" target="_blank">6 Guaranteed Ways to Improve Work-Life Balance in 2025</a></li><li><a href="https://www.amyshamblen.com/blog/the-ultimate-guide-for-a-better-work-life-balance" target="_blank">The Ultimate Guide for a Better Work-Life Balance</a></li><li><a href="https://www.vantagecircle.com/en/blog/work-life-balance/" target="_blank">25 Best Ways to Celebrate Work-Life Balance and Its Benefits</a></li><li><a href="https://www.healthdirect.gov.au/work-life-balance" target="_blank">Work-life balance - strategies and where to get help</a></li><li><a href="https://www.virtuallatinos.com/blog/rethinking-work-life-balance-strategies/" target="_blank">Work-Life Balance Strategies That Actually Work</a></li><li><a 
-href="https://medium.com/@rey01v/soaring-to-new-heights-comparing-human-life-to-a-kite-6e5447bf16e" target="_blank">Soaring to New Heights: Comparing Human Life to a Kite</a></li></ul>
+                    <ul class="article-link-list"><li><a href="https://www.achievers.com/blog/employee-wellbeing/" target="_blank">Work-life balance and how to improve It</a></li><li><a href="https://www.betterup.com/blog/how-to-have-good-work-life-balance" target="_blank">12 Tips to Achieve a Healthy Work-Life Balance</a></li><li><a href="https://www.jakson.com/blogs/work-life-balance-in-the-21st-centurylets-talk-about-it/" target="_blank">Work-Life Balance in the 21st Century…Let's Talk About It!</a></li><li><a href="https://novoresume.com/career-blog/work-life-balance" target="_blank">6 Guaranteed Ways to Improve Work-Life Balance in 2025</a></li><li><a href="https://www.amyshamblen.com/blog/the-ultimate-guide-for-a-better-work-life-balance" target="_blank">The Ultimate Guide for a Better Work-Life Balance</a></li><li><a href="https://www.vantagecircle.com/en/blog/work-life-balance/" target="_blank">25 Best Ways to Celebrate Work-Life Balance and Its Benefits</a></li><li><a href="https://www.healthdirect.gov.au/work-life-balance" target="_blank">Work-life balance - strategies and where to get help</a></li><li><a href="https://www.virtuallatinos.com/blog/rethinking-work-life-balance-strategies/" target="_blank">Work-Life Balance Strategies That Actually Work</a></li><li><a href="https://ckfamilyservices.org/blog/benefits-flying-kites" target="_blank">The Benefits of Flying Kites</a></li><li><a href="https://medium.com/@rey01v/soaring-to-new-heights-comparing-human-life-to-a-kite-6e5447bf16e" target="_blank">Soaring to New Heights: Comparing Human Life to a Kite</a></li></ul>
                 </div>
             </div>
 
@@ -928,9 +934,34 @@ href="https://medium.com/@rey01v/soaring-to-new-heights-comparing-human-life-to-
                 <div class="actual-content-container" id="usdcWellnessActualVideos">
                     <h6 class="inner-content-heading">USDC Wellness Video Collection</h6>
                     <div class="video-grid">
-                        <a class="usdc-video-item" href="https://drive.google.com/file/d/1mi4RtoLzroFayecKtkreSygUoE-ev9eM/view" target="_blank"><img alt="Video Thumbnail" src="https://placehold.co/640x480/4CAF50/ffffff?text=Mastering+Your+Mindset" crossorigin="anonymous" referrerpolicy="no-referrer"/><p>Mastering Your Mindset</p></a>
-                        <a class="usdc-video-item" href="https://drive.google.com/file/d/1cCQOJfOLWxYpzpWWf3LiyIIYYeaIiqui/view" target="_blank"><img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=Building+Resilience+Daily" crossorigin="anonymous" referrerpolicy="no-referrer"/><p>Building Resilience Daily</p></a>
-                        <a class="usdc-video-item" href="https://drive.google.com/file/d/18EWTPigJcqOGqw91kj8h1gghy73OmT12/view" target="_blank"><img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=Stress+Reduction+Techniques" crossorigin="anonymous" referrerpolicy="no-referrer"/><p>Stress Reduction Techniques</p></a>
+                        <a class="usdc-video-item" href="https://drive.google.com/file/d/10C2hK-eVmaw_LHgAmnCuGEe5JOC4hIKp/view?usp=sharing" target="_blank"><img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=Dream+Analysis" crossorigin="anonymous" referrerpolicy="no-referrer"/><p>Dream Analysis</p></a>
+                        <a class="usdc-video-item" href="https://drive.google.com/file/d/17ad2mfbCYI8h2U6AwaieqR00UQHOTt8V/view?usp=drive_link" target="_blank"><img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=Dream+of+sitting+in+Exam+hall" crossorigin="anonymous" referrerpolicy="no-referrer"/><p>Dream of sitting in Exam hall</p></a>
+                        <a class="usdc-video-item" href="https://drive.google.com/file/d/1EnIHmVUrdnK6ebjvSY4x094YWbXm5pAl/view?usp=drive_link" target="_blank"><img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=4-3-8+Breathing+Technique" crossorigin="anonymous" referrerpolicy="no-referrer"/><p>4-3-8 Breathing Technique</p></a>
+                        <a class="usdc-video-item" href="https://drive.google.com/file/d/1MJjUsAFJbz8K8Ot_vZ3PT8zND-zGCo93/view?usp=drive_link" target="_blank"><img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=5-4-3-2-1+Technique" crossorigin="anonymous" referrerpolicy="no-referrer"/><p>5-4-3-2-1 Technique</p></a>
+                        <a class="usdc-video-item" href="https://drive.google.com/file/d/1N47US4RumQaF7GOmWRiXTmjETwBXofOb/view?usp=drive_link" target="_blank"><img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=Dream+of+sitting+in+Exam+Hall" crossorigin="anonymous" referrerpolicy="no-referrer"/><p>Dream of sitting in Exam Hall</p></a>
+                        <a class="usdc-video-item" href="https://drive.google.com/file/d/1P8vzubwcD7SqgwerO1G1b53l0XqOv5KJ/view?usp=sharing" target="_blank"><img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=Locus+of+Control" crossorigin="anonymous" referrerpolicy="no-referrer"/><p>Locus of Control</p></a>
+                        <a class="usdc-video-item" href="https://drive.google.com/file/d/1ZM9apB6yP89Ss_13HgF6ml3fOymEVNWP/view?usp=drive_link" target="_blank"><img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=Dream+of+Flying" crossorigin="anonymous" referrerpolicy="no-referrer"/><p>Dream of Flying</p></a>
+                        <a class="usdc-video-item" href="https://drive.google.com/file/d/1dleQ2ofM2WZxIN0sp7XhTT_ib9JrhrCp/view?usp=drive_link" target="_blank"><img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=Anxiety+Wellness" crossorigin="anonymous" referrerpolicy="no-referrer"/><p>Anxiety Wellness</p></a>
+                        <a class="usdc-video-item" href="https://drive.google.com/file/d/1kgXh9iTnXFTNQZJLbAmI4gtQI9WPG4gv/view?usp=drive_link" target="_blank"><img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=Dream+of+Flying.." crossorigin="anonymous" referrerpolicy="no-referrer"/><p>Dream of Flying..</p></a>
+                        <a class="usdc-video-item" href="https://drive.google.com/file/d/1q0TuKQHUp7Aylg7jUFH_e60euxAQrhj2/view?usp=drive_link" target="_blank"><img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=Dream+of+Flying...." crossorigin="anonymous" referrerpolicy="no-referrer"/><p>Dream of Flying....</p></a>
+                        <a class="usdc-video-item" href="https://drive.google.com/file/d/1sPWswBOLMnpAXWQO6g7G7Qoqaukfr-La/view?usp=drive_link" target="_blank"><img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=Alphabet+Game" crossorigin="anonymous" referrerpolicy="no-referrer"/><p>Alphabet Game</p></a>
+                        <a class="usdc-video-item" href="https://drive.google.com/file/d/1t6U8DF911D7BpjoRATB7v43_mZGyfgkx/view?usp=drive_link" target="_blank"><img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=Dream+of+sitting+in+Exam+Hall" crossorigin="anonymous" referrerpolicy="no-referrer"/><p>Dream of sitting in Exam Hall</p></a>
+                        <a class="usdc-video-item" href="https://drive.google.com/file/d/1y4iR9tdLLQhWC9Di5B50PSn66GcZ3LqR/view?usp=drive_link" target="_blank"><img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=Managing+Overthinking" crossorigin="anonymous" referrerpolicy="no-referrer"/><p>Managing Overthinking</p></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MIND MATTERS -->
+            <div class="resource-section-container" id="mindmattersResourceSection">
+                <h5 class="sub-folder-heading">Mind Matters Resources</h5>
+                <div class="nested-resource-grid">
+                    <button type="button" class="nested-resource-card" data-target-content="mindmattersActualVideos"><h1>▶</h1><p>Videos</p></button>
+                </div>
+                <div class="actual-content-container" id="mindmattersActualVideos">
+                    <h6 class="inner-content-heading">Mind Matters Video Collection</h6>
+                    <div class="video-grid">
+                        <a class="usdc-video-item" href="https://drive.google.com/file/d/1ZpNIn7oxZ48P2Aug-SeCtKxymZmyqQbf/view?usp=sharing" target="_blank"><img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=Mind+Matters:+Real+Talk+on+Mental+Health" crossorigin="anonymous" referrerpolicy="no-referrer"/><p>Mind Matters: Real Talk on Mental Health</p></a>
+                        <a class="usdc-video-item" href="https://drive.google.com/file/d/10rT4IS7JehfneVUmFFO-Vi0QYcubak_E/view?usp=sharing" target="_blank"><img alt="Video Thumbnail" src="https://placehold.co/600x400/4CAF50/ffffff?text=Mind+Matters:+Real+Talk+on+Therapy" crossorigin="anonymous" referrerpolicy="no-referrer"/><p>Mind Matters: Real Talk on Therapy</p></a>
                     </div>
                 </div>
             </div>
@@ -939,7 +970,21 @@ href="https://medium.com/@rey01v/soaring-to-new-heights-comparing-human-life-to-
             <div class="resource-section-container" id="adaptabilityResourceSection">
                 <h5 class="sub-folder-heading">Adaptability Resources</h5>
                 <div class="nested-resource-grid"><button type="button" class="nested-resource-card" data-target-content="adaptabilityActualVideos"><h1>▶</h1><p>Videos</p></button><button type="button" class="nested-resource-card" data-target-content="adaptabilityActualArticles"><h1>📑</h1><p>Articles</p></button></div>
-                <div class="actual-content-container" id="adaptabilityActualVideos"><h6 class="inner-content-heading">Adaptability Video Collection</h6><div class="video-grid"><div class="video-placeholder" data-src="https://www.youtube.com/embed/JLUZbKhZ0Dw"><img src="https://img.youtube.com/vi/JLUZbKhZ0Dw/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div><div class="video-placeholder" data-src="https://www.youtube.com/embed/1CNITFBrb4E"><img src="https://img.youtube.com/vi/1CNITFBrb4E/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div><div class="video-placeholder" data-src="https://www.youtube.com/embed/ZsfPua2zAjw"><img src="https://img.youtube.com/vi/ZsfPua2zAjw/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div><div class="video-placeholder" data-src="https://www.youtube.com/embed/empWHZh6Oho"><img src="https://img.youtube.com/vi/empWHZh6Oho/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div><div class="video-placeholder" data-src="https://www.youtube.com/embed/eSX-Kuo4ulw"><img src="https://img.youtube.com/vi/eSX-Kuo4ulw/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div><div class="video-placeholder" data-src="https://www.youtube.com/embed/QijH4UAqGD8"><img src="https://img.youtube.com/vi/QijH4UAqGD8/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div><div class="video-placeholder" data-src="https://www.youtube.com/embed/SbMqoHrjnLM"><img src="https://img.youtube.com/vi/SbMqoHrjnLM/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div></div></div>
+                <div class="actual-content-container" id="adaptabilityActualVideos"><h6 class="inner-content-heading">Adaptability Video Collection</h6><div class="video-grid"><div class="video-placeholder" data-src="https://www.youtube.com/embed/JLUZbKhZ0Dw"><img src="https://img.youtube.com/vi/JLUZbKhZ0Dw/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div><div class="video-placeholder" data-src="https://www.youtube.com/embed/1CNITFBrb4E"><img src="https://img.youtube.com/vi/1CNITFBrb4E/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div><div class="video-placeholder" data-src="https://www.youtube.com/embed/ZsfPua2zAjw"><img src="https://img.youtube.com/vi/ZsfPua2zAjw/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div><div class="video-placeholder" data-src="https://www.youtube.com/embed/empWHZh6Oho"><img src="https://img.youtube.com/vi/empWHZh6Oho/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div><div class="video-placeholder" data-src="https://www.youtube.com/embed/eSX-Kuo4ulw"><img src="https://img.youtube.com/vi/eSX-Kuo4ulw/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div><div class="video-placeholder" data-src="https://www.youtube.com/embed/QijH4UAqGD8"><img src="https://img.youtube.com/vi/QijH4UAqGD8/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div><div class="video-placeholder" data-src="https://www.youtube.com/embed/SbMqoHrjnLM"><img src="https://img.youtube.com/vi/SbMqoHrjnLM/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/IDPCPmBy4Pw"><img src="https://img.youtube.com/vi/IDPCPmBy4Pw/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/JUgpVjRcRSQ"><img src="https://img.youtube.com/vi/JUgpVjRcRSQ/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/A1hUva6Jm0"><img src="https://img.youtube.com/vi/A1hUva6Jm0/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/HCVhp422Bmg"><img src="https://img.youtube.com/vi/HCVhp422Bmg/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/bzITNj3H2uI"><img src="https://img.youtube.com/vi/bzITNj3H2uI/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/kVnCY7eE94w"><img src="https://img.youtube.com/vi/kVnCY7eE94w/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/lXJQzQM46Y"><img src="https://img.youtube.com/vi/lXJQzQM46Y/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/4dIq7HuUtQ"><img src="https://img.youtube.com/vi/4dIq7HuUtQ/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/Wur3RaGNR58"><img src="https://img.youtube.com/vi/Wur3RaGNR58/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/90x9a1eJWQK"><img src="https://img.youtube.com/vi/90x9a1eJWQK/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/jnSKFjIMOlk"><img src="https://img.youtube.com/vi/jnSKFjIMOlk/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/A7ICBkXpRnI"><img src="https://img.youtube.com/vi/A7ICBkXpRnI/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/XSudD0K7MNE"><img src="https://img.youtube.com/vi/XSudD0K7MNE/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                    </div></div>
                 <div class="actual-content-container" id="adaptabilityActualArticles"><h6 class="inner-content-heading">Adaptability Article Collection</h6><ul class="article-link-list"><li><a href="https://www.verywellmind.com/psychological-flexibility-7509628" target="_blank">Psychological Flexibility: What It Means and Why It Matters</a></li><li><a href="https://nypost.com/2024/06/24/lifestyle/the-number-one-trait-you-need-to-be-successful-in-your-career/" target="_blank">The One Trait Shared by Extremely Successful People—and It’s a ‘Muscle’ You Can Build</a></li><li><a href="https://www.businessinsider.com/job-search-job-security-adaptability-communication-work-skills-2024-2" target="_blank">If You’re Looking for a Job, the Most Important Skill Is Adaptability Amid AI Rise</a></li><li><a href="https://www.robertwalters.com.au/insights/career-advice/blog/mastering-adaptability-in-the-workplace.html" target="_blank">Mastering Adaptability in the Workplace: Your Guide to Thriving in Change</a></li><li><a href="https://www.abroad.io/blog/8-tips-enhance-workplace-adaptability" target="_blank">8 Tips to Enhance Your Adaptability Skills in the Workplace</a></li><li><a href="https://www.betterup.com/blog/how-to-increase-adaptability" target="_blank">How to Improve Adaptability Skills and Embrace Change</a></li><li><a href="https://www.smartsheet.com/content/workplace-adaptability" target="_blank">How to Build Adaptability in the Workplace</a></li><li><a href="https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights/future-proof-solving-the-adaptability-paradox-for-the-long-term/" target="_blank">Future Proof: Solving the ‘Adaptability Paradox’</a></li><li><a href="https://asana.com/resources/workplace-adaptability-skills" target="_blank">6 Tips to Increase Your Adaptability in the Workplace</a></li></ul></div>
             </div>
 
@@ -960,6 +1005,18 @@ href="https://medium.com/@rey01v/soaring-to-new-heights-comparing-human-life-to-
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/Nh7DwRKRolg"><img src="https://img.youtube.com/vi/Nh7DwRKRolg/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/KmrokQdsjTA"><img src="https://img.youtube.com/vi/KmrokQdsjTA/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/hAxCpAnV3-E"><img src="https://img.youtube.com/vi/hAxCpAnV3-E/hqdefault.jpg" alt="Video Thumbnail" crossorigin="anonymous" referrerpolicy="no-referrer"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/-AtnrOYfLhc"><img src="https://img.youtube.com/vi/-AtnrOYfLhc/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/lwmfIicD-vc"><img src="https://img.youtube.com/vi/lwmfIicD-vc/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/HuF6cMePYTA"><img src="https://img.youtube.com/vi/HuF6cMePYTA/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/cfYy_tju8Hg"><img src="https://img.youtube.com/vi/cfYy_tju8Hg/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/e9mgYPdHQek"><img src="https://img.youtube.com/vi/e9mgYPdHQek/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/Iahd1IZ8pL0"><img src="https://img.youtube.com/vi/Iahd1IZ8pL0/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/34brPse628I"><img src="https://img.youtube.com/vi/34brPse628I/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/PVVOaihZuHc"><img src="https://img.youtube.com/vi/PVVOaihZuHc/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/O3IolV3Z9MQ"><img src="https://img.youtube.com/vi/O3IolV3Z9MQ/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/Aj-e5Q4vhsk"><img src="https://img.youtube.com/vi/Aj-e5Q4vhsk/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/4DJuD0-RpFQ"><img src="https://img.youtube.com/vi/4DJuD0-RpFQ/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/-v7jP9EZgao"><img src="https://img.youtube.com/vi/-v7jP9EZgao/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                     </div>
                 </div>
                 <div class="actual-content-container" id="assertivenessActualArticles">
@@ -998,6 +1055,17 @@ href="https://medium.com/@rey01v/soaring-to-new-heights-comparing-human-life-to-
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/uGjL1WE9zTw"><img src="https://img.youtube.com/vi/uGjL1WE9zTw/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/vgkiVSlFCXs"><img src="https://img.youtube.com/vi/vgkiVSlFCXs/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/yVGkxd-tmAE"><img src="https://img.youtube.com/vi/yVGkxd-tmAE/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/dR20kMhbigk"><img src="https://img.youtube.com/vi/dR20kMhbigk/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/sWdTsesGvfU"><img src="https://img.youtube.com/vi/sWdTsesGvfU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/G5MDEcHJ25w"><img src="https://img.youtube.com/vi/G5MDEcHJ25w/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/bVbtXS4mriQ"><img src="https://img.youtube.com/vi/bVbtXS4mriQ/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/N_4su81dHlo"><img src="https://img.youtube.com/vi/N_4su81dHlo/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/2-D9qQlg_X4"><img src="https://img.youtube.com/vi/2-D9qQlg_X4/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/1QA-V8MkDw"><img src="https://img.youtube.com/vi/1QA-V8MkDw/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/J0CPnGEtv4k"><img src="https://img.youtube.com/vi/J0CPnGEtv4k/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/1RFINS2GyzE"><img src="https://img.youtube.com/vi/1RFINS2GyzE/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/ujdW11Z3nqE"><img src="https://img.youtube.com/vi/ujdW11Z3nqE/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/wwmAsTuHP8"><img src="https://img.youtube.com/vi/wwmAsTuHP8/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                     </div>
                 </div>
                 <div class="actual-content-container" id="assertivenesshowtosaynoActualArticles">
@@ -1157,6 +1225,14 @@ href="https://medium.com/@rey01v/soaring-to-new-heights-comparing-human-life-to-
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/hHmw32DML-s"><img src="https://img.youtube.com/vi/hHmw32DML-s/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/list=PLdYzX3jwib3FHPetDtSUqkJ6uQ71G9Mup"><img src="https://img.youtube.com/vi/PLdYzX3jwib3FHPetDtSUqkJ6uQ71G9Mup/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/vAAQu9nXcf4"><img src="https://img.youtube.com/vi/vAAQu9nXcf4/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/9fkeCd5F-9o"><img src="https://img.youtube.com/vi/9fkeCd5F-9o/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/9E2SdLD3Kpc"><img src="https://img.youtube.com/vi/9E2SdLD3Kpc/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/XVZNa7dKUoI"><img src="https://img.youtube.com/vi/XVZNa7dKUoI/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/C07DdqbnFns"><img src="https://img.youtube.com/vi/C07DdqbnFns/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/IA-UZ4Q7zs8"><img src="https://img.youtube.com/vi/IA-UZ4Q7zs8/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/OvZUQUPYLEY"><img src="https://img.youtube.com/vi/OvZUQUPYLEY/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/bd1VcBtucZI"><img src="https://img.youtube.com/vi/bd1VcBtucZI/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/nu5I85_YaaK"><img src="https://img.youtube.com/vi/nu5I85_YaaK/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                     </div>
                 </div>
                 <div class="actual-content-container" id="buildbetterroutinesActualArticles">
@@ -1191,6 +1267,11 @@ href="https://medium.com/@rey01v/soaring-to-new-heights-comparing-human-life-to-
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/VMbhM59K5FQ"><img src="https://img.youtube.com/vi/VMbhM59K5FQ/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/XB6Oq5YoHiU"><img src="https://img.youtube.com/vi/XB6Oq5YoHiU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/smjGAcyqDnk"><img src="https://img.youtube.com/vi/smjGAcyqDnk/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/nnwk6u9utfo"><img src="https://img.youtube.com/vi/nnwk6u9utfo/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/BpKF-IcXBMQ"><img src="https://img.youtube.com/vi/BpKF-IcXBMQ/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/AZyIr_A5T_k"><img src="https://img.youtube.com/vi/AZyIr_A5T_k/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/G6bqMASijk8"><img src="https://img.youtube.com/vi/G6bqMASijk8/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/GieO8uI58tM"><img src="https://img.youtube.com/vi/GieO8uI58tM/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                     </div>
                 </div>
                 <div class="actual-content-container" id="burnoutActualArticles">
@@ -1228,6 +1309,25 @@ href="https://medium.com/@rey01v/soaring-to-new-heights-comparing-human-life-to-
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/hnpQrMqDoqE"><img src="https://img.youtube.com/vi/hnpQrMqDoqE/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/ntfcfJ28eiU"><img src="https://img.youtube.com/vi/ntfcfJ28eiU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/nzVzO0vFEBo"><img src="https://img.youtube.com/vi/nzVzO0vFEBo/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/XZPBo1hWxSU"><img src="https://img.youtube.com/vi/XZPBo1hWxSU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/80A9_IblcZY"><img src="https://img.youtube.com/vi/80A9_IblcZY/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/k7ChMqZuA5s"><img src="https://img.youtube.com/vi/k7ChMqZuA5s/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/4RMT_Lr9zRw"><img src="https://img.youtube.com/vi/4RMT_Lr9zRw/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/w-HY6zHqA"><img src="https://img.youtube.com/vi/w-HY6zHqA/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/jvnNgdCsY7o"><img src="https://img.youtube.com/vi/jvnNgdCsY7o/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/jpmzBhs5a5Y"><img src="https://img.youtube.com/vi/jpmzBhs5a5Y/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/Sv-C54qahk8"><img src="https://img.youtube.com/vi/Sv-C54qahk8/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/DFD7yDR0-ko"><img src="https://img.youtube.com/vi/DFD7yDR0-ko/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/HD0mvrLuc2Y"><img src="https://img.youtube.com/vi/HD0mvrLuc2Y/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/l_NYrWqUr40"><img src="https://img.youtube.com/vi/l_NYrWqUr40/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/b5ZEspOAoIU"><img src="https://img.youtube.com/vi/b5ZEspOAoIU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/Foj5dhapHds"><img src="https://img.youtube.com/vi/Foj5dhapHds/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/0Tk82hEHnNY"><img src="https://img.youtube.com/vi/0Tk82hEHnNY/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/lB4abdi5lBg"><img src="https://img.youtube.com/vi/lB4abdi5lBg/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/7LKEtZhskv4"><img src="https://img.youtube.com/vi/7LKEtZhskv4/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/5I4daBlU13k"><img src="https://img.youtube.com/vi/5I4daBlU13k/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/YIgORdM64qk"><img src="https://img.youtube.com/vi/YIgORdM64qk/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/iittl2C3Ly8"><img src="https://img.youtube.com/vi/iittl2C3Ly8/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                     </div>
                 </div>
                 <div class="actual-content-container" id="confidenceActualArticles">
@@ -1264,6 +1364,19 @@ href="https://medium.com/@rey01v/soaring-to-new-heights-comparing-human-life-to-
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/rXiMGT-Ie0M"><img src="https://img.youtube.com/vi/rXiMGT-Ie0M/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/sfn4VImLlu8"><img src="https://img.youtube.com/vi/sfn4VImLlu8/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/v3nH0Fnbs94"><img src="https://img.youtube.com/vi/v3nH0Fnbs94/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/jUf9sY4HvxY"><img src="https://img.youtube.com/vi/jUf9sY4HvxY/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/r4xPwhcnS-s"><img src="https://img.youtube.com/vi/r4xPwhcnS-s/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/ZHXYWmnm7Yg"><img src="https://img.youtube.com/vi/ZHXYWmnm7Yg/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/v4sby5j4dTY"><img src="https://img.youtube.com/vi/v4sby5j4dTY/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/shgbdOVgoPY"><img src="https://img.youtube.com/vi/shgbdOVgoPY/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/GPrsDWYtrPM"><img src="https://img.youtube.com/vi/GPrsDWYtrPM/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/fsJGTRl2ax0"><img src="https://img.youtube.com/vi/fsJGTRl2ax0/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/F6Zg65eK9XU"><img src="https://img.youtube.com/vi/F6Zg65eK9XU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/QLbGHQo4qnA"><img src="https://img.youtube.com/vi/QLbGHQo4qnA/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/3WHN4cNWL2k"><img src="https://img.youtube.com/vi/3WHN4cNWL2k/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/Lg8gQNueIU"><img src="https://img.youtube.com/vi/Lg8gQNueIU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/bDvhqw6VxJ8"><img src="https://img.youtube.com/vi/bDvhqw6VxJ8/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/fshjGv43dR8"><img src="https://img.youtube.com/vi/fshjGv43dR8/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                     </div>
                 </div>
                 <div class="actual-content-container" id="conflictresolutionActualArticles">
@@ -1409,6 +1522,20 @@ href="https://medium.com/@rey01v/soaring-to-new-heights-comparing-human-life-to-
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/L4N1q4RNi9I"><img src="https://img.youtube.com/vi/L4N1q4RNi9I/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/Mt0sq8MVAU4"><img src="https://img.youtube.com/vi/Mt0sq8MVAU4/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/lHZ54TBXbiI"><img src="https://img.youtube.com/vi/lHZ54TBXbiI/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/sDmzLzhgc4"><img src="https://img.youtube.com/vi/sDmzLzhgc4/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/LmFdyn648UY"><img src="https://img.youtube.com/vi/LmFdyn648UY/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/yA53yhiOe04"><img src="https://img.youtube.com/vi/yA53yhiOe04/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/fwcKTYvupJw"><img src="https://img.youtube.com/vi/fwcKTYvupJw/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/tE7EEGPGw0"><img src="https://img.youtube.com/vi/tE7EEGPGw0/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/hj7kw3FDNaw"><img src="https://img.youtube.com/vi/hj7kw3FDNaw/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/vTvdLIjcF8"><img src="https://img.youtube.com/vi/vTvdLIjcF8/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/PCRSVRD2EAK"><img src="https://img.youtube.com/vi/PCRSVRD2EAK/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/Mt0sq8MVAU4"><img src="https://img.youtube.com/vi/Mt0sq8MVAU4/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/ECrqUfxrMU"><img src="https://img.youtube.com/vi/ECrqUfxrMU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/Y4bN9CXfKQM"><img src="https://img.youtube.com/vi/Y4bN9CXfKQM/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/kMQr8LHdlxI"><img src="https://img.youtube.com/vi/kMQr8LHdlxI/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/eEzJsXlVMY"><img src="https://img.youtube.com/vi/eEzJsXlVMY/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/6tdoQbFecjc"><img src="https://img.youtube.com/vi/6tdoQbFecjc/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                     </div>
                 </div>
                 <div class="actual-content-container" id="goalsettingActualArticles">
@@ -1448,6 +1575,16 @@ href="https://medium.com/@rey01v/soaring-to-new-heights-comparing-human-life-to-
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/ZaQ1MY8xftE"><img src="https://img.youtube.com/vi/ZaQ1MY8xftE/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/rmcvmwpluW0"><img src="https://img.youtube.com/vi/rmcvmwpluW0/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/sPEYnmV_fHQ"><img src="https://img.youtube.com/vi/sPEYnmV_fHQ/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/-w1ZuG0Uhb8"><img src="https://img.youtube.com/vi/-w1ZuG0Uhb8/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/7DIMMlih-QTA"><img src="https://img.youtube.com/vi/7DIMMlih-QTA/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/lXYy4W5wAfM"><img src="https://img.youtube.com/vi/lXYy4W5wAfM/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/rmcvmwpluW0"><img src="https://img.youtube.com/vi/rmcvmwpluW0/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/SRJWSFRTU7k"><img src="https://img.youtube.com/vi/SRJWSFRTU7k/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/m-aXe_Id_VA"><img src="https://img.youtube.com/vi/m-aXe_Id_VA/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/imjOk07uMO0"><img src="https://img.youtube.com/vi/imjOk07uMO0/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/-dVPFVWei8"><img src="https://img.youtube.com/vi/-dVPFVWei8/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/tznztJSW9sE"><img src="https://img.youtube.com/vi/tznztJSW9sE/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/4115qFsdWKQ"><img src="https://img.youtube.com/vi/4115qFsdWKQ/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                     </div>
                 </div>
                 <div class="actual-content-container" id="gratitudeActualArticles">
@@ -1483,6 +1620,15 @@ href="https://medium.com/@rey01v/soaring-to-new-heights-comparing-human-life-to-
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/PZ7lDrwYdZc"><img src="https://img.youtube.com/vi/PZ7lDrwYdZc/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/kqQLQZ7vTcI"><img src="https://img.youtube.com/vi/kqQLQZ7vTcI/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/mN5w13ztN54"><img src="https://img.youtube.com/vi/mN5w13ztN54/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/wr6fQKpbRM"><img src="https://img.youtube.com/vi/wr6fQKpbRM/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/vN1aRN5bQQQ"><img src="https://img.youtube.com/vi/vN1aRN5bQQQ/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/75d_29QWELK"><img src="https://img.youtube.com/vi/75d_29QWELK/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/Wcs2PFZ5q6g"><img src="https://img.youtube.com/vi/Wcs2PFZ5q6g/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/iz0yM5YoIow"><img src="https://img.youtube.com/vi/iz0yM5YoIow/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/kfQCNO4-r4w"><img src="https://img.youtube.com/vi/kfQCNO4-r4w/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/MbF5dyU96CE"><img src="https://img.youtube.com/vi/MbF5dyU96CE/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/27qUZLK3iEw"><img src="https://img.youtube.com/vi/27qUZLK3iEw/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/_rUtORsGMc"><img src="https://img.youtube.com/vi/_rUtORsGMc/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                     </div>
                 </div>
                 <div class="actual-content-container" id="habitsActualArticles">
@@ -1553,6 +1699,21 @@ href="https://medium.com/@rey01v/soaring-to-new-heights-comparing-human-life-to-
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/Czg_9C7gw0o"><img src="https://img.youtube.com/vi/Czg_9C7gw0o/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/JH5bC-SLvb4"><img src="https://img.youtube.com/vi/JH5bC-SLvb4/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/pCM0VWFC2v4"><img src="https://img.youtube.com/vi/pCM0VWFC2v4/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/gnEpRDh4Y2A"><img src="https://img.youtube.com/vi/gnEpRDh4Y2A/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/uTZXjvcsMIU"><img src="https://img.youtube.com/vi/uTZXjvcsMIU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/-QDjX_spkwI"><img src="https://img.youtube.com/vi/-QDjX_spkwI/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/g8q-Nq-ajx8"><img src="https://img.youtube.com/vi/g8q-Nq-ajx8/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/ta7CrC7QTgE"><img src="https://img.youtube.com/vi/ta7CrC7QTgE/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/jQKRZdsidqc"><img src="https://img.youtube.com/vi/jQKRZdsidqc/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/QugooaNrNsk"><img src="https://img.youtube.com/vi/QugooaNrNsk/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/5sVwy0tF3Pc"><img src="https://img.youtube.com/vi/5sVwy0tF3Pc/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/C9N6K3nfwao"><img src="https://img.youtube.com/vi/C9N6K3nfwao/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/NBLLCbUMiL"><img src="https://img.youtube.com/vi/NBLLCbUMiL/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/TO_Y_ths_EEw"><img src="https://img.youtube.com/vi/TO_Y_ths_EEw/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/ygkNsiZmqSQ"><img src="https://img.youtube.com/vi/ygkNsiZmqSQ/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/n_9zQoPCig"><img src="https://img.youtube.com/vi/n_9zQoPCig/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/z5Q5S5Z8wh8M"><img src="https://img.youtube.com/vi/z5Q5S5Z8wh8M/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/b4jTc1YrpEgM"><img src="https://img.youtube.com/vi/b4jTc1YrpEgM/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                     </div>
                 </div>
                 <div class="actual-content-container" id="managingsocialmediaActualArticles">
@@ -1589,6 +1750,19 @@ href="https://medium.com/@rey01v/soaring-to-new-heights-comparing-human-life-to-
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/hiiEeMN7vbQ"><img src="https://img.youtube.com/vi/hiiEeMN7vbQ/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/jYNG5XhrvGQ"><img src="https://img.youtube.com/vi/jYNG5XhrvGQ/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/lwuJ8Kj7hFg"><img src="https://img.youtube.com/vi/lwuJ8Kj7hFg/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/CmRia5GfOoA"><img src="https://img.youtube.com/vi/CmRia5GfOoA/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/KUWN_TjTrnU"><img src="https://img.youtube.com/vi/KUWN_TjTrnU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/NWv1VdDeoRY"><img src="https://img.youtube.com/vi/NWv1VdDeoRY/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/eBZ7lUJu9UM"><img src="https://img.youtube.com/vi/eBZ7lUJu9UM/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/L57B4VISWKQ"><img src="https://img.youtube.com/vi/L57B4VISWKQ/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/M1CHPnZIfmU"><img src="https://img.youtube.com/vi/M1CHPnZIfmU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/Fkt1JWZb48g"><img src="https://img.youtube.com/vi/Fkt1JWZb48g/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/CNdQFK68ceK"><img src="https://img.youtube.com/vi/CNdQFK68ceK/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/EIUvqv0v1EE"><img src="https://img.youtube.com/vi/EIUvqv0v1EE/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/jfdoJxPjp1k"><img src="https://img.youtube.com/vi/jfdoJxPjp1k/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/v7XjFTrPl6o"><img src="https://img.youtube.com/vi/v7XjFTrPl6o/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/2vi3Yx4Fy4"><img src="https://img.youtube.com/vi/2vi3Yx4Fy4/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/rf8FX2sI3gU"><img src="https://img.youtube.com/vi/rf8FX2sI3gU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                     </div>
                 </div>
                 <div class="actual-content-container" id="mindsetActualArticles">
@@ -1623,6 +1797,18 @@ href="https://medium.com/@rey01v/soaring-to-new-heights-comparing-human-life-to-
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/FWTNMzK9vG4"><img src="https://img.youtube.com/vi/FWTNMzK9vG4/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/bmRCGdU3Nkk"><img src="https://img.youtube.com/vi/bmRCGdU3Nkk/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/rRid6GCJtgc"><img src="https://img.youtube.com/vi/rRid6GCJtgc/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/48jlHax2nig"><img src="https://img.youtube.com/vi/48jlHax2nig/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/CFU_58AnT0g"><img src="https://img.youtube.com/vi/CFU_58AnT0g/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/pagSd89scoM"><img src="https://img.youtube.com/vi/pagSd89scoM/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/BUY2LeZFZHs"><img src="https://img.youtube.com/vi/BUY2LeZFZHs/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/VkSNUvrUmxA"><img src="https://img.youtube.com/vi/VkSNUvrUmxA/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/4UZOY9r6cj w"><img src="https://img.youtube.com/vi/4UZOY9r6cj w/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/lODVOIZiL4I"><img src="https://img.youtube.com/vi/lODVOIZiL4I/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/r_VbnSc_8il"><img src="https://img.youtube.com/vi/r_VbnSc_8il/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/ctyqx6trumo"><img src="https://img.youtube.com/vi/ctyqx6trumo/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/zx7xafW0hCY"><img src="https://img.youtube.com/vi/zx7xafW0hCY/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/Wncq2BTb_jg"><img src="https://img.youtube.com/vi/Wncq2BTb_jg/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/ROK_7ZdkQeg"><img src="https://img.youtube.com/vi/ROK_7ZdkQeg/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                     </div>
                 </div>
                 <div class="actual-content-container" id="procrastinationActualArticles">
@@ -1657,7 +1843,9 @@ href="https://medium.com/@rey01v/soaring-to-new-heights-comparing-human-life-to-
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/MEe6dnetwuE"><img src="https://img.youtube.com/vi/MEe6dnetwuE/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/TQ8uc85cEu4"><img src="https://img.youtube.com/vi/TQ8uc85cEu4/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/dqONk48l5vY"><img src="https://img.youtube.com/vi/dqONk48l5vY/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
-                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/eTgNgGO_bLs"><img src="https://img.youtube.com/vi/eTgNgGO_bLs/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
+                        <div class="video-placeholder" data-src="https://www.youtube.com/embed/eTgNgGO_bLs"><img src="https://img.youtube.com/
+Use Arrow Up and Arrow Down to select a turn, Enter to jump to it, and Escape to return to the chat.
+src="https://www.youtube.com/embed/eTgNgGO_bLs"><img src="https://img.youtube.com/vi/eTgNgGO_bLs/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/fjVA_mmFmxU"><img src="https://img.youtube.com/vi/fjVA_mmFmxU/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                         <div class="video-placeholder" data-src="https://www.youtube.com/embed/fk-_SwHhLLc"><img src="https://img.youtube.com/vi/fk-_SwHhLLc/hqdefault.jpg" alt="Video Thumbnail"><div class="play-button"></div></div>
                     </div>
@@ -1678,15 +1866,6 @@ href="https://medium.com/@rey01v/soaring-to-new-heights-comparing-human-life-to-
                     </ul>
                 </div>
             </div>
-
-            <!-- MAIN_CONTENT_INSERTION_POINT -->
-            
-            <!-- ===== FIX STARTS HERE ===== -->
-            <!-- AFFIRMATION CARDS (Container for Patch script) -->
-            <div class="resource-section-container" id="affirmationcardsResourceSection">
-                <!-- Content for this section is injected dynamically by the patch script -->
-            </div>
-            <!-- ===== FIX ENDS HERE ===== -->
 
             `;
         }
@@ -1942,7 +2121,7 @@ href="https://medium.com/@rey01v/soaring-to-new-heights-comparing-human-life-to-
 </div>
 <script>
 (function(){
-  const WEBAPP = "https://script.google.com/macros/s/AKfycbx-zrCM_Gza-AqFlPXpkJjznU4nTJQM4p099_Hjm2goIoviraIwvJ1y60eCcnR-oxY7IQ/exec";
+  const WEBAPP = "https://script.google.com/macros/s/AKfycbxc4iTJ4gNDeEE2ss4s2e2bURWiigKdu60U2wgQYHpnYBBCeh8BCjCiXaSUNbv7ol9fRg/exec";
   const FOLDER = "1oWEwJEAFE9Smnmuj3zacAM-9Bhjfdd4e";
 
   // Click on existing "Affirmation Cards" tile
@@ -2192,8 +2371,6 @@ href="https://medium.com/@rey01v/soaring-to-new-heights-comparing-human-life-to-
           }
         });
       }, { root: null, rootMargin: '200px 0px', threshold: 0.01 });
-Use Arrow Up and Arrow Down to select a turn, Enter to jump to it, and Escape to return to the chat.
- }, { root: null, rootMargin: '200px 0px', threshold: 0.01 });
     }
 
     const frag = document.createDocumentFragment();
