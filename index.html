@@ -784,14 +784,8 @@
                 <button type="button" class="folder-card" data-target="mindsetResourceSection"><h1>🧠</h1><p>Mindset</p></button>
                 <button type="button" class="folder-card" data-target="procrastinationResourceSection"><h1>🐢</h1><p> Procrastination</p></button>
                 <button type="button" class="folder-card" data-target="sleephygieneResourceSection"><h1>🛌</h1><p>Sleep Hygiene</p></button>
+                <!-- FOLDER_BUTTON_INSERTION_POINT -->
             </div>
-
-            <!-- ===== FIX STARTS HERE ===== -->
-            <!-- AFFIRMATION CARDS (Container for Patch script) -->
-            <div class="resource-section-container" id="affirmationcardsResourceSection">
-                <!-- Content for this section is injected dynamically by the patch script -->
-            </div>
-            <!-- ===== FIX ENDS HERE ===== -->
 
             <!-- ANXIETY -->
             <div class="resource-section-container" id="anxietyResourceSection">
@@ -870,7 +864,8 @@
                 </div>
                 <div class="actual-content-container" id="worklifeActualArticles">
                     <h6 class="inner-content-heading">Work-Life Balance Article Collection</h6>
-                    <ul class="article-link-list"><li><a href="https://www.achievers.com/blog/employee-wellbeing/" target="_blank">Work-life balance and how to improve It</a></li><li><a href="https://www.betterup.com/blog/how-to-have-good-work-life-balance" target="_blank">12 Tips to Achieve a Healthy Work-Life Balance</a></li><li><a href="https://www.jakson.com/blogs/work-life-balance-in-the-21st-centurylets-talk-about-it/" target="_blank">Work-Life Balance in the 21st Century…Let's Talk About It!</a></li><li><a href="https://novoresume.com/career-blog/work-life-balance" target="_blank">6 Guaranteed Ways to Improve Work-Life Balance in 2025</a></li><li><a href="https://www.amyshamblen.com/blog/the-ultimate-guide-for-a-better-work-life-balance" target="_blank">The Ultimate Guide for a Better Work-Life Balance</a></li><li><a href="https://www.vantagecircle.com/en/blog/work-life-balance/" target="_blank">25 Best Ways to Celebrate Work-Life Balance and Its Benefits</a></li><li><a href="https://www.healthdirect.gov.au/work-life-balance" target="_blank">Work-life balance - strategies and where to get help</a></li><li><a href="https://www.virtuallatinos.com/blog/rethinking-work-life-balance-strategies/" target="_blank">Work-Life Balance Strategies That Actually Work</a></li><li><a href="https://ckfamilyservices.org/blog/benefits-flying-kites" target="_blank">The Benefits of Flying Kites</a></li><li><a href="https://medium.com/@rey01v/soaring-to-new-heights-comparing-human-life-to-a-kite-6e5447bf16e" target="_blank">Soaring to New Heights: Comparing Human Life to a Kite</a></li></ul>
+                    <ul class="article-link-list"><li><a href="https://www.achievers.com/blog/employee-wellbeing/" target="_blank">Work-life balance and how to improve It</a></li><li><a href="https://www.betterup.com/blog/how-to-have-good-work-life-balance" target="_blank">12 Tips to Achieve a Healthy Work-Life Balance</a></li><li><a href="https://www.jakson.com/blogs/work-life-balance-in-the-21st-centurylets-talk-about-it/" target="_blank">Work-Life Balance in the 21st Century…Let's Talk About It!</a></li><li><a href="https://novoresume.com/career-blog/work-life-balance" target="_blank">6 Guaranteed Ways to Improve Work-Life Balance in 2025</a></li><li><a href="https://www.amyshamblen.com/blog/the-ultimate-guide-for-a-better-work-life-balance" target="_blank">The Ultimate Guide for a Better Work-Life Balance</a></li><li><a href="https://www.vantagecircle.com/en/blog/work-life-balance/" target="_blank">25 Best Ways to Celebrate Work-Life Balance and Its Benefits</a></li><li><a href="https://www.healthdirect.gov.au/work-life-balance" target="_blank">Work-life balance - strategies and where to get help</a></li><li><a href="https://www.virtuallatinos.com/blog/rethinking-work-life-balance-strategies/" target="_blank">Work-Life Balance Strategies That Actually Work</a></li><li><a 
+href="https://medium.com/@rey01v/soaring-to-new-heights-comparing-human-life-to-a-kite-6e5447bf16e" target="_blank">Soaring to New Heights: Comparing Human Life to a Kite</a></li></ul>
                 </div>
             </div>
 
@@ -1684,6 +1679,15 @@
                 </div>
             </div>
 
+            <!-- MAIN_CONTENT_INSERTION_POINT -->
+            
+            <!-- ===== FIX STARTS HERE ===== -->
+            <!-- AFFIRMATION CARDS (Container for Patch script) -->
+            <div class="resource-section-container" id="affirmationcardsResourceSection">
+                <!-- Content for this section is injected dynamically by the patch script -->
+            </div>
+            <!-- ===== FIX ENDS HERE ===== -->
+
             `;
         }
     }
@@ -1938,7 +1942,7 @@
 </div>
 <script>
 (function(){
-  const WEBAPP = "https://script.google.com/macros/s/AKfycbxc4iTJ4gNDeEE2ss4s2e2bURWiigKdu60U2wgQYHpnYBBCeh8BCjCiXaSUNbv7ol9fRg/exec";
+  const WEBAPP = "https://script.google.com/macros/s/AKfycbx-zrCM_Gza-AqFlPXpkJjznU4nTJQM4p099_Hjm2goIoviraIwvJ1y60eCcnR-oxY7IQ/exec";
   const FOLDER = "1oWEwJEAFE9Smnmuj3zacAM-9Bhjfdd4e";
 
   // Click on existing "Affirmation Cards" tile
