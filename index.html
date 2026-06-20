@@ -441,8 +441,7 @@ select, input[type="text"], input[type="email"], input[type="date"], input[type=
                     <div class="appointment-details">
                         <h3>Availability</h3>
                         <ul>
-                            <li><strong>Mon &amp; Tue:</strong> 9 AM – 4 PM (Online &amp; Offline) (Location: JP Nagar)</li>
-                            <li><strong>Wed &amp; Thu:</strong> 9 AM – 4 PM (Online &amp; Offline) (Location: Jayanagar)</li>
+                            <li><strong>Mon &amp; Thu:</strong> 9 AM – 4 PM (Online &amp; Offline) (Location: JP Nagar)</li>
                             <li><strong>Fri:</strong> 9 AM – 4 PM (Online)</li>
                         </ul>
                         
@@ -452,6 +451,8 @@ select, input[type="text"], input[type="email"], input[type="date"], input[type=
   <input type="text" id="bfName" required>
   <label for="bfEmail">Email</label>
   <input type="email" id="bfEmail" required>
+  <label for="bfPhone">Contact Number</label>
+  <input type="tel" id="bfPhone" placeholder="e.g. 9876543210" required>
   <div class="booking-inline">
     <div>
       <label for="bfDate">Preferred Date</label>
@@ -475,7 +476,6 @@ select, input[type="text"], input[type="email"], input[type="date"], input[type=
       <select id="bfLocation" required>
         <option value="Online">Online</option>
         <option value="JP Nagar">JP Nagar</option>
-        <option value="Jayanagar">Jayanagar</option>
       </select>
     </div>
   </div>
@@ -502,6 +502,42 @@ select, input[type="text"], input[type="email"], input[type="date"], input[type=
         <p>&copy; 2025 USDC Wellbeing Hub. All Rights Reserved.</p>
     </footer>
 
+    <!-- ======= Background Music (optional, calming loop) ======= -->
+    <audio id="bgMusic" loop preload="none">
+        <source src="PASTE_YOUR_MUSIC_FILE_URL_HERE.mp3" type="audio/mpeg">
+    </audio>
+    <button id="musicToggle" type="button" aria-label="Toggle background music" title="Play calming background music"
+        style="position:fixed; bottom:24px; right:24px; z-index:2000; width:54px; height:54px; border-radius:50%;
+               background:var(--primary-green); color:#fff; border:none; font-size:1.4em; cursor:pointer;
+               box-shadow:0 6px 18px rgba(0,0,0,0.18); display:flex; align-items:center; justify-content:center;
+               transition: background .2s ease, transform .2s ease;">🎵</button>
+
+    <script>
+    // Background music: browsers block autoplay-with-sound, so it only starts after the visitor
+    // clicks the floating button. Click again to pause. Replace the <source src="..."> above with
+    // your own hosted mp3 URL (e.g. uploaded to your GitHub repo, or any direct .mp3 link).
+    (function () {
+        const audio = document.getElementById('bgMusic');
+        const btn = document.getElementById('musicToggle');
+        if (!audio || !btn) return;
+        audio.volume = 0.35;
+
+        btn.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play().catch(() => {
+                    alert('Add your music file URL in the <audio> tag near the bottom of index.html for this to work.');
+                });
+                btn.textContent = '⏸️';
+                btn.style.background = 'var(--dark-green)';
+            } else {
+                audio.pause();
+                btn.textContent = '🎵';
+                btn.style.background = 'var(--primary-green)';
+            }
+        });
+    })();
+    </script>
+
     <script>
     // ======================================================================
     // SINGLE BACKEND URL — paste your ONE unified Apps Script Web App URL here.
@@ -509,7 +545,7 @@ select, input[type="text"], input[type="email"], input[type="date"], input[type=
     // Cards gallery, AND the Resource Library (replacing the 3 separate URLs
     // that used to point at 3 separate Apps Script projects).
     // ======================================================================
-    const BACKEND_URL = "https://script.google.com/macros/s/AKfycbxg9g7Jq5r2wMVG2UH8f6gHssoPNvcE3gEMqgPpWsvm_bTpC3Xcy85Z8QlZoLrNXOw/exec";
+    const BACKEND_URL = "PASTE_YOUR_DEPLOYED_WEB_APP_URL_HERE";
 
     // --- MASTER SCRIPT ---
     document.addEventListener('DOMContentLoaded', () => {
@@ -915,6 +951,7 @@ select, input[type="text"], input[type="email"], input[type="date"], input[type=
 
         const nameEl = document.getElementById('bfName');
         const emailEl = document.getElementById('bfEmail');
+        const phoneEl = document.getElementById('bfPhone');
         const dateEl = document.getElementById('bfDate');
         const timeEl = document.getElementById('bfTime');
         const typeEl = document.getElementById('bfType');
@@ -953,7 +990,7 @@ select, input[type="text"], input[type="email"], input[type="date"], input[type=
 
         function setSessionTypeOptions(day) {
             const offlineOpt = Array.from(typeEl.options).find(o => o.value === 'Offline');
-            if (day === 5) { // Friday
+            if (day === 5) { // Friday — Online only
                 typeEl.value = 'Online';
                 if (offlineOpt) offlineOpt.disabled = true;
             } else {
@@ -968,10 +1005,8 @@ select, input[type="text"], input[type="email"], input[type="date"], input[type=
                 locationEl.insertAdjacentHTML('beforeend', '<option value="Online">Online</option>');
                 return;
             }
-            if (day === 1 || day === 2) { // Mon/Tue
+            if (day === 1 || day === 4) { // Mon/Thu — Offline available at JP Nagar
                 locationEl.insertAdjacentHTML('beforeend', '<option value="JP Nagar">JP Nagar</option>');
-            } else if (day === 3 || day === 4) { // Wed/Thu
-                locationEl.insertAdjacentHTML('beforeend', '<option value="Jayanagar">Jayanagar</option>');
             } else {
                 locationEl.insertAdjacentHTML('beforeend', '<option value="">Not available</option>');
             }
@@ -982,10 +1017,10 @@ select, input[type="text"], input[type="email"], input[type="date"], input[type=
             if (!val) return;
             const d = new Date(val + 'T12:00:00Z'); // Use UTC noon to avoid timezone shift issues
             currentDay = d.getUTCDay();
-            if (currentDay === 0 || currentDay === 6) {
-                dateEl.setCustomValidity('Sessions are available Monday to Friday only.');
-            } else {
+            if (currentDay === 1 || currentDay === 4 || currentDay === 5) {
                 dateEl.setCustomValidity('');
+            } else {
+                dateEl.setCustomValidity('Sessions are available Monday, Thursday, and Friday only.');
             }
             setSessionTypeOptions(currentDay);
             setLocationOptions(currentDay);
@@ -1051,6 +1086,7 @@ select, input[type="text"], input[type="email"], input[type="date"], input[type=
                 formType: 'booking',
                 name: nameEl.value,
                 email: emailEl.value,
+                phone: phoneEl.value,
                 date: dateEl.value,
                 time: timeEl.value,
                 type: typeEl.value,
