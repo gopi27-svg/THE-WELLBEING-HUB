@@ -441,7 +441,7 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
                     <div class="appointment-details">
                         <h3>Availability</h3>
                         <ul>
-                            <li><strong>Mon &amp; Thu:</strong> 9 AM – 4 PM (Online &amp; Offline) (Location: JP Nagar)</li>
+                            <li><strong>Mon – Thu:</strong> 9 AM – 4 PM (Online &amp; Offline) (Location: JP Nagar)</li>
                             <li><strong>Fri:</strong> 9 AM – 4 PM (Online)</li>
                         </ul>
                         
@@ -504,7 +504,7 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
 
     <!-- ======= Background Music (optional, calming loop) ======= -->
     <audio id="bgMusic" loop preload="none">
-        <source src="bg-music.mpeg" type="audio/mpeg">
+       <source src="bg-music.mpeg" type="audio/mpeg">
     </audio>
     <button id="musicToggle" type="button" aria-label="Toggle background music" title="Play calming background music"
         style="position:fixed; bottom:24px; right:24px; z-index:2000; width:54px; height:54px; border-radius:50%;
@@ -1008,7 +1008,7 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
                 locationEl.insertAdjacentHTML('beforeend', '<option value="Online">Online</option>');
                 return;
             }
-            if (day === 1 || day === 4) { // Mon/Thu — Offline available at JP Nagar
+            if (day >= 1 && day <= 4) { // Mon-Thu — Offline available at JP Nagar
                 locationEl.insertAdjacentHTML('beforeend', '<option value="JP Nagar">JP Nagar</option>');
             } else {
                 locationEl.insertAdjacentHTML('beforeend', '<option value="">Not available</option>');
@@ -1020,10 +1020,10 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
             if (!val) return;
             const d = new Date(val + 'T12:00:00Z'); // Use UTC noon to avoid timezone shift issues
             currentDay = d.getUTCDay();
-            if (currentDay === 1 || currentDay === 4 || currentDay === 5) {
+            if (currentDay >= 1 && currentDay <= 5) {
                 dateEl.setCustomValidity('');
             } else {
-                dateEl.setCustomValidity('Sessions are available Monday, Thursday, and Friday only.');
+                dateEl.setCustomValidity('Sessions are available Monday to Friday only.');
             }
             setSessionTypeOptions(currentDay);
             setLocationOptions(currentDay);
