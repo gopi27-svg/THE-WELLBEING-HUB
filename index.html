@@ -48,7 +48,7 @@
         .section { margin-bottom: var(--spacing-xl); }
         .disclaimer-text { color: var(--text-dark); font-size: 1.05em; margin-bottom: var(--spacing-sm); }
         label { display: block; margin-top: var(--spacing-md); margin-bottom: var(--spacing-sm); font-weight: 600; color: var(--text-dark); font-size: 1.05em; }
-        select, input[type="text"], input[type="email"], input[type="date"], input[type="time"] { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid var(--border-light); border-radius: var(--radius-sm); box-sizing: border-box; font-family: 'Montserrat', sans-serif; font-size: 1.05em; color: var(--text-dark); transition: all 0.3s ease; }
+        select, input[type="text"], input[type="email"], input[type="tel"], input[type="date"], input[type="time"] { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid var(--border-light); border-radius: var(--radius-sm); box-sizing: border-box; font-family: 'Montserrat', sans-serif; font-size: 1.05em; color: var(--text-dark); transition: all 0.3s ease; }
         select:focus, input:focus { outline: none; border-color: var(--primary-green); box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2); }
         .btn { display: inline-block; background: var(--primary-green); color: var(--white) !important; padding: 16px 45px; border: none; border-radius: var(--radius-sm); cursor: pointer; font-weight: 600; font-size: 1.1em; transition: all 0.3s ease; text-transform: uppercase; text-align: center; text-decoration: none; }
         .btn:hover { background: var(--dark-green); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
@@ -331,7 +331,7 @@ h2 { letter-spacing: 0.2px; }
 }
 .btn.secondary { box-shadow: none; }
 
-select, input[type="text"], input[type="email"], input[type="date"], input[type="time"] {
+select, input[type="text"], input[type="email"], input[type="tel"], input[type="date"], input[type="time"] {
   background-color: #fff;
 }
 
@@ -452,7 +452,7 @@ select, input[type="text"], input[type="email"], input[type="date"], input[type=
   <label for="bfEmail">Email</label>
   <input type="email" id="bfEmail" required>
   <label for="bfPhone">Contact Number</label>
-  <input type="tel" id="bfPhone" placeholder="e.g. 9876543210" required>
+  <input type="tel" id="bfPhone" placeholder="e.g. 9876543210" inputmode="numeric" maxlength="10" pattern="[0-9]{10}" title="Enter a 10-digit phone number" required>
   <div class="booking-inline">
     <div>
       <label for="bfDate">Preferred Date</label>
@@ -504,7 +504,7 @@ select, input[type="text"], input[type="email"], input[type="date"], input[type=
 
     <!-- ======= Background Music (optional, calming loop) ======= -->
     <audio id="bgMusic" loop preload="none">
-        <source src="https://drive.google.com/file/d/1qGIxjXu3FpNtz9fGSteIKGTqHVMdFE0y/view?usp=sharing" type="audio/mpeg">
+        <source src="bg-music.mpeg" type="audio/mpeg">
     </audio>
     <button id="musicToggle" type="button" aria-label="Toggle background music" title="Play calming background music"
         style="position:fixed; bottom:24px; right:24px; z-index:2000; width:54px; height:54px; border-radius:50%;
@@ -952,6 +952,9 @@ select, input[type="text"], input[type="email"], input[type="date"], input[type=
         const nameEl = document.getElementById('bfName');
         const emailEl = document.getElementById('bfEmail');
         const phoneEl = document.getElementById('bfPhone');
+        phoneEl.addEventListener('input', () => {
+            phoneEl.value = phoneEl.value.replace(/\D/g, '').slice(0, 10);
+        });
         const dateEl = document.getElementById('bfDate');
         const timeEl = document.getElementById('bfTime');
         const typeEl = document.getElementById('bfType');
@@ -1041,6 +1044,11 @@ select, input[type="text"], input[type="email"], input[type="date"], input[type=
             e.preventDefault();
             updateForDate();
 
+            if (!/^\d{10}$/.test(phoneEl.value.trim())) {
+                alert('Please enter a valid 10-digit contact number.');
+                phoneEl.focus();
+                return;
+            }
             if (!dateEl.checkValidity()) {
                 alert(dateEl.validationMessage || 'Please pick a valid weekday.');
                 dateEl.reportValidity();
