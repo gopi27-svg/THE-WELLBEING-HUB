@@ -65,6 +65,10 @@
         .score-healthy { color: var(--dark-green); font-weight: 700; }
         .score-moderate { color: var(--warning-orange); font-weight: 700; }
         .score-concern { color: var(--danger-red); font-weight: 700; }
+        .question-block { margin-bottom: 18px; }
+        .question-block label { display: block; margin-bottom: 6px; }
+        select.field-error, input.field-error { border-color: var(--danger-red) !important; background-color: #FFEBEE !important; box-shadow: 0 0 0 1px var(--danger-red); }
+        .question-block.has-error label { color: var(--danger-red); font-weight: 700; }
         ul { list-style: none; padding: 0; }
         #assessment-page ul li, #contact-page ul li { padding-left: 30px; position: relative; }
         #assessment-page ul li::before, #contact-page ul li::before { content: '\2713'; color: var(--primary-green); font-size: 1.3em; position: absolute; left: 0; top: 50%; transform: translateY(-50%); font-weight: bold; }
@@ -577,12 +581,12 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // --- 2. ASSESSMENT LOGIC (INTEGRATED WITH GOOGLE SHEETS) ---
+    // --- 2. ASSESSMENT LOGIC (BACKEND-DRIVEN QUESTION BANK) ---
     let currentStep = 1;
-    const totalQuestionSections = 5;
+    let ASSESSMENT_SECTIONS = [];
+    let totalQuestionSections = 0;
 
     function setupAssessment() {
-        // IMPORTANT: Replace this with your own Web App URL after deploying the Code.gs script
         const scriptURL = BACKEND_URL; // assessment submission
         const formContainer = document.getElementById('wellbeingForm');
         const startBtn = document.getElementById('startAssessmentBtn');
@@ -590,20 +594,42 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
         const thankYouContainer = document.getElementById('thankYouMessage');
 
         startBtn.addEventListener('click', () => {
-            introContainer.style.display = 'none';
-            formContainer.style.display = 'block';
-            currentStep = 1;
-            renderFullForm();
-            updateStepVisibility();
+            startBtn.disabled = true;
+            const originalBtnText = startBtn.textContent;
+            startBtn.textContent = 'Loading\u2026';
+
+            fetch(`${BACKEND_URL}?action=getAssessmentQuestions`)
+                .then(r => r.json())
+                .then(result => {
+                    if (result.status !== 'ok' || !result.sections || !result.sections.length) {
+                        throw new Error(result.message || 'No assessment questions are configured yet.');
+                    }
+                    ASSESSMENT_SECTIONS = result.sections;
+                    totalQuestionSections = ASSESSMENT_SECTIONS.length;
+                    introContainer.style.display = 'none';
+                    formContainer.style.display = 'block';
+                    currentStep = 1;
+                    renderFullForm();
+                    updateStepVisibility();
+                })
+                .catch(err => {
+                    alert('Could not load the assessment right now: ' + err.message);
+                })
+                .finally(() => {
+                    startBtn.disabled = false;
+                    startBtn.textContent = originalBtnText;
+                });
         });
 
         formContainer.addEventListener('submit', function(e) {
             e.preventDefault();
-            
+
+            if (!validateCurrentStep()) return;
+
             const submitBtn = e.target.querySelector('button[type="submit"]');
             submitBtn.disabled = true;
             submitBtn.textContent = 'Submitting...';
-            
+
             // --- DATA COLLECTION ---
             const data = {
                 formType: 'assessment',
@@ -614,32 +640,35 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
                 location: formContainer.querySelector('#location').value,
             };
 
-            // Calculate scores and add them to the data object
-            Object.assign(data, calculateAllScores());
-
-            // Capture all individual questions and answers
-            const fullResponses = {};
-            const sections = ["Anxiety", "Stress", "Work-Life Balance", "Overall Happiness", "Emotional Well-Being"];
-            sections.forEach((sectionName, index) => {
-                const stepId = index + 4; // Questions start at step 4
-                fullResponses[sectionName] = [];
-                const questionLabels = document.querySelectorAll(`#step-${stepId} label`);
-                questionLabels.forEach(labelEl => {
-                    const selectEl = labelEl.nextElementSibling;
-                    if (selectEl && selectEl.tagName === 'SELECT') {
-                        const questionText = labelEl.textContent;
-                        const answerValue = selectEl.value;
-                        const answerText = selectEl.options[selectEl.selectedIndex].text;
-                        
-                        fullResponses[sectionName].push({
-                            question: questionText,
-                            answerValue: answerValue,
-                            answerText: answerText
-                        });
-                    }
+            // Build the generic sections payload (score + full responses + the scoring
+            // thresholds that were live when this attempt started) — fully driven by
+            // whatever sections/questions are currently configured in the admin panel.
+            data.sections = ASSESSMENT_SECTIONS.map((section, index) => {
+                const stepId = index + 4;
+                let score = 0;
+                const questions = [];
+                const selects = document.querySelectorAll(`#step-${stepId} select`);
+                selects.forEach(sel => {
+                    const val = sel.value ? parseInt(sel.value, 10) : 0;
+                    score += val;
+                    const label = sel.previousElementSibling;
+                    questions.push({
+                        question: label ? label.textContent : '',
+                        answerValue: sel.value,
+                        answerText: sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text : ''
+                    });
                 });
+                return {
+                    name: section.name,
+                    icon: section.icon,
+                    inverted: section.inverted,
+                    maxScore: section.maxScore,
+                    healthyMax: section.healthyMax,
+                    moderateMax: section.moderateMax,
+                    score: score,
+                    questions: questions
+                };
             });
-            data.fullResponses = fullResponses;
 
             // --- SEND DATA TO GOOGLE SCRIPT ---
             fetch(scriptURL, {
@@ -666,23 +695,16 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
         });
     }
 
-    function calculateAllScores() {
-        const scores = {};
-        const sections = ["Anxiety", "Stress", "Work-Life Balance", "Overall Happiness", "Emotional Well-Being"];
-        sections.forEach((sectionName, index) => {
-            let score = 0;
+    function calculateAllScoresGeneric() {
+        return ASSESSMENT_SECTIONS.map((section, index) => {
             const stepId = index + 4;
+            let score = 0;
             const selects = document.querySelectorAll(`#step-${stepId} select`);
-            selects.forEach(selectElement => {
-                if (selectElement.value) score += parseInt(selectElement.value);
-            });
-            let key = sectionName.replace(/-(\w)/g, (match, p1) => p1.toUpperCase()).replace(/\s+/g, '');
-            key = key.charAt(0).toLowerCase() + key.slice(1) + 'Score';
-            scores[key] = score;
+            selects.forEach(sel => { if (sel.value) score += parseInt(sel.value, 10); });
+            return { name: section.name, score: score, maxScore: section.maxScore, inverted: section.inverted, healthyMax: section.healthyMax, moderateMax: section.moderateMax };
         });
-        return scores;
     }
-    
+
     window.nextStep = function() {
         if (currentStep >= 4 && currentStep <= 3 + totalQuestionSections) {
             if (!validateCurrentStep()) return;
@@ -703,11 +725,23 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
 
     function validateCurrentStep() {
         const selects = document.querySelectorAll(`#step-${currentStep} select`);
-        for (const sel of selects) {
+        let allAnswered = true;
+        let firstInvalid = null;
+        selects.forEach(sel => {
+            const block = sel.closest('.question-block');
             if (sel.value === "") {
-                alert('Please answer all questions before proceeding.');
-                return false;
+                sel.classList.add('field-error');
+                if (block) block.classList.add('has-error');
+                allAnswered = false;
+                if (!firstInvalid) firstInvalid = sel;
+            } else {
+                sel.classList.remove('field-error');
+                if (block) block.classList.remove('has-error');
             }
+        });
+        if (!allAnswered) {
+            if (firstInvalid) firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return false;
         }
         return true;
     }
@@ -717,33 +751,48 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
         const target = document.getElementById(`step-${currentStep}`);
         if (target) target.classList.add("active");
     }
-    
+
+    function classifyScoreClient_(score, maxScore, inverted) {
+        const low = Math.floor(maxScore / 3);
+        const high = Math.floor((2 * maxScore) / 3);
+        if (!inverted) {
+            if (score <= low) return 'Healthy';
+            if (score <= high) return 'Moderate';
+            return 'Concern';
+        } else {
+            if (score <= low) return 'Concern';
+            if (score <= high) return 'Moderate';
+            return 'Healthy';
+        }
+    }
+
     function calculateScores() {
-        const sections = ["Anxiety", "Stress", "Work-Life Balance", "Overall Happiness", "Emotional Well-Being"];
         const scoreDiv = document.getElementById("scoreBreakdown");
         if (!scoreDiv) return;
         scoreDiv.innerHTML = "";
-        
-        const allScores = calculateAllScores();
 
-        for (let i = 0; i < sections.length; i++) {
-            const sectionName = sections[i];
-            let key = sectionName.replace(/-(\w)/g, (match, p1) => p1.toUpperCase()).replace(/\s+/g, '');
-            key = key.charAt(0).toLowerCase() + key.slice(1) + 'Score';
-            const score = allScores[key];
+        const allScores = calculateAllScoresGeneric();
+        allScores.forEach(s => {
+            const cls = classifyScoreClient_(s.score, s.maxScore, s.inverted);
+            const rangeText = cls === 'Healthy' ? 'Healthy Range \u2705' : cls === 'Moderate' ? 'Moderate \u26a0\ufe0f' : 'Area of Concern \u2757';
+            const rangeClass = cls === 'Healthy' ? 'score-healthy' : cls === 'Moderate' ? 'score-moderate' : 'score-concern';
+            scoreDiv.innerHTML += `<p><strong>${s.name}:</strong> <span class="${rangeClass}">${s.score} / ${s.maxScore} - ${rangeText}</span></p>`;
+        });
+    }
 
-            let rangeText = "", rangeClass = "";
-            if (["Overall Happiness", "Emotional Well-Being"].includes(sectionName)) {
-                if (score <= 13) { rangeText = "Area of Concern ❗"; rangeClass = "score-concern"; }
-                else if (score <= 26) { rangeText = "Moderate ⚠️"; rangeClass = "score-moderate"; }
-                else { rangeText = "Healthy Range ✅"; rangeClass = "score-healthy"; }
-            } else {
-                if (score <= 13) { rangeText = "Healthy Range ✅"; rangeClass = "score-healthy"; }
-                else if (score <= 26) { rangeText = "Moderate ⚠️"; rangeClass = "score-moderate"; }
-                else { rangeText = "Area of Concern ❗"; rangeClass = "score-concern"; }
-            }
-            scoreDiv.innerHTML += `<p><strong>${sectionName}:</strong> <span class="${rangeClass}">${score} - ${rangeText}</span></p>`;
-        }
+    function renderScoringGuidelines() {
+        const el = document.getElementById('scoringGuidelinesContainer');
+        if (!el) return;
+        el.innerHTML = ASSESSMENT_SECTIONS.map(s => {
+            const lowLabel = !s.inverted ? 'Healthy Range \u2705' : 'Area of Concern \u2757';
+            const highLabel = !s.inverted ? 'Area of Concern \u2757' : 'Healthy Range \u2705';
+            const lowClass = !s.inverted ? 'score-healthy' : 'score-concern';
+            const highClass = !s.inverted ? 'score-concern' : 'score-healthy';
+            return `<p><strong>${s.name}</strong> (max ${s.maxScore}):<br>` +
+                `<span class="${lowClass}">0\u2013${s.healthyMax}:</span> ${lowLabel}<br>` +
+                `<span class="score-moderate">${s.healthyMax + 1}\u2013${s.moderateMax}:</span> Moderate \u26a0\ufe0f<br>` +
+                `<span class="${highClass}">${s.moderateMax + 1}\u2013${s.maxScore}:</span> ${highLabel}</p>`;
+        }).join('');
     }
 
     function renderFullForm() {
@@ -757,37 +806,43 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
             <div class="step-section" id="step-3"><div class="section"><h2>Self-Assessment Instructions</h2><p class="disclaimer-text">**Please Note:** This assessment is for awareness purposes only and is not a diagnostic tool.</p><ul><li>**0:** Never</li><li>**1:** Rarely</li><li>**2:** Sometimes</li><li>**3:** Often</li><li>**4:** Always</li></ul></div><div class="btn-group"><button class="btn secondary" onclick="prevStep()" type="button">Back</button><button class="btn" onclick="nextStep()" type="button">Start Questions</button></div></div>
             <div id="questionsContainer"></div>
             <div class="step-section" id="step-9">
-                <div class="section"><h2>Your Wellbeing Snapshot</h2><p class="disclaimer-text">Below is a breakdown of your scores.</p><div id="scoreBreakdown"></div><h3>Scoring Guidelines:</h3><p>**For Anxiety, Stress, and Work-Life Balance:**<br><span class="score-healthy">0–13:</span> Healthy Range ✅<br><span class="score-moderate">14–26:</span> Moderate ⚠️<br><span class="score-concern">27–40:</span> Area of Concern ❗</p><p>**For Overall Happiness and Emotional Well-Being:**<br><span class="score-concern">0–13:</span> Area of Concern ❗<br><span class="score-moderate">14–26:</span> Moderate ⚠️<br><span class="score-healthy">27–40:</span> Healthy Range ✅</p></div>
+                <div class="section"><h2>Your Wellbeing Snapshot</h2><p class="disclaimer-text">Below is a breakdown of your scores.</p><div id="scoreBreakdown"></div><h3>Scoring Guidelines:</h3><div id="scoringGuidelinesContainer"></div></div>
                 <div class="btn-group"><button class="btn secondary" onclick="prevStep()" type="button">Back</button><button class="btn" type="submit">Submit Final</button></div>
             </div>
         `;
         renderQuestions();
+        renderScoringGuidelines();
     }
 
     function renderQuestions() {
-        const sections = [
-            { name: "Anxiety", questions: ["I feel nervous, anxious, or on edge.", "I worry excessively about different things.", "I experience racing thoughts that are hard to control.", "I feel a sense of panic in everyday situations.", "I avoid certain places or situations because they make me anxious.", "I find it difficult to calm myself when upset.", "I experience physical symptoms like trembling or a racing heart.", "I feel tense or jumpy for no apparent reason.", "I feel a constant sense of dread or worry.", "I find it hard to stop worrying once I’ve started."] },
-            { name: "Stress", questions: ["I feel overwhelmed by my responsibilities.", "I struggle to keep up with day-to-day tasks.", "I have difficulty sleeping due to racing thoughts.", "I often feel emotionally drained.", "I feel that I am constantly under pressure.", "I get irritated or angry more easily than usual.", "I feel tired even after a full night's sleep.", "I notice physical signs of stress (headaches, stomachaches, etc.).", "I find it difficult to relax or unwind.", "I feel like I’m losing control over parts of my life."] },
-            { name: "Work-Life Balance", questions: ["I find it hard to disconnect from work during personal time.", "I feel guilty when taking breaks or days off.", "My personal relationships suffer due to work stress.", "I frequently bring work-related problems home.", "I struggle to set boundaries between work and home.", "I miss meals, rest, or social time because of work.", "I constantly check work emails/messages outside work hours.", "I struggle to set boundaries between work and home.", "I feel that work consumes most of my time and energy.", "I feel fulfilled by both my work and personal life."] },
-            { name: "Overall Happiness", questions: ["I feel a sense of purpose and meaning in life.", "I enjoy the things I do each day.", "I feel hopeful about my future.", "I often find things that make me laugh or smile.", "I have a sense of accomplishment in my day-to-day life.", "I feel connected to the people around me.", "I engage in activities that make me happy.", "I am satisfied with where my life is right now.", "I feel grateful for what I have.", "I am optimistic about tomorrow."] },
-            { name: "Emotional Well-Being", questions: ["I am aware of my emotions throughout the day.", "I can express my feelings clearly to others.", "I know healthy ways to cope when I’m feeling low.", "I can bounce back after facing a setback.", "I feel comfortable asking for help when I need to.", "I am able to accept things I cannot change.", "I feel confident in my ability to manage my emotions.", "I make time for self-care regularly.", "I feel emotionally supported by people in my life.", "I feel in control of how I respond to emotional challenges."] }
-        ];
         const container = document.getElementById("questionsContainer");
         container.innerHTML = '';
         let stepId = 4;
-        sections.forEach((sectionData, index) => {
+        ASSESSMENT_SECTIONS.forEach((sectionData, index) => {
             const div = document.createElement("div");
             div.className = "step-section";
             div.id = `step-${stepId}`;
-            let innerHTML = `<div class="section"><h2>Section ${index + 1}: ${sectionData.name}</h2>`;
+            const heading = (sectionData.icon ? sectionData.icon + ' ' : '') + sectionData.name;
+            let innerHTML = `<div class="section"><h2>Section ${index + 1}: ${heading}</h2>`;
             sectionData.questions.forEach((q, qIndex) => {
                 const name = sectionData.name.replace(/\s+/g, '') + qIndex;
-                innerHTML += `<label>${q}</label><select name="${name}" required><option value="">Select</option><option value="0">Never</option><option value="1">Rarely</option><option value="2">Sometimes</option><option value="3">Often</option><option value="4">Always</option></select>`;
+                innerHTML += `<div class="question-block"><label>${q.text}</label><select name="${name}" required><option value="">Select</option><option value="0">Never</option><option value="1">Rarely</option><option value="2">Sometimes</option><option value="3">Often</option><option value="4">Always</option></select></div>`;
             });
             innerHTML += `</div><div class='btn-group'><button class='btn secondary' type='button' onclick='prevStep()'>Back</button><button class='btn' type='button' onclick='nextStep()'>Next</button></div>`;
             div.innerHTML = innerHTML;
             container.appendChild(div);
             stepId++;
+        });
+
+        // Clear the red highlight on a question as soon as it's answered.
+        container.querySelectorAll('select').forEach(sel => {
+            sel.addEventListener('change', () => {
+                if (sel.value !== '') {
+                    sel.classList.remove('field-error');
+                    const block = sel.closest('.question-block');
+                    if (block) block.classList.remove('has-error');
+                }
+            });
         });
     }
 
@@ -1140,165 +1195,6 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
 
 </script>
 
-
-<!-- ===== Affirmation Cards — SINGLE FILE OVERLAY (v8, INLINE images) ===== -->
-<style>
-  #aff-gallery-overlay{position:fixed;inset:0;display:none;z-index:9999;background:#f6f7fb}
-  #aff-gallery-overlay.open{display:block}
-  #aff-head{position:sticky;top:0;background:#fff;padding:12px 16px;box-shadow:0 2px 8px rgba(0,0,0,.06);z-index:1;display:flex;gap:12px;align-items:center}
-  #aff-back{margin-right:auto;text-decoration:none;border:1px solid #ddd;background:#fff;padding:6px 10px;border-radius:10px;font-size:13px;cursor:pointer}
-  #aff-title{margin:0;font-size:18px}
-  #aff-wrap{max-width:1200px;margin:18px auto 40px;padding:0 16px}
-  #aff-status{margin:0 0 14px;color:#555}
-  #aff-grid{display:grid;grid-template-columns:1fr;gap:18px;justify-items:center}
-  @media (min-width:700px){#aff-grid{grid-template-columns:repeat(2,1fr)}}
-  @media (min-width:1024px){#aff-grid{grid-template-columns:repeat(3,1fr)}}
-  .aff-card{width:100%;max-width:360px;position:relative}
-  .aff-flip{width:100%;perspective:1200px;position:relative}
-  .aff-flip-inner{width:100%;aspect-ratio:3/4;transition:transform .6s;transform-style:preserve-3d;border-radius:18px;background:#fff;box-shadow:6px 10px 18px rgba(0,0,0,.06),-4px -4px 12px rgba(255,255,255,.9);cursor:pointer}
-  .aff-flip:hover .aff-flip-inner,.aff-flip.is-flipped .aff-flip-inner{transform:rotateY(180deg)}
-  .aff-face{position:absolute;inset:0;backface-visibility:hidden;overflow:hidden;border-radius:18px;display:flex;align-items:center;justify-content:center;background:#fff}
-  .aff-face img{width:100%;height:100%;object-fit:contain;image-rendering:auto}
-  .aff-back{transform:rotateY(180deg)}
-  .aff-label{margin-top:8px;text-align:center;font-weight:600;font-size:.98rem}
-  .aff-menu{position:absolute;top:8px;right:8px;z-index:5}
-  .aff-menubtn{border:none;background:rgba(255,255,255,.9);padding:6px 10px;border-radius:50%;cursor:pointer;font-size:18px;line-height:1;box-shadow:0 2px 6px rgba(0,0,0,.2)}
-  .aff-menubtn:after{content:'⋯'}
-  .aff-menulist{position:absolute;right:0;top:34px;background:#fff;border:1px solid #e0e0e0;border-radius:10px;box-shadow:0 6px 16px rgba(0,0,0,.15);display:none;min-width:220px;overflow:hidden}
-  .aff-menulist.open{display:block}
-  .aff-menuitem{padding:10px 12px;cursor:pointer;font-size:14px}
-  .aff-menuitem:hover{background:#f5f5f5}
-  #aff-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;padding:20px;z-index:10000}
-  #aff-modal.open{display:flex}
-  #aff-mwrap{width:auto;max-width:92vw;max-height:92vh;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.3);display:flex;flex-direction:column}
-  #aff-mbar{display:flex;gap:8px;justify-content:flex-end;padding:10px;border-bottom:1px solid #eee}
-  .aff-mbtn{border:1px solid #ddd;background:#fff;padding:6px 10px;border-radius:10px;cursor:pointer;font-size:13px}
-  #aff-mcontent{flex:1;display:flex;align-items:center;justify-content:center;padding:10px}
-  #aff-mimg{max-width:88vw;max-height:80vh;width:auto;height:auto;object-fit:contain;display:block;background:#fff}
-</style>
-<div id="aff-gallery-overlay" role="dialog" aria-modal="true" aria-hidden="true">
-  <header id="aff-head">
-    <button id="aff-back">← Back to The Wellbeing Hub</button>
-    <h1 id="aff-title">Affirmation Cards — Gallery</h1>
-  </header>
-  <div id="aff-wrap">
-    <div id="aff-status">Loading cards…</div>
-    <div id="aff-grid" aria-live="polite"></div>
-  </div>
-  <div id="aff-modal" aria-hidden="true">
-    <div id="aff-mwrap">
-      <div id="aff-mbar">
-        <button class="aff-mbtn" id="aff-front">Front</button>
-        <button class="aff-mbtn" id="aff-backbtn">Back</button>
-        <button class="aff-mbtn" id="aff-close">Close</button>
-      </div>
-      <div id="aff-mcontent">
-        <img id="aff-mimg" alt="Preview">
-      </div>
-    </div>
-  </div>
-</div>
-<script>
-(function(){
-  const WEBAPP = "https://script.google.com/macros/s/AKfycbxc4iTJ4gNDeEE2ss4s2e2bURWiigKdu60U2wgQYHpnYBBCeh8BCjCiXaSUNbv7ol9fRg/exec";
-  const FOLDER = "1oWEwJEAFE9Smnmuj3zacAM-9Bhjfdd4e";
-
-  // Click on existing "Affirmation Cards" tile
-  document.addEventListener('click', (e)=>{
-    const card = e.target.closest('.folder-card');
-    if(card){
-      const label=(card.textContent||'').toLowerCase();
-      if(label.includes('affirmation cards')){
-        e.preventDefault();
-        const o=document.getElementById('aff-gallery-overlay');
-        o.classList.add('open'); o.setAttribute('aria-hidden','false');
-        window.scrollTo({top:0,behavior:'smooth'});
-      }
-    }
-  });
-
-  // Back
-  document.getElementById('aff-back').addEventListener('click', ()=>{
-    const o=document.getElementById('aff-gallery-overlay');
-    o.classList.remove('open'); o.setAttribute('aria-hidden','true');
-    try{ const res=document.getElementById('resources-page')||document.querySelector('[id*=resources]'); if(res){res.scrollIntoView({behavior:'smooth'});}
-      location.hash='resources'; }catch(e){}
-  });
-
-  // Modal controls
-  const modalState={front:'',back:'',side:'front'};
-  function openModal(front,back){ modalState.front=front; modalState.back=back; modalState.side='front';
-    document.getElementById('aff-modal').classList.add('open'); document.getElementById('aff-mimg').src=front; }
-  function showSide(side){ modalState.side=side; document.getElementById('aff-mimg').src=(side==='front')?modalState.front:modalState.back; }
-  document.getElementById('aff-close').addEventListener('click',()=>{ document.getElementById('aff-mimg').src=''; document.getElementById('aff-modal').classList.remove('open'); });
-  document.getElementById('aff-front').addEventListener('click',()=>showSide('front'));
-  document.getElementById('aff-backbtn').addEventListener('click',()=>showSide('back'));
-
-  // Render (INLINE base64)
-  let pairs=[];
-  function render(){
-    const grid=document.getElementById('aff-grid');
-    const status=document.getElementById('aff-status');
-    status.textContent='Loaded '+pairs.length+' cards';
-    grid.innerHTML=pairs.map((p,idx)=>{
-      const label=p.label||('CARD '+String(idx+1).padStart(2,'0'));
-      const f=p.frontData || p.frontUrl || '';
-      const b=p.backData  || p.backUrl  || f;
-      return (
-        '<div class="aff-card" data-idx="'+idx+'">'+
-          '<div class="aff-menu">'+
-            '<button class="aff-menubtn" aria-label="More options"></button>'+
-            '<div class="aff-menulist">'+
-              '<div class="aff-menuitem" data-action="view">View</div>'+
-              '<div class="aff-menuitem" data-action="share">Share via WhatsApp (Front + Back)</div>'+
-            '</div>'+
-          '</div>'+
-          '<div class="aff-flip" title="Click to flip">'+
-            '<div class="aff-flip-inner">'+
-              '<div class="aff-face front"><img src="'+f+'" alt="'+label+' front"></div>'+
-              '<div class="aff-face back aff-back"><img src="'+b+'" alt="'+label+' back"></div>'+
-            '</div>'+
-          '</div>'+
-          '<div class="aff-label">'+label+'</div>'+
-        '</div>'
-      );
-    }).join('');
-  }
-
-  // Menu + flip
-  document.addEventListener('click', function(e){
-    const mb=e.target.closest('.aff-menubtn');
-    if(mb){ const list=mb.parentElement.querySelector('.aff-menulist');
-      document.querySelectorAll('.aff-menulist.open').forEach(m=>m.classList.remove('open'));
-      if(list) list.classList.toggle('open'); e.stopPropagation(); return; }
-    if(!e.target.closest('.aff-menu')) document.querySelectorAll('.aff-menulist.open').forEach(m=>m.classList.remove('open'));
-    const item=e.target.closest('.aff-menuitem');
-    if(item){
-      const card=item.closest('.aff-card'); const idx=Number(card?.dataset?.idx||-1); const pair=pairs[idx]||{};
-      const label=card.querySelector('.aff-label')?.textContent||'CARD';
-      const f=pair.frontData||pair.frontUrl||''; const b=pair.backData||pair.backUrl||f;
-      if(item.dataset.action==='view'){ openModal(f,b); }
-      if(item.dataset.action==='share'){ const text=label+'\nFront: '+f+'\nBack: '+b; window.open('https://wa.me/?text='+encodeURIComponent(text),'_blank','noopener'); }
-      item.parentElement.classList.remove('open');
-    }
-    const fi=e.target.closest('.aff-flip-inner'); if(fi && !e.target.closest('.aff-menu')) fi.parentElement.classList.toggle('is-flipped');
-  });
-
-  // JSONP callback
-  window.affirmationMeta=function(data){
-    if(data && Array.isArray(data.pairs)){ pairs=data.pairs; render(); }
-    else { document.getElementById('aff-status').textContent='No cards found.'; }
-  };
-
-  // Inject JSONP (INLINE mode)
-  (function loadMeta(){
-    const s=document.createElement('script');
-    s.src = WEBAPP + '?folder=' + encodeURIComponent(FOLDER) + '&inline=1&callback=affirmationMeta&nocache=1&ts=' + Date.now();
-    document.body.appendChild(s);
-  })();
-})();
-</script>
-<!-- ===== /Overlay v8 ===== -->
 
 <!-- ======= AFFIRMATION CARDS: NON-DESTRUCTIVE PATCH (infinite scroll + load more) ======= -->
 <script>
