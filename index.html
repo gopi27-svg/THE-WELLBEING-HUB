@@ -1227,8 +1227,50 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
     .ac-skel.thumb{width:100%;aspect-ratio:2/3;border-radius:10px}
     @keyframes pulse{0%{background-position:100% 0}100%{background-position:0 0}}
     body.affirm-lock{overflow:hidden;}
+    .ac-thumb{cursor:zoom-in;}
+    #acLightbox{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:9500;display:none;align-items:center;justify-content:center;padding:24px;flex-direction:column;}
+    #acLightbox.open{display:flex;}
+    #acLightboxImgWrap{max-width:min(90vw,420px);max-height:78vh;display:flex;align-items:center;justify-content:center;}
+    #acLightboxImgWrap img{max-width:100%;max-height:78vh;border-radius:14px;box-shadow:0 10px 40px rgba(0,0,0,.4);}
+    #acLightboxBar{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap;justify-content:center;}
+    #acLightboxBar button{border:none;border-radius:10px;padding:10px 18px;font-weight:700;cursor:pointer;}
+    .ac-lb-flip{background:#fff;color:var(--text-dark);}
+    .ac-lb-close{background:rgba(255,255,255,.15);color:#fff;}
+    #acLightboxLabel{color:#fff;margin-top:14px;font-weight:700;}
   `;
   document.head.appendChild(style);
+
+  // Lightbox shell (click any card thumbnail to open a larger preview).
+  const lightbox = document.createElement('div');
+  lightbox.id = 'acLightbox';
+  lightbox.innerHTML = `
+    <div id="acLightboxImgWrap"><img id="acLightboxImg" alt="Affirmation Card preview"></div>
+    <div id="acLightboxLabel"></div>
+    <div id="acLightboxBar">
+      <button type="button" class="ac-lb-flip" id="acLightboxFlip">Flip</button>
+      <button type="button" class="ac-lb-close" id="acLightboxClose">Close</button>
+    </div>
+  `;
+  document.body.appendChild(lightbox);
+
+  const lbState = { front: '', back: '', side: 'front', label: '' };
+  function openLightbox_(frontSrc, backSrc, label) {
+    lbState.front = frontSrc || backSrc;
+    lbState.back = backSrc || frontSrc;
+    lbState.side = 'front';
+    lbState.label = label || '';
+    document.getElementById('acLightboxImg').src = lbState.front;
+    document.getElementById('acLightboxLabel').textContent = lbState.label + ' \u2014 Front';
+    lightbox.classList.add('open');
+  }
+  document.getElementById('acLightboxFlip').addEventListener('click', () => {
+    lbState.side = lbState.side === 'front' ? 'back' : 'front';
+    const src = lbState.side === 'front' ? lbState.front : lbState.back;
+    document.getElementById('acLightboxImg').src = src;
+    document.getElementById('acLightboxLabel').textContent = lbState.label + ' \u2014 ' + (lbState.side === 'front' ? 'Front' : 'Back');
+  });
+  document.getElementById('acLightboxClose').addEventListener('click', () => lightbox.classList.remove('open'));
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) lightbox.classList.remove('open'); });
 
   // Build the overlay shell once.
   const overlay = document.createElement('div');
@@ -1396,6 +1438,7 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
       img.dataset.src = p.frontThumb || p.backThumb || '';
       state.io.observe(img);
       wrap.appendChild(img);
+      wrap.addEventListener('click', () => openLightbox_(p.frontThumb, p.backThumb, p.label || 'Affirmation Card'));
 
       const label = document.createElement('div'); label.className = 'ac-label'; label.textContent = p.label || '';
       const side = document.createElement('div'); side.className = 'ac-side'; side.textContent = 'Front';
