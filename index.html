@@ -1210,6 +1210,11 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
     .ac-thumb{width:100%;aspect-ratio:2/3;position:relative;overflow:hidden;border-radius:10px;border:1px solid var(--border-light);background:#f4f7f6}
     .ac-thumb img{width:100%;height:100%;object-fit:cover;display:block}
     .ac-label{font-weight:700;font-size:.95rem;margin-top:8px;text-align:center;color:var(--text-dark)}
+    .ac-share-wrap{position:relative;margin-top:8px;}
+    .ac-share-menu{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--border-light);border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.15);display:none;min-width:160px;overflow:hidden;z-index:20;}
+    .ac-share-menu.open{display:block;}
+    .ac-share-item{display:block;padding:10px 14px;font-size:.88rem;color:var(--text-dark);text-decoration:none;cursor:pointer;}
+    .ac-share-item:hover{background:#f4f7f6;}
     .ac-side{font-size:.8rem;color:var(--text-medium);margin-top:2px}
     .ac-skel{animation:pulse 1.1s ease-in-out infinite;background:linear-gradient(90deg,#eef2f3 25%,#f5f9f7 37%,#eef2f3 63%);background-size:400% 100%}
     .ac-skel.thumb{width:100%;aspect-ratio:2/3;border-radius:10px}
@@ -1372,14 +1377,47 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
         side.textContent = isFront ? 'Back' : 'Front';
       });
 
+      const shareWrap = document.createElement('div'); shareWrap.className = 'ac-share-wrap';
+      const shareBtn = document.createElement('button'); shareBtn.className = 'btn secondary'; shareBtn.type = 'button'; shareBtn.style.marginTop = '8px'; shareBtn.textContent = '\u2197\ufe0f Share';
+      const shareMenu = document.createElement('div'); shareMenu.className = 'ac-share-menu';
+
+      const frontLink = p.frontUrl || p.frontThumb || '';
+      const backLink = p.backUrl || p.backThumb || frontLink;
+      const shareText = `${p.label || 'Affirmation Card'}\nFront: ${frontLink}\nBack: ${backLink}`;
+
+      const emailBtn = document.createElement('a'); emailBtn.className = 'ac-share-item'; emailBtn.textContent = '\ud83d\udce7 Email';
+      emailBtn.href = 'mailto:?subject=' + encodeURIComponent(p.label || 'Affirmation Card') + '&body=' + encodeURIComponent(shareText);
+
+      const waBtn = document.createElement('a'); waBtn.className = 'ac-share-item'; waBtn.textContent = '\ud83d\udcac WhatsApp';
+      waBtn.href = 'https://wa.me/?text=' + encodeURIComponent(shareText);
+      waBtn.target = '_blank'; waBtn.rel = 'noopener';
+
+      shareMenu.appendChild(emailBtn);
+      shareMenu.appendChild(waBtn);
+      shareBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = shareMenu.classList.contains('open');
+        document.querySelectorAll('.ac-share-menu.open').forEach(m => m.classList.remove('open'));
+        if (!isOpen) shareMenu.classList.add('open');
+      });
+      shareWrap.appendChild(shareBtn);
+      shareWrap.appendChild(shareMenu);
+
       card.appendChild(wrap);
       card.appendChild(label);
       card.appendChild(side);
       card.appendChild(flip);
+      card.appendChild(shareWrap);
       frag.appendChild(card);
     });
     grid.appendChild(frag);
   }
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.ac-share-wrap')) {
+      document.querySelectorAll('.ac-share-menu.open').forEach(m => m.classList.remove('open'));
+    }
+  });
 })();
 </script>
 </body>
