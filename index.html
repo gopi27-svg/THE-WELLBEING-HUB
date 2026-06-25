@@ -582,9 +582,9 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
     }
 
     // --- 2. ASSESSMENT LOGIC (BACKEND-DRIVEN QUESTION BANK) ---
+    // --- 2. ASSESSMENT LOGIC (RESTORED ORIGINAL 5-SECTION VERSION) ---
     let currentStep = 1;
-    let ASSESSMENT_SECTIONS = [];
-    let totalQuestionSections = 0;
+    const totalQuestionSections = 5;
 
     function setupAssessment() {
         const scriptURL = BACKEND_URL; // assessment submission
@@ -594,31 +594,11 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
         const thankYouContainer = document.getElementById('thankYouMessage');
 
         startBtn.addEventListener('click', () => {
-            startBtn.disabled = true;
-            const originalBtnText = startBtn.textContent;
-            startBtn.textContent = 'Loading\u2026';
-
-            fetch(`${BACKEND_URL}?action=getAssessmentQuestions`)
-                .then(r => r.json())
-                .then(result => {
-                    if (result.status !== 'ok' || !result.sections || !result.sections.length) {
-                        throw new Error(result.message || 'No assessment questions are configured yet.');
-                    }
-                    ASSESSMENT_SECTIONS = result.sections;
-                    totalQuestionSections = ASSESSMENT_SECTIONS.length;
-                    introContainer.style.display = 'none';
-                    formContainer.style.display = 'block';
-                    currentStep = 1;
-                    renderFullForm();
-                    updateStepVisibility();
-                })
-                .catch(err => {
-                    alert('Could not load the assessment right now: ' + err.message);
-                })
-                .finally(() => {
-                    startBtn.disabled = false;
-                    startBtn.textContent = originalBtnText;
-                });
+            introContainer.style.display = 'none';
+            formContainer.style.display = 'block';
+            currentStep = 1;
+            renderFullForm();
+            updateStepVisibility();
         });
 
         formContainer.addEventListener('submit', function(e) {
@@ -640,35 +620,32 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
                 location: formContainer.querySelector('#location').value,
             };
 
-            // Build the generic sections payload (score + full responses + the scoring
-            // thresholds that were live when this attempt started) — fully driven by
-            // whatever sections/questions are currently configured in the admin panel.
-            data.sections = ASSESSMENT_SECTIONS.map((section, index) => {
-                const stepId = index + 4;
-                let score = 0;
-                const questions = [];
-                const selects = document.querySelectorAll(`#step-${stepId} select`);
-                selects.forEach(sel => {
-                    const val = sel.value ? parseInt(sel.value, 10) : 0;
-                    score += val;
-                    const label = sel.previousElementSibling;
-                    questions.push({
-                        question: label ? label.textContent : '',
-                        answerValue: sel.value,
-                        answerText: sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text : ''
-                    });
+            // Calculate scores and add them to the data object
+            Object.assign(data, calculateAllScores());
+
+            // Capture all individual questions and answers
+            const fullResponses = {};
+            const sections = ["Anxiety", "Stress", "Work-Life Balance", "Overall Happiness", "Emotional Well-Being"];
+            sections.forEach((sectionName, index) => {
+                const stepId = index + 4; // Questions start at step 4
+                fullResponses[sectionName] = [];
+                const questionLabels = document.querySelectorAll(`#step-${stepId} label`);
+                questionLabels.forEach(labelEl => {
+                    const selectEl = labelEl.nextElementSibling;
+                    if (selectEl && selectEl.tagName === 'SELECT') {
+                        const questionText = labelEl.textContent;
+                        const answerValue = selectEl.value;
+                        const answerText = selectEl.options[selectEl.selectedIndex].text;
+
+                        fullResponses[sectionName].push({
+                            question: questionText,
+                            answerValue: answerValue,
+                            answerText: answerText
+                        });
+                    }
                 });
-                return {
-                    name: section.name,
-                    icon: section.icon,
-                    inverted: section.inverted,
-                    maxScore: section.maxScore,
-                    healthyMax: section.healthyMax,
-                    moderateMax: section.moderateMax,
-                    score: score,
-                    questions: questions
-                };
             });
+            data.fullResponses = fullResponses;
 
             // --- SEND DATA TO GOOGLE SCRIPT ---
             fetch(scriptURL, {
@@ -695,14 +672,21 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
         });
     }
 
-    function calculateAllScoresGeneric() {
-        return ASSESSMENT_SECTIONS.map((section, index) => {
-            const stepId = index + 4;
+    function calculateAllScores() {
+        const scores = {};
+        const sections = ["Anxiety", "Stress", "Work-Life Balance", "Overall Happiness", "Emotional Well-Being"];
+        sections.forEach((sectionName, index) => {
             let score = 0;
+            const stepId = index + 4;
             const selects = document.querySelectorAll(`#step-${stepId} select`);
-            selects.forEach(sel => { if (sel.value) score += parseInt(sel.value, 10); });
-            return { name: section.name, score: score, maxScore: section.maxScore, inverted: section.inverted, healthyMax: section.healthyMax, moderateMax: section.moderateMax };
+            selects.forEach(selectElement => {
+                if (selectElement.value) score += parseInt(selectElement.value);
+            });
+            let key = sectionName.replace(/-(\w)/g, (match, p1) => p1.toUpperCase()).replace(/\s+/g, '');
+            key = key.charAt(0).toLowerCase() + key.slice(1) + 'Score';
+            scores[key] = score;
         });
+        return scores;
     }
 
     window.nextStep = function() {
@@ -752,47 +736,32 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
         if (target) target.classList.add("active");
     }
 
-    function classifyScoreClient_(score, maxScore, inverted) {
-        const low = Math.floor(maxScore / 3);
-        const high = Math.floor((2 * maxScore) / 3);
-        if (!inverted) {
-            if (score <= low) return 'Healthy';
-            if (score <= high) return 'Moderate';
-            return 'Concern';
-        } else {
-            if (score <= low) return 'Concern';
-            if (score <= high) return 'Moderate';
-            return 'Healthy';
-        }
-    }
-
     function calculateScores() {
+        const sections = ["Anxiety", "Stress", "Work-Life Balance", "Overall Happiness", "Emotional Well-Being"];
         const scoreDiv = document.getElementById("scoreBreakdown");
         if (!scoreDiv) return;
         scoreDiv.innerHTML = "";
 
-        const allScores = calculateAllScoresGeneric();
-        allScores.forEach(s => {
-            const cls = classifyScoreClient_(s.score, s.maxScore, s.inverted);
-            const rangeText = cls === 'Healthy' ? 'Healthy Range \u2705' : cls === 'Moderate' ? 'Moderate \u26a0\ufe0f' : 'Area of Concern \u2757';
-            const rangeClass = cls === 'Healthy' ? 'score-healthy' : cls === 'Moderate' ? 'score-moderate' : 'score-concern';
-            scoreDiv.innerHTML += `<p><strong>${s.name}:</strong> <span class="${rangeClass}">${s.score} / ${s.maxScore} - ${rangeText}</span></p>`;
-        });
-    }
+        const allScores = calculateAllScores();
 
-    function renderScoringGuidelines() {
-        const el = document.getElementById('scoringGuidelinesContainer');
-        if (!el) return;
-        el.innerHTML = ASSESSMENT_SECTIONS.map(s => {
-            const lowLabel = !s.inverted ? 'Healthy Range \u2705' : 'Area of Concern \u2757';
-            const highLabel = !s.inverted ? 'Area of Concern \u2757' : 'Healthy Range \u2705';
-            const lowClass = !s.inverted ? 'score-healthy' : 'score-concern';
-            const highClass = !s.inverted ? 'score-concern' : 'score-healthy';
-            return `<p><strong>${s.name}</strong> (max ${s.maxScore}):<br>` +
-                `<span class="${lowClass}">0\u2013${s.healthyMax}:</span> ${lowLabel}<br>` +
-                `<span class="score-moderate">${s.healthyMax + 1}\u2013${s.moderateMax}:</span> Moderate \u26a0\ufe0f<br>` +
-                `<span class="${highClass}">${s.moderateMax + 1}\u2013${s.maxScore}:</span> ${highLabel}</p>`;
-        }).join('');
+        for (let i = 0; i < sections.length; i++) {
+            const sectionName = sections[i];
+            let key = sectionName.replace(/-(\w)/g, (match, p1) => p1.toUpperCase()).replace(/\s+/g, '');
+            key = key.charAt(0).toLowerCase() + key.slice(1) + 'Score';
+            const score = allScores[key];
+
+            let rangeText = "", rangeClass = "";
+            if (["Overall Happiness", "Emotional Well-Being"].includes(sectionName)) {
+                if (score <= 13) { rangeText = "Area of Concern \u2757"; rangeClass = "score-concern"; }
+                else if (score <= 26) { rangeText = "Moderate \u26a0\ufe0f"; rangeClass = "score-moderate"; }
+                else { rangeText = "Healthy Range \u2705"; rangeClass = "score-healthy"; }
+            } else {
+                if (score <= 13) { rangeText = "Healthy Range \u2705"; rangeClass = "score-healthy"; }
+                else if (score <= 26) { rangeText = "Moderate \u26a0\ufe0f"; rangeClass = "score-moderate"; }
+                else { rangeText = "Area of Concern \u2757"; rangeClass = "score-concern"; }
+            }
+            scoreDiv.innerHTML += `<p><strong>${sectionName}:</strong> <span class="${rangeClass}">${score} - ${rangeText}</span></p>`;
+        }
     }
 
     function renderFullForm() {
@@ -806,27 +775,32 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
             <div class="step-section" id="step-3"><div class="section"><h2>Self-Assessment Instructions</h2><p class="disclaimer-text">**Please Note:** This assessment is for awareness purposes only and is not a diagnostic tool.</p><ul><li>**0:** Never</li><li>**1:** Rarely</li><li>**2:** Sometimes</li><li>**3:** Often</li><li>**4:** Always</li></ul></div><div class="btn-group"><button class="btn secondary" onclick="prevStep()" type="button">Back</button><button class="btn" onclick="nextStep()" type="button">Start Questions</button></div></div>
             <div id="questionsContainer"></div>
             <div class="step-section" id="step-9">
-                <div class="section"><h2>Your Wellbeing Snapshot</h2><p class="disclaimer-text">Below is a breakdown of your scores.</p><div id="scoreBreakdown"></div><h3>Scoring Guidelines:</h3><div id="scoringGuidelinesContainer"></div></div>
+                <div class="section"><h2>Your Wellbeing Snapshot</h2><p class="disclaimer-text">Below is a breakdown of your scores.</p><div id="scoreBreakdown"></div><h3>Scoring Guidelines:</h3><p>**For Anxiety, Stress, and Work-Life Balance:**<br><span class="score-healthy">0\u201313:</span> Healthy Range \u2705<br><span class="score-moderate">14\u201326:</span> Moderate \u26a0\ufe0f<br><span class="score-concern">27\u201340:</span> Area of Concern \u2757</p><p>**For Overall Happiness and Emotional Well-Being:**<br><span class="score-concern">0\u201313:</span> Area of Concern \u2757<br><span class="score-moderate">14\u201326:</span> Moderate \u26a0\ufe0f<br><span class="score-healthy">27\u201340:</span> Healthy Range \u2705</p></div>
                 <div class="btn-group"><button class="btn secondary" onclick="prevStep()" type="button">Back</button><button class="btn" type="submit">Submit Final</button></div>
             </div>
         `;
         renderQuestions();
-        renderScoringGuidelines();
     }
 
     function renderQuestions() {
+        const sections = [
+            { name: "Anxiety", questions: ["I feel nervous, anxious, or on edge.", "I worry excessively about different things.", "I experience racing thoughts that are hard to control.", "I feel a sense of panic in everyday situations.", "I avoid certain places or situations because they make me anxious.", "I find it difficult to calm myself when upset.", "I experience physical symptoms like trembling or a racing heart.", "I feel tense or jumpy for no apparent reason.", "I feel a constant sense of dread or worry.", "I find it hard to stop worrying once I\u2019ve started."] },
+            { name: "Stress", questions: ["I feel overwhelmed by my responsibilities.", "I struggle to keep up with day-to-day tasks.", "I have difficulty sleeping due to racing thoughts.", "I often feel emotionally drained.", "I feel that I am constantly under pressure.", "I get irritated or angry more easily than usual.", "I feel tired even after a full night's sleep.", "I notice physical signs of stress (headaches, stomachaches, etc.).", "I find it difficult to relax or unwind.", "I feel like I\u2019m losing control over parts of my life."] },
+            { name: "Work-Life Balance", questions: ["I find it hard to disconnect from work during personal time.", "I feel guilty when taking breaks or days off.", "My personal relationships suffer due to work stress.", "I frequently bring work-related problems home.", "I struggle to set boundaries between work and home.", "I miss meals, rest, or social time because of work.", "I constantly check work emails/messages outside work hours.", "I struggle to set boundaries between work and home.", "I feel that work consumes most of my time and energy.", "I feel fulfilled by both my work and personal life."] },
+            { name: "Overall Happiness", questions: ["I feel a sense of purpose and meaning in life.", "I enjoy the things I do each day.", "I feel hopeful about my future.", "I often find things that make me laugh or smile.", "I have a sense of accomplishment in my day-to-day life.", "I feel connected to the people around me.", "I engage in activities that make me happy.", "I am satisfied with where my life is right now.", "I feel grateful for what I have.", "I am optimistic about tomorrow."] },
+            { name: "Emotional Well-Being", questions: ["I am aware of my emotions throughout the day.", "I can express my feelings clearly to others.", "I know healthy ways to cope when I\u2019m feeling low.", "I can bounce back after facing a setback.", "I feel comfortable asking for help when I need to.", "I am able to accept things I cannot change.", "I feel confident in my ability to manage my emotions.", "I make time for self-care regularly.", "I feel emotionally supported by people in my life.", "I feel in control of how I respond to emotional challenges."] }
+        ];
         const container = document.getElementById("questionsContainer");
         container.innerHTML = '';
         let stepId = 4;
-        ASSESSMENT_SECTIONS.forEach((sectionData, index) => {
+        sections.forEach((sectionData, index) => {
             const div = document.createElement("div");
             div.className = "step-section";
             div.id = `step-${stepId}`;
-            const heading = (sectionData.icon ? sectionData.icon + ' ' : '') + sectionData.name;
-            let innerHTML = `<div class="section"><h2>Section ${index + 1}: ${heading}</h2>`;
+            let innerHTML = `<div class="section"><h2>Section ${index + 1}: ${sectionData.name}</h2>`;
             sectionData.questions.forEach((q, qIndex) => {
                 const name = sectionData.name.replace(/\s+/g, '') + qIndex;
-                innerHTML += `<div class="question-block"><label>${q.text}</label><select name="${name}" required><option value="">Select</option><option value="0">Never</option><option value="1">Rarely</option><option value="2">Sometimes</option><option value="3">Often</option><option value="4">Always</option></select></div>`;
+                innerHTML += `<div class="question-block"><label>${q}</label><select name="${name}" required><option value="">Select</option><option value="0">Never</option><option value="1">Rarely</option><option value="2">Sometimes</option><option value="3">Often</option><option value="4">Always</option></select></div>`;
             });
             innerHTML += `</div><div class='btn-group'><button class='btn secondary' type='button' onclick='prevStep()'>Back</button><button class='btn' type='button' onclick='nextStep()'>Next</button></div>`;
             div.innerHTML = innerHTML;
@@ -1218,7 +1192,7 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
     .ac-thumb img{width:100%;height:100%;object-fit:cover;display:block}
     .ac-label{font-weight:700;font-size:.95rem;margin-top:8px;text-align:center;color:var(--text-dark)}
     .ac-share-wrap{position:relative;margin-top:8px;}
-    .ac-share-menu{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--border-light);border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.15);display:none;min-width:180px;overflow:hidden;z-index:20;}
+    .ac-share-menu{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--border-light);border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.15);display:none;min-width:240px;overflow:hidden;z-index:20;}
     .ac-share-menu.open{display:block;}
     .ac-share-item{display:block;width:100%;text-align:left;padding:10px 14px;font-size:.88rem;color:var(--text-dark);text-decoration:none;cursor:pointer;border:none;background:none;font-family:inherit;}
     .ac-share-item:hover{background:#f4f7f6;}
@@ -1228,15 +1202,17 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
     @keyframes pulse{0%{background-position:100% 0}100%{background-position:0 0}}
     body.affirm-lock{overflow:hidden;}
     .ac-thumb{cursor:zoom-in;}
-    #acLightbox{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:9500;display:none;align-items:center;justify-content:center;padding:24px;flex-direction:column;}
+    #acLightbox{position:fixed;inset:0;background:rgba(10,15,12,.92);z-index:9500;display:none;align-items:center;justify-content:center;padding:30px;flex-direction:column;}
     #acLightbox.open{display:flex;}
-    #acLightboxImgWrap{max-width:min(90vw,420px);max-height:78vh;display:flex;align-items:center;justify-content:center;}
-    #acLightboxImgWrap img{max-width:100%;max-height:78vh;border-radius:14px;box-shadow:0 10px 40px rgba(0,0,0,.4);}
-    #acLightboxBar{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap;justify-content:center;}
-    #acLightboxBar button{border:none;border-radius:10px;padding:10px 18px;font-weight:700;cursor:pointer;}
+    #acLightboxImgWrap{width:100%;max-width:520px;display:flex;align-items:center;justify-content:center;}
+    #acLightboxImgWrap img{width:100%;max-width:520px;max-height:72vh;height:auto;object-fit:contain;border-radius:16px;box-shadow:0 16px 50px rgba(0,0,0,.5);background:#fff;}
+    #acLightboxBar{display:flex;gap:14px;margin-top:20px;flex-wrap:wrap;justify-content:center;}
+    #acLightboxBar button{border:none;border-radius:10px;padding:12px 22px;font-weight:700;cursor:pointer;font-size:1em;}
     .ac-lb-flip{background:#fff;color:var(--text-dark);}
-    .ac-lb-close{background:rgba(255,255,255,.15);color:#fff;}
-    #acLightboxLabel{color:#fff;margin-top:14px;font-weight:700;}
+    .ac-lb-flip:hover{background:#e8f5e9;}
+    .ac-lb-close{background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.4) !important;}
+    .ac-lb-close:hover{background:rgba(255,255,255,.3);}
+    #acLightboxLabel{color:#fff;margin-top:18px;font-weight:700;font-size:1.1em;}
   `;
   document.head.appendChild(style);
 
@@ -1456,14 +1432,14 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
       const shareBtn = document.createElement('button'); shareBtn.className = 'btn secondary'; shareBtn.type = 'button'; shareBtn.style.marginTop = '8px'; shareBtn.textContent = '\u2197\ufe0f Share';
       const shareMenu = document.createElement('div'); shareMenu.className = 'ac-share-menu';
 
-      const shareFrontBtn = document.createElement('button'); shareFrontBtn.type = 'button'; shareFrontBtn.className = 'ac-share-item'; shareFrontBtn.textContent = '\ud83d\uddbc\ufe0f Share Front Image';
-      shareFrontBtn.addEventListener('click', () => { shareMenu.classList.remove('open'); shareCardImage_(p.frontThumb, (p.label || 'Affirmation Card') + ' (Front)'); });
+      const waItem = document.createElement('button'); waItem.type = 'button'; waItem.className = 'ac-share-item'; waItem.textContent = '\ud83d\udcac Download both \u2192 Open WhatsApp Web';
+      waItem.addEventListener('click', () => { shareMenu.classList.remove('open'); downloadAndOpen_(p, 'whatsapp'); });
 
-      const shareBackBtn = document.createElement('button'); shareBackBtn.type = 'button'; shareBackBtn.className = 'ac-share-item'; shareBackBtn.textContent = '\ud83d\uddbc\ufe0f Share Back Image';
-      shareBackBtn.addEventListener('click', () => { shareMenu.classList.remove('open'); shareCardImage_(p.backThumb || p.frontThumb, (p.label || 'Affirmation Card') + ' (Back)'); });
+      const mailItem = document.createElement('button'); mailItem.type = 'button'; mailItem.className = 'ac-share-item'; mailItem.textContent = '\ud83d\udce7 Download both \u2192 Open Email';
+      mailItem.addEventListener('click', () => { shareMenu.classList.remove('open'); downloadAndOpen_(p, 'email'); });
 
-      shareMenu.appendChild(shareFrontBtn);
-      shareMenu.appendChild(shareBackBtn);
+      shareMenu.appendChild(waItem);
+      shareMenu.appendChild(mailItem);
       shareBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         const isOpen = shareMenu.classList.contains('open');
@@ -1484,29 +1460,51 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
   }
 
   /**
-   * Shares the actual image file (not a link) via the device's native share sheet
-   * (WhatsApp, Email, etc. all show up there as image-attachment targets) when the
-   * browser supports it — mainly Android Chrome and iOS Safari 16+. On browsers
-   * that don't support sharing files yet (most desktop browsers), it opens the
-   * image in a new tab so the person can save/right-click and attach it manually.
+   * Downloads both the front and back images of a card to the person's computer,
+   * then opens the WEB version of WhatsApp or Email (never a desktop app, and
+   * never the long OS share-sheet list) so they can attach the just-downloaded
+   * images themselves. There's no supported way for a website to auto-attach an
+   * image straight into a WhatsApp or Gmail chat — this is the closest, most
+   * reliable equivalent: two clicks (download, then attach) instead of one.
    */
-  async function shareCardImage_(imageUrl, label) {
-    if (!imageUrl) return;
+  async function downloadImage_(url, filename) {
     try {
-      const resp = await fetch(imageUrl, { mode: 'cors' });
+      const resp = await fetch(url, { mode: 'cors' });
       if (!resp.ok) throw new Error('fetch-failed');
       const blob = await resp.blob();
-      const ext = (blob.type && blob.type.includes('png')) ? 'png' : 'jpg';
-      const file = new File([blob], (label || 'card').replace(/\s+/g, '_') + '.' + ext, { type: blob.type || 'image/jpeg' });
-
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({ files: [file], title: label || 'Affirmation Card' });
-        return;
-      }
-      throw new Error('share-files-unsupported');
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 4000);
+      return true;
     } catch (err) {
-      window.open(imageUrl, '_blank', 'noopener');
-      alert('Your browser doesn\'t support sharing images directly here (this mostly works on phones). The image has opened in a new tab — long-press or right-click it to save, then attach it in WhatsApp or Email.');
+      window.open(url, '_blank', 'noopener');
+      return false;
+    }
+  }
+
+  async function downloadAndOpen_(p, target) {
+    const safeLabel = (p.label || 'Affirmation_Card').replace(/\s+/g, '_');
+    const frontOk = await downloadImage_(p.frontThumb, safeLabel + '_Front.jpg');
+    let backOk = true;
+    if (p.backThumb && p.backThumb !== p.frontThumb) {
+      backOk = await downloadImage_(p.backThumb, safeLabel + '_Back.jpg');
+    }
+
+    if (target === 'whatsapp') {
+      window.open('https://web.whatsapp.com/', '_blank', 'noopener');
+    } else {
+      window.open('https://mail.google.com/mail/?view=cm&fs=1&su=' + encodeURIComponent(p.label || 'Affirmation Card'), '_blank', 'noopener');
+    }
+
+    if (frontOk && backOk) {
+      alert('Both images have been downloaded to your computer (check your Downloads folder). ' + (target === 'whatsapp' ? 'WhatsApp Web' : 'Email') + ' has opened in a new tab \u2014 open a chat/compose a message and attach the two downloaded images from there.');
+    } else {
+      alert('The images opened in a new tab instead of downloading directly (your browser blocked it). Right-click \u2192 "Save image as..." on each, then attach them in ' + (target === 'whatsapp' ? 'WhatsApp Web' : 'Email') + '.');
     }
   }
 
