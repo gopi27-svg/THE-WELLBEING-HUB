@@ -1196,7 +1196,7 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
 </script>
 
 
-<!-- ======= AFFIRMATION CARDS: NON-DESTRUCTIVE PATCH (infinite scroll + load more) ======= -->
+<!-- ======= AFFIRMATION CARDS: FULL-SCREEN GALLERY SECTION ======= -->
 <script>
 (function () {
   const GAS_URL = BACKEND_URL; // affirmation cards gallery
@@ -1204,23 +1204,64 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
 
   const style = document.createElement('style');
   style.textContent = `
-    #affirmToolbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:16px}
+    #affirmOverlay{position:fixed;inset:0;background:#f4f7f6;z-index:9000;display:none;flex-direction:column;}
+    #affirmOverlay.open{display:flex;}
+    #affirmOverlayHeader{position:sticky;top:0;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.08);padding:16px 24px;display:flex;align-items:center;gap:16px;z-index:1;}
+    #affirmOverlayBack{border:1px solid var(--border-light);background:#fff;padding:8px 16px;border-radius:10px;font-weight:700;cursor:pointer;font-size:.9rem;}
+    #affirmOverlayBack:hover{background:#f4f7f6;}
+    #affirmOverlayTitle{margin:0;font-size:1.4em;color:var(--dark-green);}
+    #affirmOverlayBody{flex:1;overflow-y:auto;padding:24px;max-width:1200px;margin:0 auto;width:100%;box-sizing:border-box;}
+    #affirmToolbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:16px;flex-wrap:wrap;}
     #affirmGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px}
     .ac-card{background:#fff;border-radius:14px;box-shadow:6px 10px 18px rgba(0,0,0,.05),-4px -4px 12px rgba(255,255,255,.9);padding:10px;display:flex;flex-direction:column;align-items:center}
     .ac-thumb{width:100%;aspect-ratio:2/3;position:relative;overflow:hidden;border-radius:10px;border:1px solid var(--border-light);background:#f4f7f6}
     .ac-thumb img{width:100%;height:100%;object-fit:cover;display:block}
     .ac-label{font-weight:700;font-size:.95rem;margin-top:8px;text-align:center;color:var(--text-dark)}
     .ac-share-wrap{position:relative;margin-top:8px;}
-    .ac-share-menu{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--border-light);border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.15);display:none;min-width:160px;overflow:hidden;z-index:20;}
+    .ac-share-menu{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--border-light);border-radius:10px;box-shadow:0 8px 20px rgba(0,0,0,.15);display:none;min-width:180px;overflow:hidden;z-index:20;}
     .ac-share-menu.open{display:block;}
-    .ac-share-item{display:block;padding:10px 14px;font-size:.88rem;color:var(--text-dark);text-decoration:none;cursor:pointer;}
+    .ac-share-item{display:block;width:100%;text-align:left;padding:10px 14px;font-size:.88rem;color:var(--text-dark);text-decoration:none;cursor:pointer;border:none;background:none;font-family:inherit;}
     .ac-share-item:hover{background:#f4f7f6;}
     .ac-side{font-size:.8rem;color:var(--text-medium);margin-top:2px}
     .ac-skel{animation:pulse 1.1s ease-in-out infinite;background:linear-gradient(90deg,#eef2f3 25%,#f5f9f7 37%,#eef2f3 63%);background-size:400% 100%}
     .ac-skel.thumb{width:100%;aspect-ratio:2/3;border-radius:10px}
     @keyframes pulse{0%{background-position:100% 0}100%{background-position:0 0}}
+    body.affirm-lock{overflow:hidden;}
   `;
   document.head.appendChild(style);
+
+  // Build the overlay shell once.
+  const overlay = document.createElement('div');
+  overlay.id = 'affirmOverlay';
+  overlay.innerHTML = `
+    <div id="affirmOverlayHeader">
+      <button id="affirmOverlayBack" type="button">\u2190 Back to Resources</button>
+      <h2 id="affirmOverlayTitle">\ud83d\udc8c Affirmation Cards</h2>
+    </div>
+    <div id="affirmOverlayBody">
+      <div id="affirmToolbar">
+        <div class="disclaimer-text">Scroll to load more • 24 at a time. <span id="affirmCount" style="margin-left:8px;"></span></div>
+        <button class="btn secondary" id="affirmLoad">Loading…</button>
+      </div>
+      <div id="affirmGrid"></div>
+      <div id="affirmSentinel" style="height:1px"></div>
+      <p id="affirmMsg" class="disclaimer-text" style="margin-top:10px;display:none"></p>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  document.getElementById('affirmOverlayBack').addEventListener('click', closeAffirmOverlay);
+
+  function openAffirmOverlay(){
+    overlay.classList.add('open');
+    document.body.classList.add('affirm-lock');
+    window.scrollTo({ top: 0 });
+    initAffirmIfNeeded();
+  }
+  function closeAffirmOverlay(){
+    overlay.classList.remove('open');
+    document.body.classList.remove('affirm-lock');
+  }
 
   const state = { nextPageToken: "", loading: false, loadedOnce: false, io: null, sentinelIO: null, shown: 0, total: 0 };
 
@@ -1229,27 +1270,18 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
     if (!btn) return;
     const targetId = btn.dataset.target;
     if (targetId === 'affirmationcardsResourceSection') {
-      setTimeout(initAffirmIfNeeded, 0);
+      e.preventDefault();
+      e.stopPropagation();
+      openAffirmOverlay();
     }
-  });
+  }, true);
 
   function initAffirmIfNeeded() {
-    const sec = document.getElementById('affirmationcardsResourceSection');
-    if (!sec || sec.dataset.acReady === '1') return;
+    const grid = document.getElementById('affirmGrid');
+    if (grid.dataset.acReady === '1') return;
+    grid.dataset.acReady = '1';
 
-    sec.innerHTML = `
-      <h5 class="sub-folder-heading">Affirmation Cards</h5>
-      <div id="affirmToolbar">
-        <div class="disclaimer-text">Scroll to load more • 24 at a time. <span id="affirmCount" style="margin-left:8px;"></span></div>
-        <button class="btn secondary" id="affirmLoad">Loading…</button>
-      </div>
-      <div id="affirmGrid">
-        ${Array.from({length:12}).map(()=>`<div class="ac-card"><div class="ac-thumb ac-skel thumb"></div><div class="ac-label ac-skel" style="height:14px;width:60%;margin-top:10px;border-radius:10px"></div></div>`).join('')}
-      </div>
-      <div id="affirmSentinel" style="height:1px"></div>
-      <p id="affirmMsg" class="disclaimer-text" style="margin-top:10px;display:none"></p>
-    `;
-    sec.dataset.acReady = '1';
+    grid.innerHTML = Array.from({length:12}).map(()=>`<div class="ac-card"><div class="ac-thumb ac-skel thumb"></div><div class="ac-label ac-skel" style="height:14px;width:60%;margin-top:10px;border-radius:10px"></div></div>`).join('');
 
     document.getElementById('affirmLoad').addEventListener('click', loadPage);
     ensureSentinel();
@@ -1381,19 +1413,14 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
       const shareBtn = document.createElement('button'); shareBtn.className = 'btn secondary'; shareBtn.type = 'button'; shareBtn.style.marginTop = '8px'; shareBtn.textContent = '\u2197\ufe0f Share';
       const shareMenu = document.createElement('div'); shareMenu.className = 'ac-share-menu';
 
-      const frontLink = p.frontUrl || p.frontThumb || '';
-      const backLink = p.backUrl || p.backThumb || frontLink;
-      const shareText = `${p.label || 'Affirmation Card'}\nFront: ${frontLink}\nBack: ${backLink}`;
+      const shareFrontBtn = document.createElement('button'); shareFrontBtn.type = 'button'; shareFrontBtn.className = 'ac-share-item'; shareFrontBtn.textContent = '\ud83d\uddbc\ufe0f Share Front Image';
+      shareFrontBtn.addEventListener('click', () => { shareMenu.classList.remove('open'); shareCardImage_(p.frontThumb, (p.label || 'Affirmation Card') + ' (Front)'); });
 
-      const emailBtn = document.createElement('a'); emailBtn.className = 'ac-share-item'; emailBtn.textContent = '\ud83d\udce7 Email';
-      emailBtn.href = 'mailto:?subject=' + encodeURIComponent(p.label || 'Affirmation Card') + '&body=' + encodeURIComponent(shareText);
+      const shareBackBtn = document.createElement('button'); shareBackBtn.type = 'button'; shareBackBtn.className = 'ac-share-item'; shareBackBtn.textContent = '\ud83d\uddbc\ufe0f Share Back Image';
+      shareBackBtn.addEventListener('click', () => { shareMenu.classList.remove('open'); shareCardImage_(p.backThumb || p.frontThumb, (p.label || 'Affirmation Card') + ' (Back)'); });
 
-      const waBtn = document.createElement('a'); waBtn.className = 'ac-share-item'; waBtn.textContent = '\ud83d\udcac WhatsApp';
-      waBtn.href = 'https://wa.me/?text=' + encodeURIComponent(shareText);
-      waBtn.target = '_blank'; waBtn.rel = 'noopener';
-
-      shareMenu.appendChild(emailBtn);
-      shareMenu.appendChild(waBtn);
+      shareMenu.appendChild(shareFrontBtn);
+      shareMenu.appendChild(shareBackBtn);
       shareBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         const isOpen = shareMenu.classList.contains('open');
@@ -1411,6 +1438,33 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
       frag.appendChild(card);
     });
     grid.appendChild(frag);
+  }
+
+  /**
+   * Shares the actual image file (not a link) via the device's native share sheet
+   * (WhatsApp, Email, etc. all show up there as image-attachment targets) when the
+   * browser supports it — mainly Android Chrome and iOS Safari 16+. On browsers
+   * that don't support sharing files yet (most desktop browsers), it opens the
+   * image in a new tab so the person can save/right-click and attach it manually.
+   */
+  async function shareCardImage_(imageUrl, label) {
+    if (!imageUrl) return;
+    try {
+      const resp = await fetch(imageUrl, { mode: 'cors' });
+      if (!resp.ok) throw new Error('fetch-failed');
+      const blob = await resp.blob();
+      const ext = (blob.type && blob.type.includes('png')) ? 'png' : 'jpg';
+      const file = new File([blob], (label || 'card').replace(/\s+/g, '_') + '.' + ext, { type: blob.type || 'image/jpeg' });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: label || 'Affirmation Card' });
+        return;
+      }
+      throw new Error('share-files-unsupported');
+    } catch (err) {
+      window.open(imageUrl, '_blank', 'noopener');
+      alert('Your browser doesn\'t support sharing images directly here (this mostly works on phones). The image has opened in a new tab — long-press or right-click it to save, then attach it in WhatsApp or Email.');
+    }
   }
 
   document.addEventListener('click', (e) => {
