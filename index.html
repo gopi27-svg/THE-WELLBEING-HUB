@@ -690,9 +690,7 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
     }
 
     window.nextStep = function() {
-        if (currentStep >= 4 && currentStep <= 3 + totalQuestionSections) {
-            if (!validateCurrentStep()) return;
-        }
+        if (!validateCurrentStep()) return;
         if (currentStep === 3 + totalQuestionSections) {
             calculateScores();
         }
@@ -708,18 +706,19 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
     };
 
     function validateCurrentStep() {
-        const selects = document.querySelectorAll(`#step-${currentStep} select`);
+        const fields = document.querySelectorAll(`#step-${currentStep} select, #step-${currentStep} input`);
         let allAnswered = true;
         let firstInvalid = null;
-        selects.forEach(sel => {
-            const block = sel.closest('.question-block');
-            if (sel.value === "") {
-                sel.classList.add('field-error');
+        fields.forEach(el => {
+            const block = el.closest('.question-block');
+            const invalid = !el.checkValidity(); // covers required-empty AND format (e.g. email)
+            if (invalid) {
+                el.classList.add('field-error');
                 if (block) block.classList.add('has-error');
                 allAnswered = false;
-                if (!firstInvalid) firstInvalid = sel;
+                if (!firstInvalid) firstInvalid = el;
             } else {
-                sel.classList.remove('field-error');
+                el.classList.remove('field-error');
                 if (block) block.classList.remove('has-error');
             }
         });
@@ -786,7 +785,7 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
         const sections = [
             { name: "Anxiety", questions: ["I feel nervous, anxious, or on edge.", "I worry excessively about different things.", "I experience racing thoughts that are hard to control.", "I feel a sense of panic in everyday situations.", "I avoid certain places or situations because they make me anxious.", "I find it difficult to calm myself when upset.", "I experience physical symptoms like trembling or a racing heart.", "I feel tense or jumpy for no apparent reason.", "I feel a constant sense of dread or worry.", "I find it hard to stop worrying once I\u2019ve started."] },
             { name: "Stress", questions: ["I feel overwhelmed by my responsibilities.", "I struggle to keep up with day-to-day tasks.", "I have difficulty sleeping due to racing thoughts.", "I often feel emotionally drained.", "I feel that I am constantly under pressure.", "I get irritated or angry more easily than usual.", "I feel tired even after a full night's sleep.", "I notice physical signs of stress (headaches, stomachaches, etc.).", "I find it difficult to relax or unwind.", "I feel like I\u2019m losing control over parts of my life."] },
-            { name: "Work-Life Balance", questions: ["I find it hard to disconnect from work during personal time.", "I feel guilty when taking breaks or days off.", "My personal relationships suffer due to work stress.", "I frequently bring work-related problems home.", "I struggle to set boundaries between work and home.", "I miss meals, rest, or social time because of work.", "I constantly check work emails/messages outside work hours.", "I struggle to set boundaries between work and home.", "I feel that work consumes most of my time and energy.", "I feel fulfilled by both my work and personal life."] },
+            { name: "Work-Life Balance", questions: ["I find it hard to disconnect from work during personal time.", "I feel guilty when taking breaks or days off.", "My personal relationships suffer due to work stress.", "I frequently bring work-related problems home.", "I struggle to set boundaries between work and home.", "I miss meals, rest, or social time because of work.", "I constantly check work emails/messages outside work hours.", "I have little time left for hobbies or personal interests because of work.", "I feel that work consumes most of my time and energy.", "I rarely feel a sense of balance between my work and personal life."] },
             { name: "Overall Happiness", questions: ["I feel a sense of purpose and meaning in life.", "I enjoy the things I do each day.", "I feel hopeful about my future.", "I often find things that make me laugh or smile.", "I have a sense of accomplishment in my day-to-day life.", "I feel connected to the people around me.", "I engage in activities that make me happy.", "I am satisfied with where my life is right now.", "I feel grateful for what I have.", "I am optimistic about tomorrow."] },
             { name: "Emotional Well-Being", questions: ["I am aware of my emotions throughout the day.", "I can express my feelings clearly to others.", "I know healthy ways to cope when I\u2019m feeling low.", "I can bounce back after facing a setback.", "I feel comfortable asking for help when I need to.", "I am able to accept things I cannot change.", "I feel confident in my ability to manage my emotions.", "I make time for self-care regularly.", "I feel emotionally supported by people in my life.", "I feel in control of how I respond to emotional challenges."] }
         ];
@@ -1189,7 +1188,9 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
     #affirmHero .ac-hero-emoji{font-size:2.4em;display:block;margin-bottom:4px;}
     #affirmHero p{color:var(--text-medium);font-size:1.05em;max-width:560px;margin:6px auto 0;}
     #affirmToolbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:22px;flex-wrap:wrap;background:#fff;border-radius:14px;padding:14px 20px;box-shadow:0 4px 16px rgba(31,58,38,.06);}
-    #affirmGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:22px}
+    #affirmGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+    @media (max-width:980px){ #affirmGrid{grid-template-columns:repeat(2,1fr);} }
+    @media (max-width:560px){ #affirmGrid{grid-template-columns:1fr;} }
     .ac-card{background:#fff;border-radius:18px;box-shadow:0 6px 20px rgba(31,58,38,.08);padding:14px;display:flex;flex-direction:column;align-items:center;transition:transform .22s ease,box-shadow .22s ease;border:1px solid rgba(207,216,220,.4);}
     .ac-card:hover{transform:translateY(-6px);box-shadow:0 16px 34px rgba(31,58,38,.16);}
     .ac-thumb{width:100%;aspect-ratio:2/3;position:relative;overflow:hidden;border-radius:13px;border:1px solid var(--border-light);background:#f4f7f6;box-shadow:inset 0 0 0 1px rgba(255,255,255,.5);}
@@ -1211,28 +1212,39 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
     .ac-thumb{cursor:zoom-in;}
     #acLightbox{position:fixed;inset:0;background:rgba(10,15,12,.92);z-index:9500;display:none;align-items:center;justify-content:center;padding:30px;flex-direction:column;}
     #acLightbox.open{display:flex;}
-    #acLightboxImgWrap{width:100%;max-width:520px;display:flex;align-items:center;justify-content:center;}
-    #acLightboxImgWrap img{width:100%;max-width:520px;max-height:72vh;height:auto;object-fit:contain;border-radius:16px;box-shadow:0 16px 50px rgba(0,0,0,.5);background:#fff;}
-    #acLightboxBar{display:flex;gap:14px;margin-top:20px;flex-wrap:wrap;justify-content:center;}
-    #acLightboxBar button{border:none;border-radius:10px;padding:12px 22px;font-weight:700;cursor:pointer;font-size:1em;}
-    .ac-lb-flip{background:#fff;color:var(--text-dark);}
-    .ac-lb-flip:hover{background:#e8f5e9;}
-    .ac-lb-close{background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.4) !important;}
-    .ac-lb-close:hover{background:rgba(255,255,255,.3);}
-    #acLightboxLabel{color:#fff;margin-top:18px;font-weight:700;font-size:1.1em;}
+    #acLightboxImgWrap{width:100%;max-width:520px;display:flex;align-items:center;justify-content:center;position:relative;}
+    #acLightboxImgWrap img{width:100%;max-width:520px;max-height:72vh;height:auto;object-fit:contain;border-radius:16px;box-shadow:0 16px 50px rgba(0,0,0,.5);background:#fff;cursor:pointer;transition:transform .15s ease;}
+    #acLightboxImgWrap img:active{transform:scale(.98);}
+    #acLightboxClose{position:absolute;top:-44px;right:0;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.4);color:#fff;width:38px;height:38px;border-radius:50%;font-size:1.2em;cursor:pointer;line-height:1;}
+    #acLightboxClose:hover{background:rgba(255,255,255,.3);}
+    #acLightboxMenuBtn{position:absolute;top:-44px;right:48px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.4);color:#fff;width:38px;height:38px;border-radius:50%;font-size:1.3em;font-weight:900;cursor:pointer;line-height:1;}
+    #acLightboxMenuBtn:hover{background:rgba(255,255,255,.3);}
+    #acLightboxMenu{position:absolute;top:0;right:48px;background:#fff;border-radius:12px;box-shadow:0 10px 28px rgba(0,0,0,.3);min-width:230px;overflow:hidden;display:none;z-index:5;}
+    #acLightboxMenu.open{display:block;}
+    .ac-lb-menu-item{display:block;width:100%;text-align:left;padding:12px 16px;font-size:.9rem;color:var(--text-dark);background:none;border:none;cursor:pointer;font-family:inherit;font-weight:600;}
+    .ac-lb-menu-item:hover{background:var(--light-green-bg,#E8F5E9);color:var(--dark-green);}
+    #acLightboxHint{color:rgba(255,255,255,.7);font-size:.82em;margin-top:10px;}
+    #acLightboxLabel{color:#fff;margin-top:16px;font-weight:700;font-size:1.1em;}
   `;
   document.head.appendChild(style);
 
-  // Lightbox shell (click any card thumbnail to open a larger preview).
+  // Lightbox shell (click any card thumbnail to open a larger preview; click the
+  // big image itself to flip front/back; the \u22ee menu has Download & Share).
   const lightbox = document.createElement('div');
   lightbox.id = 'acLightbox';
   lightbox.innerHTML = `
-    <div id="acLightboxImgWrap"><img id="acLightboxImg" alt="Affirmation Card preview"></div>
-    <div id="acLightboxLabel"></div>
-    <div id="acLightboxBar">
-      <button type="button" class="ac-lb-flip" id="acLightboxFlip">Flip</button>
-      <button type="button" class="ac-lb-close" id="acLightboxClose">Close</button>
+    <div id="acLightboxImgWrap">
+      <img id="acLightboxImg" alt="Affirmation Card preview">
+      <button type="button" id="acLightboxMenuBtn" title="More options">\u22ee</button>
+      <button type="button" id="acLightboxClose" title="Close">\u2715</button>
+      <div id="acLightboxMenu">
+        <button type="button" class="ac-lb-menu-item" id="acLbDownloadBoth">\u2b07\ufe0f Download Front + Back</button>
+        <button type="button" class="ac-lb-menu-item" id="acLbWhatsapp">\ud83d\udcac Share via WhatsApp Web</button>
+        <button type="button" class="ac-lb-menu-item" id="acLbEmail">\ud83d\udce7 Share via Email</button>
+      </div>
     </div>
+    <div id="acLightboxLabel"></div>
+    <div id="acLightboxHint">Tap the image to flip \u00b7 Front / Back</div>
   `;
   document.body.appendChild(lightbox);
 
@@ -1246,14 +1258,36 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
     document.getElementById('acLightboxLabel').textContent = lbState.label + ' \u2014 Front';
     lightbox.classList.add('open');
   }
-  document.getElementById('acLightboxFlip').addEventListener('click', () => {
+  function flipLightbox_() {
     lbState.side = lbState.side === 'front' ? 'back' : 'front';
     const src = lbState.side === 'front' ? lbState.front : lbState.back;
     document.getElementById('acLightboxImg').src = src;
     document.getElementById('acLightboxLabel').textContent = lbState.label + ' \u2014 ' + (lbState.side === 'front' ? 'Front' : 'Back');
-  });
+  }
+  document.getElementById('acLightboxImg').addEventListener('click', flipLightbox_);
   document.getElementById('acLightboxClose').addEventListener('click', () => lightbox.classList.remove('open'));
-  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) lightbox.classList.remove('open'); });
+  document.getElementById('acLightboxMenuBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    document.getElementById('acLightboxMenu').classList.toggle('open');
+  });
+  document.getElementById('acLbDownloadBoth').addEventListener('click', () => {
+    document.getElementById('acLightboxMenu').classList.remove('open');
+    downloadAndOpen_({ label: lbState.label, frontThumb: lbState.front, backThumb: lbState.back }, 'download');
+  });
+  document.getElementById('acLbWhatsapp').addEventListener('click', () => {
+    document.getElementById('acLightboxMenu').classList.remove('open');
+    downloadAndOpen_({ label: lbState.label, frontThumb: lbState.front, backThumb: lbState.back }, 'whatsapp');
+  });
+  document.getElementById('acLbEmail').addEventListener('click', () => {
+    document.getElementById('acLightboxMenu').classList.remove('open');
+    downloadAndOpen_({ label: lbState.label, frontThumb: lbState.front, backThumb: lbState.back }, 'email');
+  });
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) lightbox.classList.remove('open');
+    if (!e.target.closest('#acLightboxMenu') && e.target.id !== 'acLightboxMenuBtn') {
+      document.getElementById('acLightboxMenu').classList.remove('open');
+    }
+  });
 
   // Build the overlay shell once.
   const overlay = document.createElement('div');
@@ -1359,7 +1393,7 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
       action: 'list',
       folder: FOLDER_ID,
       pageSize: '24',
-      size: 'w400'
+      size: 'w700'
     });
     if (state.nextPageToken) qs.set('pageToken', state.nextPageToken);
 
@@ -1416,7 +1450,7 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
 
     const frag = document.createDocumentFragment();
     pairs.forEach(p => {
-      const card = document.createElement('div'); card.className = 'ac-card'; card.dataset.side = 'front';
+      const card = document.createElement('div'); card.className = 'ac-card';
 
       const wrap = document.createElement('div'); wrap.className = 'ac-thumb';
       const img = document.createElement('img');
@@ -1428,43 +1462,11 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
       wrap.addEventListener('click', () => openLightbox_(p.frontThumb, p.backThumb, p.label || 'Affirmation Card'));
 
       const label = document.createElement('div'); label.className = 'ac-label'; label.textContent = p.label || '';
-      const side = document.createElement('div'); side.className = 'ac-side'; side.textContent = 'Front';
-
-      const flip = document.createElement('button'); flip.className = 'btn secondary'; flip.type = 'button'; flip.style.marginTop = '10px'; flip.textContent = 'Flip';
-      flip.addEventListener('click', () => {
-        const isFront = card.dataset.side !== 'back';
-        card.dataset.side = isFront ? 'back' : 'front';
-        const nextSrc = isFront ? (p.backThumb || p.frontThumb) : (p.frontThumb || p.backThumb);
-        if (nextSrc && img.src !== nextSrc) img.src = nextSrc;
-        side.textContent = isFront ? 'Back' : 'Front';
-      });
-
-      const shareWrap = document.createElement('div'); shareWrap.className = 'ac-share-wrap';
-      const shareBtn = document.createElement('button'); shareBtn.className = 'btn secondary'; shareBtn.type = 'button'; shareBtn.style.marginTop = '8px'; shareBtn.textContent = '\u2197\ufe0f Share';
-      const shareMenu = document.createElement('div'); shareMenu.className = 'ac-share-menu';
-
-      const waItem = document.createElement('button'); waItem.type = 'button'; waItem.className = 'ac-share-item'; waItem.textContent = '\ud83d\udcac Download both \u2192 Open WhatsApp Web';
-      waItem.addEventListener('click', () => { shareMenu.classList.remove('open'); downloadAndOpen_(p, 'whatsapp'); });
-
-      const mailItem = document.createElement('button'); mailItem.type = 'button'; mailItem.className = 'ac-share-item'; mailItem.textContent = '\ud83d\udce7 Download both \u2192 Open Email';
-      mailItem.addEventListener('click', () => { shareMenu.classList.remove('open'); downloadAndOpen_(p, 'email'); });
-
-      shareMenu.appendChild(waItem);
-      shareMenu.appendChild(mailItem);
-      shareBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const isOpen = shareMenu.classList.contains('open');
-        document.querySelectorAll('.ac-share-menu.open').forEach(m => m.classList.remove('open'));
-        if (!isOpen) shareMenu.classList.add('open');
-      });
-      shareWrap.appendChild(shareBtn);
-      shareWrap.appendChild(shareMenu);
+      const side = document.createElement('div'); side.className = 'ac-side'; side.textContent = 'Click to view';
 
       card.appendChild(wrap);
       card.appendChild(label);
       card.appendChild(side);
-      card.appendChild(flip);
-      card.appendChild(shareWrap);
       frag.appendChild(card);
     });
     grid.appendChild(frag);
@@ -1508,14 +1510,16 @@ select, input[type="text"], input[type="email"], input[type="tel"], input[type="
 
     if (target === 'whatsapp') {
       window.open('https://web.whatsapp.com/', '_blank', 'noopener');
-    } else {
+    } else if (target === 'email') {
       window.open('https://mail.google.com/mail/?view=cm&fs=1&su=' + encodeURIComponent(p.label || 'Affirmation Card'), '_blank', 'noopener');
     }
+    // target === 'download' just downloads, no web app is opened.
 
+    const appName = target === 'whatsapp' ? 'WhatsApp Web' : target === 'email' ? 'Email' : '';
     if (frontOk && backOk) {
-      alert('Both images have been downloaded to your computer (check your Downloads folder). ' + (target === 'whatsapp' ? 'WhatsApp Web' : 'Email') + ' has opened in a new tab \u2014 open a chat/compose a message and attach the two downloaded images from there.');
+      alert('Both images have been downloaded to your computer (check your Downloads folder).' + (appName ? ' ' + appName + ' has opened in a new tab \u2014 open a chat/compose a message and attach the two downloaded images from there.' : ''));
     } else {
-      alert('The images opened in a new tab instead of downloading directly (your browser blocked it). Right-click \u2192 "Save image as..." on each, then attach them in ' + (target === 'whatsapp' ? 'WhatsApp Web' : 'Email') + '.');
+      alert('The images opened in a new tab instead of downloading directly (your browser blocked it). Right-click \u2192 "Save image as..." on each' + (appName ? ', then attach them in ' + appName + '.' : '.'));
     }
   }
 
